@@ -37,6 +37,8 @@ extern "C" {
 #include "dataPacketTx.h"
 #include "dataPacketRx.h"
 #include "application.h"
+#include "pid.h"
+#include "movingAverage.h"
 
 /* USER CODE END Includes */
 

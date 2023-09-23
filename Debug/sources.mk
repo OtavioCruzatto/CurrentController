@@ -26,4 +26,6 @@ Core/Src \
 Core/Startup \
 DataPacket/Src \
 Drivers/STM32F4xx_HAL_Driver/Src \
+Dsp/Src \
+Pid/Src \
 

@@ -37,7 +37,9 @@ DataPacket/Src/dataPacketRx.o: ../DataPacket/Src/dataPacketRx.c \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/defs.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/application.h
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/application.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Pid/Inc/pid.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketRx.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -78,3 +80,5 @@ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/defs.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/application.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Pid/Inc/pid.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h:

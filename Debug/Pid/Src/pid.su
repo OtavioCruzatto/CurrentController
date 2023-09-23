@@ -1,0 +1,7 @@
+../Pid/Src/pid.c:10:6:pidInit	16	static
+../Pid/Src/pid.c:25:6:pidCompute	16	static
+../Pid/Src/pid.c:69:6:pidSetSetpoint	16	static
+../Pid/Src/pid.c:74:9:pidGetSetpoint	16	static
+../Pid/Src/pid.c:79:6:pidSetProcessVariable	16	static
+../Pid/Src/pid.c:84:9:pidGetProcessVariable	16	static
+../Pid/Src/pid.c:89:9:pidGetControlledVariable	16	static

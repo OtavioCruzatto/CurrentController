@@ -18,6 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "stdio.h"
+#include <string.h>
+#include <inttypes.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -61,6 +64,10 @@ uint32_t counterTimer4 = 0;
 
 Application app;
 uint8_t stateMachine = 0x00;
+
+PidController pid;
+
+MovingAverage movingAverage;
 
 /* USER CODE END PV */
 
@@ -147,6 +154,9 @@ int main(void)
   dataPacketTxInit(&dataPacketTx, 0xAA, 0x55);
   dataPacketRxInit(&dataPacketRx, 0xAA, 0x55);
   applicationInit(&app, LED_GPIO_Port, LED_Pin);
+  pidInit(&pid, 1, 1, 1, PID_CONTROLLER);
+  pidSetSetpoint(&pid, 10000); // 10mA
+  movingAverageInit(&movingAverage, 256);
   HAL_UART_Receive_IT(&huart2, &receivedByte, 1);
 
   /* USER CODE END 2 */
@@ -246,13 +256,14 @@ int main(void)
 			  break;
 
 		  case 5:
-			  if (counterTimer4 >= DELAY_10_MILISECONDS)
+			  if (counterTimer4 >= DELAY_1_MILISECONDS)
 			  {
 				  HAL_ADC_Start(&hadc1);
-				  HAL_ADC_PollForConversion(&hadc1, 100);
+				  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 				  uint16_t adcValue = HAL_ADC_GetValue(&hadc1);
-				  applicationSetAdcValue(&app, adcValue);
 				  HAL_ADC_Stop(&hadc1);
+				  movingAverageAddValue(&movingAverage, adcValue);
+				  applicationSetAdcValue(&app, movingAverageGetMean(&movingAverage));
 				  applicationSetAdcReadCompleteStatus(&app, TRUE);
 				  counterTimer4 = 0;
 			  }
