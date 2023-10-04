@@ -178,6 +178,7 @@ int main(void)
 
 	  if (controllerDelay >= DELAY_10_MILISECONDS)
 	  {
+		  appRunController(&app, hdac);
 		  controllerDelay = 0;
 	  }
 

@@ -23,7 +23,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin)
 	app->dataLenght = 0;
 
 	// ======== Controller =========== //
-	pidInit(&app->pid, 5, 2, 0, PID_CONTROLLER);
+	pidInit(&app->pid, 1, 1, 0, PID_CONTROLLER);
 	pidSetSetpoint(&app->pid, 500);
 
 	// ======== Data Packet Tx =========== //
@@ -94,6 +94,15 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength)
 		app->dataLenght = dataLength;
 		memcpy(app->data, data, dataLength);
 	}
+}
+
+// ======== Controller =========== //
+void appRunController(App *app, DAC_HandleTypeDef hdac)
+{
+	pidSetProcessVariable(&app->pid, app->adcValue);
+	pidCompute(&app->pid);
+	uint32_t controlledVariable = pidGetControlledVariable(&app->pid);
+	HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, controlledVariable);
 }
 
 // ======== Data Packet Tx =========== //

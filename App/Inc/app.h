@@ -59,6 +59,9 @@ void appSetDecodeStatus(App *app, Bool status);
 Bool appGetDecodeStatus(App *app);
 void appSetData(App *app, uint8_t *data, uint8_t dataLength);
 
+// ======== Controller =========== //
+void appRunController(App *app, DAC_HandleTypeDef hdac);
+
 // ======== Data Packet Tx =========== //
 void appSendAdcRead(App *app, UART_HandleTypeDef huart);
 void appTrySendData(App *app, UART_HandleTypeDef huart);
