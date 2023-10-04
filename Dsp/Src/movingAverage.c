@@ -11,7 +11,7 @@ void movingAverageInit(MovingAverage *movingAverage, int16_t length)
 {
 	movingAverage->index = 0;
 	movingAverage->length = length;
-	memset(movingAverage->buffer, 0x00, MAX_QTY_OF_ELEMENTS);
+	memset(movingAverage->buffer, 0x00, MAX_QTY_OF_ELEMENTS * sizeof(int32_t));
 	movingAverage->sum = 0;
 	movingAverage->movingAverage = 0;
 }

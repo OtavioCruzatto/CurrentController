@@ -8,9 +8,11 @@
 #ifndef INC_DATAPACKETRX_H_
 #define INC_DATAPACKETRX_H_
 
-#include "main.h"
+//#include "main.h"
 #include <string.h>
 #include "crc8.h"
+#include "enums.h"
+//#include <stdint.h>
 
 #define MIN_PAYLOAD_RX_DATA_BYTES	0
 #define MAX_PAYLOAD_RX_DATA_BYTES	255

@@ -42,32 +42,24 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
-
 DAC_HandleTypeDef hdac;
-
 TIM_HandleTypeDef htim9;
-
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
-DataPacketTx dataPacketTx;
-DataPacketRx dataPacketRx;
-
 uint8_t receivedByte = 0x00;
-uint8_t bytes[2] = {0x00, 0x00};
 
-uint32_t counterTimer1 = 0;
-uint32_t counterTimer2 = 0;
-uint32_t counterTimer3 = 0;
-uint32_t counterTimer4 = 0;
+uint16_t decodeDataPacketDelay = 0;
+uint16_t blinkLedDelay = 0;
+uint16_t sendDataDelay1 = 0;
+uint16_t samplingDelay = 0;
+uint16_t controllerDelay = 0;
 
-Application app;
+App app;
 uint8_t stateMachine = 0x00;
 
-PidController pid;
-
-MovingAverage movingAverage;
+char message[20] = "";
 
 /* USER CODE END PV */
 
@@ -93,10 +85,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 	if (htim == &htim9)
 	{
-		counterTimer1++;
-		counterTimer2++;
-		counterTimer3++;
-		counterTimer4++;
+		decodeDataPacketDelay++;
+		blinkLedDelay++;
+		sendDataDelay1++;
+		samplingDelay++;
+		controllerDelay++;
 	}
 }
 
@@ -108,7 +101,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if (huart == &huart2)
 	{
 		HAL_UART_Receive_IT(&huart2, &receivedByte, 1);
-		dataPacketRxAppend(&dataPacketRx, receivedByte);
+		appAppendReceivedByte(&app, receivedByte);
 		receivedByte = 0x00;
 	}
 }
@@ -151,12 +144,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start_IT(&htim9);
-  dataPacketTxInit(&dataPacketTx, 0xAA, 0x55);
-  dataPacketRxInit(&dataPacketRx, 0xAA, 0x55);
-  applicationInit(&app, LED_GPIO_Port, LED_Pin);
-  pidInit(&pid, 1, 1, 1, PID_CONTROLLER);
-  pidSetSetpoint(&pid, 10000); // 10mA
-  movingAverageInit(&movingAverage, 256);
+  appInit(&app, LED_GPIO_Port, LED_Pin);
+  HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   HAL_UART_Receive_IT(&huart2, &receivedByte, 1);
 
   /* USER CODE END 2 */
@@ -176,6 +165,26 @@ int main(void)
 
 	  /* Put here the code to be executed in all cycles before the state machine */
 
+	  if (samplingDelay >= DELAY_10_MILISECONDS)
+	  {
+		  HAL_ADC_Start(&hadc1);
+		  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
+		  uint16_t adcValue = HAL_ADC_GetValue(&hadc1);
+		  HAL_ADC_Stop(&hadc1);
+		  appSetAdcValue(&app, adcValue);
+		  appSetAdcReadCompleteStatus(&app, TRUE);
+		  samplingDelay = 0;
+	  }
+
+	  if (controllerDelay >= DELAY_10_MILISECONDS)
+	  {
+		  controllerDelay = 0;
+	  }
+
+	  // sprintf(message, "%"PRIu32"\r\n", receivedPayloadData[0]);
+	  // HAL_UART_Transmit(&huart3, ((uint8_t *) message), 20, HAL_MAX_DELAY);
+
+
 	  /********************************** TOP SLOT END *********************************/
 
 	  /* ============================================================================= */
@@ -185,87 +194,38 @@ int main(void)
 	  switch (stateMachine)
 	  {
 	  	  case 0:
-	  		  if (counterTimer1 >= DELAY_10_MILISECONDS)
+	  		  if (decodeDataPacketDelay >= DELAY_10_MILISECONDS)
 	  		  {
-	  			dataPacketRxDecode(&dataPacketRx);
-	  			counterTimer1 = 0;
+	  			appTryDecodeReceivedDataPacket(&app);
+	  			decodeDataPacketDelay = 0;
 	  		  }
 	  		  stateMachine = 1;
 	  		  break;
 
 		  case 1:
-			  if (dataPacketRxGetDataPacketStatus(&dataPacketRx) == VALID_RX_DATA_PACKET)
-			  {
-				  uint8_t receivedCmd = dataPacketRxGetCommand(&dataPacketRx);
-				  uint8_t receivedPayloadDataLength = dataPacketRxGetPayloadDataLength(&dataPacketRx);
-
-				  if (receivedPayloadDataLength > 0)
-				  {
-					  uint8_t *receivedPayloadData = dataPacketRxGetPayloadData(&dataPacketRx);
-					  applicationSetData(&app, receivedPayloadData, receivedPayloadDataLength);
-				  }
-
-				  applicationSetCommand(&app, receivedCmd);
-				  applicationSetDecodeStatus(&app, TRUE);
-				  dataPacketRxClear(&dataPacketRx);
-			  }
+			  appTryExtractCommandAndPayloadFromDecodedDataPacket(&app);
 			  stateMachine = 2;
 			  break;
 
 		  case 2:
-			  if (applicationGetDecodeStatus(&app) == TRUE)
-			  {
-				  applicationDecodeCommand(&app);
-				  applicationSetDecodeStatus(&app, FALSE);
-			  }
+			  appTryDecodeExtractedCommand(&app);
 			  stateMachine = 3;
 			  break;
 
 		  case 3:
-			  if (counterTimer2 >= applicationGetBlinkDelay(&app))
+			  if (blinkLedDelay >= appGetBlinkDelay(&app))
 			  {
-				  applicationExecuteBlinkLed(&app);
-				  counterTimer2 = 0;
+				  appExecuteBlinkLed(&app);
+				  blinkLedDelay = 0;
 			  }
 			  stateMachine = 4;
 			  break;
 
 		  case 4:
-			  if (counterTimer3 >= DELAY_50_MILISECONDS)
+			  if (sendDataDelay1 >= DELAY_50_MILISECONDS)
 			  {
-				  if (applicationGetAdcReadCompleteStatus(&app) == TRUE)
-				  {
-					  if (applicationGetEnableSendAdcRead(&app) == TRUE)
-					  {
-						  uint16_t adcValue = applicationGetAdcValue(&app);
-						  bytes[0] = ((adcValue >> 8) & 0x00FF);
-						  bytes[1] = (adcValue & 0x00FF);
-
-						  dataPacketTxSetCommand(&dataPacketTx, 0x51);
-						  dataPacketTxSetPayloadData(&dataPacketTx, bytes, 2);
-						  dataPacketTxMount(&dataPacketTx);
-						  dataPacketTxUartSend(&dataPacketTx, huart2);
-						  dataPacketTxPayloadDataClear(&dataPacketTx);
-						  dataPacketTxClear(&dataPacketTx);
-					  }
-					  applicationSetAdcReadCompleteStatus(&app, FALSE);
-				  }
-				  counterTimer3 = 0;
-			  }
-			  stateMachine = 5;
-			  break;
-
-		  case 5:
-			  if (counterTimer4 >= DELAY_1_MILISECONDS)
-			  {
-				  HAL_ADC_Start(&hadc1);
-				  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-				  uint16_t adcValue = HAL_ADC_GetValue(&hadc1);
-				  HAL_ADC_Stop(&hadc1);
-				  movingAverageAddValue(&movingAverage, adcValue);
-				  applicationSetAdcValue(&app, movingAverageGetMean(&movingAverage));
-				  applicationSetAdcReadCompleteStatus(&app, TRUE);
-				  counterTimer4 = 0;
+				  appTrySendData(&app, huart2);
+				  sendDataDelay1 = 0;
 			  }
 			  stateMachine = 0;
 			  break;

@@ -8,10 +8,11 @@
 #ifndef INC_PID_H_
 #define INC_PID_H_
 
-#include "main.h"
+//#include "main.h"
+#include <stdint.h>
 
-#define MAX_SUM_OF_ERRORS			4095
-#define MIN_SUM_OF_ERRORS			-4095
+#define MAX_SUM_OF_ERRORS			2000
+#define MIN_SUM_OF_ERRORS			-2000
 #define MAX_CONTROLLED_VARIABLE		4095
 #define MIN_CONTROLLED_VARIABLE		0
 
@@ -24,9 +25,9 @@ typedef enum CONTROLLER_TOPOLOGY
 
 typedef struct
 {
-	int8_t kp;
-	int8_t ki;
-	int8_t kd;
+	uint8_t kp;
+	uint8_t ki;
+	uint8_t kd;
 	int32_t currentError;
 	int32_t previousError;
 	int32_t sumOfErrors;
@@ -37,7 +38,7 @@ typedef struct
 	ControllerTopology controllerTopology;
 } PidController;
 
-void pidInit(PidController *pidController, int8_t kp, int8_t ki, int8_t kd, ControllerTopology controllerTopology);
+void pidInit(PidController *pidController, uint8_t kp, uint8_t ki, uint8_t kd, ControllerTopology controllerTopology);
 void pidCompute(PidController *pidController);
 void pidSetSetpoint(PidController *pidController, int32_t setpoint);
 int32_t pidGetSetpoint(PidController *pidController);

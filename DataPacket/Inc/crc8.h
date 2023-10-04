@@ -13,7 +13,8 @@
 #ifndef API_INC_CRC8_H_
 #define API_INC_CRC8_H_
 
-#include "main.h"
+//#include "main.h"
+#include <stdint.h>
 
 static const uint8_t table[] =
 {

@@ -7,7 +7,7 @@
 
 #include "pid.h"
 
-void pidInit(PidController *pidController, int8_t kp, int8_t ki, int8_t kd, ControllerTopology controllerTopology)
+void pidInit(PidController *pidController, uint8_t kp, uint8_t ki, uint8_t kd, ControllerTopology controllerTopology)
 {
 	pidController->kp = kp;
 	pidController->ki = ki;

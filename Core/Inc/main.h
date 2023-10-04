@@ -32,13 +32,13 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "enums.h"
+//#include "enums.h"
 #include "defs.h"
 #include "dataPacketTx.h"
 #include "dataPacketRx.h"
-#include "application.h"
 #include "pid.h"
 #include "movingAverage.h"
+#include "app.h"
 
 /* USER CODE END Includes */
 

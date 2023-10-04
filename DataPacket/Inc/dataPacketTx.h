@@ -8,9 +8,11 @@
 #ifndef INC_DATAPACKETTX_H_
 #define INC_DATAPACKETTX_H_
 
-#include "main.h"
+//#include "main.h"
 #include <string.h>
 #include "crc8.h"
+#include <stdint.h>
+#include "stm32f4xx_hal.h"
 
 #define MIN_PAYLOAD_TX_DATA_BYTES	0
 #define MAX_PAYLOAD_TX_DATA_BYTES	255

@@ -32,14 +32,14 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/defs.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketRx.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/application.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Pid/Inc/pid.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -74,11 +74,11 @@ Core/Src/stm32f4xx_hal_msp.o: ../Core/Src/stm32f4xx_hal_msp.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
-C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/defs.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketRx.h:
-C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/application.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Pid/Inc/pid.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h:

@@ -5,13 +5,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../App/Src/application.c 
+../App/Src/app.c 
 
 OBJS += \
-./App/Src/application.o 
+./App/Src/app.o 
 
 C_DEPS += \
-./App/Src/application.d 
+./App/Src/app.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -21,7 +21,7 @@ App/Src/%.o App/Src/%.su: ../App/Src/%.c App/Src/subdir.mk
 clean: clean-App-2f-Src
 
 clean-App-2f-Src:
-	-$(RM) ./App/Src/application.d ./App/Src/application.o ./App/Src/application.su
+	-$(RM) ./App/Src/app.d ./App/Src/app.o ./App/Src/app.su
 
 .PHONY: clean-App-2f-Src
 
