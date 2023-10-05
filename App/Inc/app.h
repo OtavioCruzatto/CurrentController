@@ -12,10 +12,15 @@
 
 #define QTY_DATA_BYTES	25
 
-typedef enum APP_COMMANDS
+typedef enum APP_RX_COMMANDS
 {
-	CMD_SET_SEND_ADC_READ_STATUS = 0x40
-} AppCommands;
+	CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE = 0x22
+} CommandsFromComputer;
+
+typedef enum APP_TX_COMMANDS
+{
+	CMD_TX_PROCESS_VARIABLE_VALUE = 0x21
+} CommandsToComputer;
 
 typedef struct
 {

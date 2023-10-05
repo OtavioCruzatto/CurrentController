@@ -105,7 +105,7 @@ void appDecodeReceivedCommand(App *app)
 {
 	switch (app->command)
 	{
-		case CMD_SET_SEND_ADC_READ_STATUS:
+		case CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE:
 			if (app->data[0] == 0x00)
 			{
 				app->enableSendProcessVariable = FALSE;
@@ -153,7 +153,7 @@ void appSendProcessVariable(App *app, UART_HandleTypeDef huart)
 	bytes[0] = ((adcValue >> 8) & 0x00FF);
 	bytes[1] = (adcValue & 0x00FF);
 
-	dataPacketTxSetCommand(&app->dataPacketTx, 0x51);
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PROCESS_VARIABLE_VALUE);
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, 2);
 	dataPacketTxMount(&app->dataPacketTx);
 	dataPacketTxUartSend(&app->dataPacketTx, huart);
