@@ -171,8 +171,8 @@ int main(void)
 		  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 		  uint16_t adcValue = HAL_ADC_GetValue(&hadc1);
 		  HAL_ADC_Stop(&hadc1);
-		  appSetAdcValue(&app, adcValue);
-		  appSetAdcReadCompleteStatus(&app, TRUE);
+		  appSetProcessVariable(&app, adcValue);
+		  appSetProcessVariableReadyToSend(&app, TRUE);
 		  samplingDelay = 0;
 	  }
 
