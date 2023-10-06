@@ -14,12 +14,14 @@
 
 typedef enum APP_RX_COMMANDS
 {
-	CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE = 0x22
+	CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE = 0x22,
+	CMD_RX_ASK_FOR_PID_KS_PARAMETERS = 0x13
 } CommandsFromComputer;
 
 typedef enum APP_TX_COMMANDS
 {
-	CMD_TX_PROCESS_VARIABLE_VALUE = 0x21
+	CMD_TX_PROCESS_VARIABLE_VALUE = 0x21,
+	CMD_TX_PID_KS_PARAMETER_VALUES = 0x14
 } CommandsToComputer;
 
 typedef struct
@@ -29,6 +31,9 @@ typedef struct
 	GPIO_TypeDef* ledPort;
 	uint16_t ledPin;
 
+	// ======== UART =========== //
+	UART_HandleTypeDef huart;
+
 	// ======== Controller =========== //
 	PidController pid;
 
@@ -36,6 +41,7 @@ typedef struct
 	DataPacketTx dataPacketTx;
 	Bool processVariableReadyToSend;
 	Bool enableSendProcessVariable;
+	Bool enableSendPidKsParameterValues;
 
 	// ======== Data Packet Rx =========== //
 	DataPacketRx dataPacketRx;
@@ -46,7 +52,7 @@ typedef struct
 } App;
 
 // ======== Init =========== //
-void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin);
+void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart);
 
 // ======== LED =========== //
 void appExecuteBlinkLed(App *app);
@@ -69,10 +75,13 @@ Bool appGetDecodeStatus(App *app);
 void appSetData(App *app, uint8_t *data, uint8_t dataLength);
 
 // ======== Data Packet Tx =========== //
-void appSendProcessVariable(App *app, UART_HandleTypeDef huart);
-void appTrySendData(App *app, UART_HandleTypeDef huart);
+void appSendProcessVariable(App *app);
+void appSendPidKsParameterValues(App *app);
+void appTrySendData(App *app);
 void appSetProcessVariableReadyToSend(App *app, Bool status);
 Bool appGetProcessVariableReadyToSend(App *app);
 Bool appGetEnableSendProcessVariable(App *app);
+Bool appGetEnableSendPidKsParameterValues(App *app);
+void appSetEnableSendPidKsParameterValues(App *app, Bool status);
 
 #endif /* INC_APP_H_ */

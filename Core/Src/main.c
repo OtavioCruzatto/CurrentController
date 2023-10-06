@@ -56,6 +56,8 @@ uint16_t sendDataDelay1 = 0;
 uint16_t samplingDelay = 0;
 uint16_t controllerDelay = 0;
 
+uint8_t counter = 0;
+
 App app;
 uint8_t stateMachine = 0x00;
 
@@ -144,7 +146,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start_IT(&htim9);
-  appInit(&app, LED_GPIO_Port, LED_Pin);
+  appInit(&app, LED_GPIO_Port, LED_Pin, huart2);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   HAL_UART_Receive_IT(&huart2, &receivedByte, 1);
 
@@ -225,7 +227,17 @@ int main(void)
 		  case 4:
 			  if (sendDataDelay1 >= DELAY_50_MILISECONDS)
 			  {
-				  appTrySendData(&app, huart2);
+				  if (appGetEnableSendPidKsParameterValues(&app) == TRUE)
+				  {
+					  counter++;
+					  if (counter > 10)
+					  {
+						  appSetEnableSendPidKsParameterValues(&app, FALSE);
+						  counter = 0;
+					  }
+				  }
+
+				  appTrySendData(&app);
 				  sendDataDelay1 = 0;
 			  }
 			  stateMachine = 0;

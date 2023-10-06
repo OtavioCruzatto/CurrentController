@@ -8,21 +8,25 @@
 #include "app.h"
 
 // ======== Init =========== //
-void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin)
+void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart)
 {
 	// ======== LED =========== //
 	app->blinkDelay = DELAY_100_MILISECONDS;
 	app->ledPort = ledPort;
 	app->ledPin = ledPin;
 
+	// ======== UART =========== //
+	app->huart = huart;
+
 	// ======== Controller =========== //
-	pidInit(&app->pid, 1, 1, 0, PID_CONTROLLER);
+	pidInit(&app->pid, 1, 2, 3, PID_CONTROLLER);
 	pidSetSetpoint(&app->pid, 500);
 
 	// ======== Data Packet Tx =========== //
 	dataPacketTxInit(&app->dataPacketTx, 0xAA, 0x55);
 	app->processVariableReadyToSend = FALSE;
 	app->enableSendProcessVariable = FALSE;
+	app->enableSendPidKsParameterValues = FALSE;
 
 	// ======== Data Packet Rx =========== //
 	dataPacketRxInit(&app->dataPacketRx, 0xAA, 0x55);
@@ -116,6 +120,10 @@ void appDecodeReceivedCommand(App *app)
 			}
 			break;
 
+		case CMD_RX_ASK_FOR_PID_KS_PARAMETERS:
+			app->enableSendPidKsParameterValues = TRUE;
+			break;
+
 		default:
 			break;
 	}
@@ -146,28 +154,49 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength)
 }
 
 // ======== Data Packet Tx =========== //
-void appSendProcessVariable(App *app, UART_HandleTypeDef huart)
+void appSendProcessVariable(App *app)
 {
-	uint16_t adcValue = appGetProcessVariable(app);
-	uint8_t bytes[2] = {0x00, 0x00};
-	bytes[0] = ((adcValue >> 8) & 0x00FF);
-	bytes[1] = (adcValue & 0x00FF);
+	uint16_t processVariableValue = appGetProcessVariable(app);
+	uint8_t qtyOfBytes = 2;
+	uint8_t bytes[qtyOfBytes];
+	bytes[0] = ((processVariableValue >> 8) & 0x00FF);
+	bytes[1] = (processVariableValue & 0x00FF);
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PROCESS_VARIABLE_VALUE);
-	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, 2);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
 	dataPacketTxMount(&app->dataPacketTx);
-	dataPacketTxUartSend(&app->dataPacketTx, huart);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
 	dataPacketTxPayloadDataClear(&app->dataPacketTx);
 	dataPacketTxClear(&app->dataPacketTx);
 }
 
-void appTrySendData(App *app, UART_HandleTypeDef huart)
+void appSendPidKsParameterValues(App *app)
 {
-	if (appGetProcessVariableReadyToSend(app) == TRUE)
+	uint8_t qtyOfBytes = 3;
+	uint8_t bytes[qtyOfBytes];
+	bytes[0] = app->pid.kp;
+	bytes[1] = app->pid.ki;
+	bytes[2] = app->pid.kd;
+
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_KS_PARAMETER_VALUES);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
+	dataPacketTxMount(&app->dataPacketTx);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
+	dataPacketTxPayloadDataClear(&app->dataPacketTx);
+	dataPacketTxClear(&app->dataPacketTx);
+}
+
+void appTrySendData(App *app)
+{
+	if (appGetEnableSendPidKsParameterValues(app) == TRUE)
+	{
+		appSendPidKsParameterValues(app);
+	}
+	else if (appGetProcessVariableReadyToSend(app) == TRUE)
 	{
 		if (appGetEnableSendProcessVariable(app) == TRUE)
 		{
-			appSendProcessVariable(app, huart);
+			appSendProcessVariable(app);
 		}
 		appSetProcessVariableReadyToSend(app, FALSE);
 	}
@@ -186,4 +215,14 @@ Bool appGetProcessVariableReadyToSend(App *app)
 Bool appGetEnableSendProcessVariable(App *app)
 {
 	return app->enableSendProcessVariable;
+}
+
+Bool appGetEnableSendPidKsParameterValues(App *app)
+{
+	return app->enableSendPidKsParameterValues;
+}
+
+void appSetEnableSendPidKsParameterValues(App *app, Bool status)
+{
+	app->enableSendPidKsParameterValues = status;
 }
