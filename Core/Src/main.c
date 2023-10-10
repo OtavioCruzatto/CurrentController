@@ -56,8 +56,6 @@ uint16_t sendDataDelay1 = 0;
 uint16_t samplingDelay = 0;
 uint16_t controllerDelay = 0;
 
-uint8_t counter = 0;
-
 App app;
 uint8_t stateMachine = 0x00;
 
@@ -225,18 +223,8 @@ int main(void)
 			  break;
 
 		  case 4:
-			  if (sendDataDelay1 >= DELAY_50_MILISECONDS)
+			  if (sendDataDelay1 >= DELAY_100_MILISECONDS)
 			  {
-				  if (appGetEnableSendPidKsParameterValues(&app) == TRUE)
-				  {
-					  counter++;
-					  if (counter > 10)
-					  {
-						  appSetEnableSendPidKsParameterValues(&app, FALSE);
-						  counter = 0;
-					  }
-				  }
-
 				  appTrySendData(&app);
 				  sendDataDelay1 = 0;
 			  }

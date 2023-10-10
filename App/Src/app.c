@@ -191,6 +191,7 @@ void appTrySendData(App *app)
 	if (appGetEnableSendPidKsParameterValues(app) == TRUE)
 	{
 		appSendPidKsParameterValues(app);
+		appSetEnableSendPidKsParameterValues(app, FALSE);
 	}
 	else if (appGetProcessVariableReadyToSend(app) == TRUE)
 	{
@@ -215,6 +216,11 @@ Bool appGetProcessVariableReadyToSend(App *app)
 Bool appGetEnableSendProcessVariable(App *app)
 {
 	return app->enableSendProcessVariable;
+}
+
+void appSetEnableSendProcessVariable(App *app, Bool status)
+{
+	app->enableSendProcessVariable = status;
 }
 
 Bool appGetEnableSendPidKsParameterValues(App *app)

@@ -81,6 +81,7 @@ void appTrySendData(App *app);
 void appSetProcessVariableReadyToSend(App *app, Bool status);
 Bool appGetProcessVariableReadyToSend(App *app);
 Bool appGetEnableSendProcessVariable(App *app);
+void appSetEnableSendProcessVariable(App *app, Bool status);
 Bool appGetEnableSendPidKsParameterValues(App *app);
 void appSetEnableSendPidKsParameterValues(App *app, Bool status);
 

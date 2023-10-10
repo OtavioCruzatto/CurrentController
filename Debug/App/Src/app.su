@@ -16,8 +16,9 @@
 ../App/Src/app.c:157:6:appSendProcessVariable	112	dynamic
 ../App/Src/app.c:173:6:appSendPidKsParameterValues	112	dynamic
 ../App/Src/app.c:189:6:appTrySendData	16	static
-../App/Src/app.c:205:6:appSetProcessVariableReadyToSend	16	static
-../App/Src/app.c:210:6:appGetProcessVariableReadyToSend	16	static
-../App/Src/app.c:215:6:appGetEnableSendProcessVariable	16	static
-../App/Src/app.c:220:6:appGetEnableSendPidKsParameterValues	16	static
-../App/Src/app.c:225:6:appSetEnableSendPidKsParameterValues	16	static
+../App/Src/app.c:206:6:appSetProcessVariableReadyToSend	16	static
+../App/Src/app.c:211:6:appGetProcessVariableReadyToSend	16	static
+../App/Src/app.c:216:6:appGetEnableSendProcessVariable	16	static
+../App/Src/app.c:221:6:appSetEnableSendProcessVariable	16	static
+../App/Src/app.c:226:6:appGetEnableSendPidKsParameterValues	16	static
+../App/Src/app.c:231:6:appSetEnableSendPidKsParameterValues	16	static
