@@ -59,8 +59,6 @@ uint16_t controllerDelay = 0;
 App app;
 uint8_t stateMachine = 0x00;
 
-char message[20] = "";
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -165,7 +163,7 @@ int main(void)
 
 	  /* Put here the code to be executed in all cycles before the state machine */
 
-	  if (samplingDelay >= DELAY_10_MILISECONDS)
+	  if (samplingDelay >= appGetSamplingDelay(&app))
 	  {
 		  HAL_ADC_Start(&hadc1);
 		  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
@@ -176,15 +174,11 @@ int main(void)
 		  samplingDelay = 0;
 	  }
 
-	  if (controllerDelay >= DELAY_10_MILISECONDS)
+	  if (controllerDelay >= appGetPidComputeDelay(&app))
 	  {
 		  appRunController(&app, hdac);
 		  controllerDelay = 0;
 	  }
-
-	  // sprintf(message, "%"PRIu32"\r\n", receivedPayloadData[0]);
-	  // HAL_UART_Transmit(&huart3, ((uint8_t *) message), 20, HAL_MAX_DELAY);
-
 
 	  /********************************** TOP SLOT END *********************************/
 

@@ -21,12 +21,15 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	// ======== Controller =========== //
 	pidInit(&app->pid, 1, 2, 3, PID_CONTROLLER);
 	pidSetSetpoint(&app->pid, 500);
+	app->samplingDelay = DELAY_10_MILISECONDS;
+	app->pidComputeDelay = DELAY_10_MILISECONDS;
 
 	// ======== Data Packet Tx =========== //
 	dataPacketTxInit(&app->dataPacketTx, 0xAA, 0x55);
 	app->processVariableReadyToSend = FALSE;
 	app->enableSendProcessVariable = FALSE;
 	app->enableSendPidKsParameterValues = FALSE;
+	app->enableSendPidControllerParameterValues = FALSE;
 
 	// ======== Data Packet Rx =========== //
 	dataPacketRxInit(&app->dataPacketRx, 0xAA, 0x55);
@@ -124,6 +127,10 @@ void appDecodeReceivedCommand(App *app)
 			app->enableSendPidKsParameterValues = TRUE;
 			break;
 
+		case CMD_RX_ASK_FOR_PID_CONTROLLER_PARAMETERS:
+			app->enableSendPidControllerParameterValues = TRUE;
+			break;
+
 		default:
 			break;
 	}
@@ -186,12 +193,39 @@ void appSendPidKsParameterValues(App *app)
 	dataPacketTxClear(&app->dataPacketTx);
 }
 
+void appSendPidControllerParameterValues(App *app)
+{
+	uint8_t qtyOfBytes = 8;
+	uint8_t bytes[qtyOfBytes];
+
+	bytes[0] = ((app->samplingDelay >> 8) & 0x00FF);
+	bytes[1] = (app->samplingDelay & 0x00FF);
+	bytes[2] = ((app->pidComputeDelay >> 8) & 0x00FF);
+	bytes[3] = (app->pidComputeDelay & 0x00FF);
+	bytes[4] = ((app->pid.setpoint >> 24) & 0x000000FF);
+	bytes[5] = ((app->pid.setpoint >> 16) & 0x000000FF);
+	bytes[6] = ((app->pid.setpoint >> 8) & 0x000000FF);
+	bytes[7] = (app->pid.setpoint & 0x000000FF);
+
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_CONTROLLER_PARAMETER_VALUES);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
+	dataPacketTxMount(&app->dataPacketTx);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
+	dataPacketTxPayloadDataClear(&app->dataPacketTx);
+	dataPacketTxClear(&app->dataPacketTx);
+}
+
 void appTrySendData(App *app)
 {
 	if (appGetEnableSendPidKsParameterValues(app) == TRUE)
 	{
 		appSendPidKsParameterValues(app);
 		appSetEnableSendPidKsParameterValues(app, FALSE);
+	}
+	else if (appGetEnableSendPidControllerParameterValues(app) == TRUE)
+	{
+		appSendPidControllerParameterValues(app);
+		appSetEnableSendPidControllerParameterValues(app, FALSE);
 	}
 	else if (appGetProcessVariableReadyToSend(app) == TRUE)
 	{
@@ -231,4 +265,34 @@ Bool appGetEnableSendPidKsParameterValues(App *app)
 void appSetEnableSendPidKsParameterValues(App *app, Bool status)
 {
 	app->enableSendPidKsParameterValues = status;
+}
+
+void appSetSamplingDelay(App *app, uint16_t samplingDelay)
+{
+	app->samplingDelay = samplingDelay;
+}
+
+uint16_t appGetSamplingDelay(App *app)
+{
+	return app->samplingDelay;
+}
+
+void appSetPidComputeDelay(App *app, uint16_t pidComputeDelay)
+{
+	app->pidComputeDelay = pidComputeDelay;
+}
+
+uint16_t appGetPidComputeDelay(App *app)
+{
+	return app->pidComputeDelay;
+}
+
+Bool appGetEnableSendPidControllerParameterValues(App *app)
+{
+	return app->enableSendPidControllerParameterValues;
+}
+
+void appSetEnableSendPidControllerParameterValues(App *app, Bool status)
+{
+	app->enableSendPidControllerParameterValues = status;
 }
