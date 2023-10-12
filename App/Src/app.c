@@ -110,6 +110,10 @@ void appTryDecodeExtractedCommand(App *app)
 
 void appDecodeReceivedCommand(App *app)
 {
+	uint16_t receivedSamplingDelay = 0;
+	uint16_t receivedPidComputeDelay = 0;
+	uint32_t receivedPidSetpoint = 0;
+
 	switch (app->command)
 	{
 		case CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE:
@@ -129,6 +133,42 @@ void appDecodeReceivedCommand(App *app)
 
 		case CMD_RX_ASK_FOR_PID_CONTROLLER_PARAMETERS:
 			app->enableSendPidControllerParameterValues = TRUE;
+			break;
+
+		case CMD_RX_SET_PID_KP_PARAMETER:
+			app->pid.kp = app->data[0];
+			break;
+
+		case CMD_RX_SET_PID_KI_PARAMETER:
+			app->pid.ki = app->data[0];
+			break;
+
+		case CMD_RX_SET_PID_KD_PARAMETER:
+			app->pid.kd = app->data[0];
+			break;
+
+		case CMD_RX_SET_SAMPLING_DELAY:
+			receivedSamplingDelay = (app->data[0] << 8) + app->data[1];
+			if ((receivedSamplingDelay >= 0) && (receivedSamplingDelay <= 50000))
+			{
+				app->samplingDelay = receivedSamplingDelay;
+			}
+			break;
+
+		case CMD_RX_SET_PID_DELAY:
+			receivedPidComputeDelay = (app->data[0] << 8) + app->data[1];
+			if ((receivedPidComputeDelay >= 0) && (receivedPidComputeDelay <= 50000))
+			{
+				app->pidComputeDelay = receivedPidComputeDelay;
+			}
+			break;
+
+		case CMD_RX_SET_PID_SETPOINT:
+			receivedPidSetpoint = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			if ((receivedPidSetpoint >= 0) && (receivedPidSetpoint <= 300000))
+			{
+				app->pid.setpoint = receivedPidSetpoint;
+			}
 			break;
 
 		default:
