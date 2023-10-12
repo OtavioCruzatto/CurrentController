@@ -142,8 +142,8 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   HAL_TIM_Base_Start_IT(&htim9);
-  appInit(&app, LED_GPIO_Port, LED_Pin, huart2);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
+  appInit(&app, LED_GPIO_Port, LED_Pin, huart2, hdac);
   HAL_UART_Receive_IT(&huart2, &receivedByte, 1);
 
   /* USER CODE END 2 */
@@ -176,7 +176,10 @@ int main(void)
 
 	  if (controllerDelay >= appGetPidComputeDelay(&app))
 	  {
-		  appRunController(&app, hdac);
+		  if (appGetRunPidControllerStatus(&app) == TRUE)
+		  {
+			  appRunController(&app);
+		  }
 		  controllerDelay = 0;
 	  }
 

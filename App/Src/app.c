@@ -8,7 +8,7 @@
 #include "app.h"
 
 // ======== Init =========== //
-void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart)
+void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac)
 {
 	// ======== LED =========== //
 	app->blinkDelay = DELAY_100_MILISECONDS;
@@ -18,11 +18,16 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	// ======== UART =========== //
 	app->huart = huart;
 
+	// ======== DAC ============ //
+	app->hdac = hdac;
+
 	// ======== Controller =========== //
 	pidInit(&app->pid, 1, 2, 3, PID_CONTROLLER);
 	pidSetSetpoint(&app->pid, 500);
 	app->samplingDelay = DELAY_10_MILISECONDS;
 	app->pidComputeDelay = DELAY_10_MILISECONDS;
+	app->runPidController = FALSE;
+	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 
 	// ======== Data Packet Tx =========== //
 	dataPacketTxInit(&app->dataPacketTx, 0xAA, 0x55);
@@ -51,12 +56,12 @@ uint32_t appGetBlinkDelay(App *app)
 }
 
 // ======== Controller =========== //
-void appRunController(App *app, DAC_HandleTypeDef hdac)
+void appRunController(App *app)
 {
 	// pidSetProcessVariable(&app->pid, app->pid->processVariable);
 	pidCompute(&app->pid);
 	uint32_t controlledVariable = pidGetControlledVariable(&app->pid);
-	HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, controlledVariable);
+	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, controlledVariable);
 }
 
 void appSetProcessVariable(App *app, uint16_t value)
@@ -168,6 +173,18 @@ void appDecodeReceivedCommand(App *app)
 			if ((receivedPidSetpoint >= 0) && (receivedPidSetpoint <= 300000))
 			{
 				app->pid.setpoint = receivedPidSetpoint;
+			}
+			break;
+
+		case CMD_RX_ASK_FOR_RUN_PID_CONTROLLER:
+			if (app->data[0] == 0x00)
+			{
+				app->runPidController = FALSE;
+				HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+			}
+			else if (app->data[0] == 0x01)
+			{
+				app->runPidController = TRUE;
 			}
 			break;
 
@@ -335,4 +352,14 @@ Bool appGetEnableSendPidControllerParameterValues(App *app)
 void appSetEnableSendPidControllerParameterValues(App *app, Bool status)
 {
 	app->enableSendPidControllerParameterValues = status;
+}
+
+Bool appGetRunPidControllerStatus(App *app)
+{
+	return app->runPidController;
+}
+
+void appSetRunPidControllerStatus(App *app, Bool status)
+{
+	app->runPidController = status;
 }

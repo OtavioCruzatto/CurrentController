@@ -22,7 +22,8 @@ typedef enum APP_RX_COMMANDS
 	CMD_RX_SET_PID_KD_PARAMETER = 0x12,
 	CMD_RX_SET_SAMPLING_DELAY = 0x18,
 	CMD_RX_SET_PID_DELAY = 0x19,
-	CMD_RX_SET_PID_SETPOINT = 0x20
+	CMD_RX_SET_PID_SETPOINT = 0x20,
+	CMD_RX_ASK_FOR_RUN_PID_CONTROLLER = 0x15
 } CommandsFromComputer;
 
 typedef enum APP_TX_COMMANDS
@@ -42,10 +43,14 @@ typedef struct
 	// ======== UART =========== //
 	UART_HandleTypeDef huart;
 
+	// ======== DAC ============ //
+	DAC_HandleTypeDef hdac;
+
 	// ======== Controller =========== //
 	PidController pid;
 	uint16_t samplingDelay;
 	uint16_t pidComputeDelay;
+	Bool runPidController;
 
 	// ======== Data Packet Tx =========== //
 	DataPacketTx dataPacketTx;
@@ -63,20 +68,22 @@ typedef struct
 } App;
 
 // ======== Init =========== //
-void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart);
+void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac);
 
 // ======== LED =========== //
 void appExecuteBlinkLed(App *app);
 uint32_t appGetBlinkDelay(App *app);
 
 // ======== Controller =========== //
-void appRunController(App *app, DAC_HandleTypeDef hdac);
+void appRunController(App *app);
 void appSetProcessVariable(App *app, uint16_t value);
 uint16_t appGetProcessVariable(App *app);
 void appSetSamplingDelay(App *app, uint16_t samplingDelay);
 uint16_t appGetSamplingDelay(App *app);
 void appSetPidComputeDelay(App *app, uint16_t pidComputeDelay);
 uint16_t appGetPidComputeDelay(App *app);
+Bool appGetRunPidControllerStatus(App *app);
+void appSetRunPidControllerStatus(App *app, Bool status);
 
 // ======== Data Packet Rx =========== //
 void appAppendReceivedByte(App *app, uint8_t receivedByte);
