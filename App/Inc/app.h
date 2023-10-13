@@ -76,8 +76,8 @@ uint32_t appGetBlinkDelay(App *app);
 
 // ======== Controller =========== //
 void appRunController(App *app);
-void appSetProcessVariable(App *app, uint16_t value);
-uint16_t appGetProcessVariable(App *app);
+void appSetProcessVariable(App *app, uint32_t value);
+uint32_t appGetProcessVariable(App *app);
 void appSetSamplingDelay(App *app, uint16_t samplingDelay);
 uint16_t appGetSamplingDelay(App *app);
 void appSetPidComputeDelay(App *app, uint16_t pidComputeDelay);

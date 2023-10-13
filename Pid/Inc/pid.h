@@ -11,8 +11,8 @@
 //#include "main.h"
 #include <stdint.h>
 
-#define MAX_SUM_OF_ERRORS			2000
-#define MIN_SUM_OF_ERRORS			-2000
+#define MAX_SUM_OF_ERRORS			10000
+#define MIN_SUM_OF_ERRORS			-10000
 #define MAX_CONTROLLED_VARIABLE		4095
 #define MIN_CONTROLLED_VARIABLE		0
 

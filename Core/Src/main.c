@@ -18,9 +18,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stdio.h"
-#include <string.h>
-#include <inttypes.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -58,6 +55,8 @@ uint16_t controllerDelay = 0;
 
 App app;
 uint8_t stateMachine = 0x00;
+
+MovingAverage movingAverageCurrentInMiliAmps;
 
 /* USER CODE END PV */
 
@@ -144,6 +143,7 @@ int main(void)
   HAL_TIM_Base_Start_IT(&htim9);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
   appInit(&app, LED_GPIO_Port, LED_Pin, huart2, hdac);
+  movingAverageInit(&movingAverageCurrentInMiliAmps, 32);
   HAL_UART_Receive_IT(&huart2, &receivedByte, 1);
 
   /* USER CODE END 2 */
@@ -169,8 +169,19 @@ int main(void)
 		  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
 		  uint16_t adcValue = HAL_ADC_GetValue(&hadc1);
 		  HAL_ADC_Stop(&hadc1);
-		  appSetProcessVariable(&app, adcValue);
-		  appSetProcessVariableReadyToSend(&app, TRUE);
+
+		  uint32_t electronicCircuitGain = 10;
+		  uint32_t shuntResistorInOhms = 1;
+		  float measuredSignalInVolts = ((3.3 * adcValue)/4095);
+		  float conditionedSignalInVolts = measuredSignalInVolts / electronicCircuitGain;
+		  float calculatedCurrentInAmps = conditionedSignalInVolts / shuntResistorInOhms;
+		  float calculatedCurrentInMiliAmpsAux = 1000 * calculatedCurrentInAmps;
+		  uint32_t calculatedCurrentInMiliAmps = (uint32_t) calculatedCurrentInMiliAmpsAux;
+
+		  movingAverageAddValue(&movingAverageCurrentInMiliAmps, calculatedCurrentInMiliAmps);
+		  uint32_t filteredCurrentInMicroAmps = movingAverageGetMean(&movingAverageCurrentInMiliAmps);
+
+		  appSetProcessVariable(&app, filteredCurrentInMicroAmps);
 		  samplingDelay = 0;
 	  }
 

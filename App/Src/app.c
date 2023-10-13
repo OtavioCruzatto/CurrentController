@@ -22,8 +22,8 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->hdac = hdac;
 
 	// ======== Controller =========== //
-	pidInit(&app->pid, 1, 2, 3, PID_CONTROLLER);
-	pidSetSetpoint(&app->pid, 500);
+	pidInit(&app->pid, 0, 0, 0, PID_CONTROLLER);
+	pidSetSetpoint(&app->pid, 0);
 	app->samplingDelay = DELAY_10_MILISECONDS;
 	app->pidComputeDelay = DELAY_10_MILISECONDS;
 	app->runPidController = FALSE;
@@ -58,18 +58,17 @@ uint32_t appGetBlinkDelay(App *app)
 // ======== Controller =========== //
 void appRunController(App *app)
 {
-	// pidSetProcessVariable(&app->pid, app->pid->processVariable);
 	pidCompute(&app->pid);
 	uint32_t controlledVariable = pidGetControlledVariable(&app->pid);
 	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, controlledVariable);
 }
 
-void appSetProcessVariable(App *app, uint16_t value)
+void appSetProcessVariable(App *app, uint32_t value)
 {
 	pidSetProcessVariable(&app->pid, value);
 }
 
-uint16_t appGetProcessVariable(App *app)
+uint32_t appGetProcessVariable(App *app)
 {
 	return pidGetProcessVariable(&app->pid);
 }
@@ -220,11 +219,13 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength)
 // ======== Data Packet Tx =========== //
 void appSendProcessVariable(App *app)
 {
-	uint16_t processVariableValue = appGetProcessVariable(app);
-	uint8_t qtyOfBytes = 2;
+	uint32_t processVariableValue = appGetProcessVariable(app);
+	uint8_t qtyOfBytes = 4;
 	uint8_t bytes[qtyOfBytes];
-	bytes[0] = ((processVariableValue >> 8) & 0x00FF);
-	bytes[1] = (processVariableValue & 0x00FF);
+	bytes[0] = ((processVariableValue >> 24) & 0x000000FF);
+	bytes[1] = ((processVariableValue >> 16) & 0x000000FF);
+	bytes[2] = ((processVariableValue >> 8) & 0x000000FF);
+	bytes[3] = (processVariableValue & 0x000000FF);
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PROCESS_VARIABLE_VALUE);
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
@@ -284,13 +285,9 @@ void appTrySendData(App *app)
 		appSendPidControllerParameterValues(app);
 		appSetEnableSendPidControllerParameterValues(app, FALSE);
 	}
-	else if (appGetProcessVariableReadyToSend(app) == TRUE)
+	else if (appGetEnableSendProcessVariable(app) == TRUE)
 	{
-		if (appGetEnableSendProcessVariable(app) == TRUE)
-		{
-			appSendProcessVariable(app);
-		}
-		appSetProcessVariableReadyToSend(app, FALSE);
+		appSendProcessVariable(app);
 	}
 }
 
