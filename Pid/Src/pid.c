@@ -20,6 +20,10 @@ void pidInit(PidController *pidController, uint8_t kp, uint8_t ki, uint8_t kd, C
 	pidController->controlledVariable = 0;
 	pidController->processVariable = 0;
 	pidController->differenceOfErrors = 0;
+	pidController->minSumOfErrors = -10000;
+	pidController->maxSumOfErrors = 10000;
+	pidController->minControlledVariable = 0;
+	pidController->maxControlledVariable = 4095;
 }
 
 void pidCompute(PidController *pidController)
@@ -28,13 +32,13 @@ void pidCompute(PidController *pidController)
 	pidController->sumOfErrors += pidController->currentError;
 	pidController->differenceOfErrors = pidController->currentError - pidController->previousError;
 
-	if (pidController->sumOfErrors > MAX_SUM_OF_ERRORS)
+	if (pidController->sumOfErrors > pidController->maxSumOfErrors)
 	{
-		pidController->sumOfErrors = MAX_SUM_OF_ERRORS;
+		pidController->sumOfErrors = pidController->maxSumOfErrors;
 	}
-	else if (pidController->sumOfErrors < MIN_SUM_OF_ERRORS)
+	else if (pidController->sumOfErrors < pidController->minSumOfErrors)
 	{
-		pidController->sumOfErrors = MIN_SUM_OF_ERRORS;
+		pidController->sumOfErrors = pidController->minSumOfErrors;
 	}
 
 	if (pidController->controllerTopology == P_CONTROLLER)
@@ -54,13 +58,13 @@ void pidCompute(PidController *pidController)
 		pidController->controlledVariable = 0;
 	}
 
-	if (pidController->controlledVariable > MAX_CONTROLLED_VARIABLE)
+	if (pidController->controlledVariable > pidController->maxControlledVariable)
 	{
-		pidController->controlledVariable = MAX_CONTROLLED_VARIABLE;
+		pidController->controlledVariable = pidController->maxControlledVariable;
 	}
-	else if (pidController->controlledVariable < MIN_CONTROLLED_VARIABLE)
+	else if (pidController->controlledVariable < pidController->minControlledVariable)
 	{
-		pidController->controlledVariable = MIN_CONTROLLED_VARIABLE;
+		pidController->controlledVariable = pidController->minControlledVariable;
 	}
 
 	pidController->previousError = pidController->currentError;

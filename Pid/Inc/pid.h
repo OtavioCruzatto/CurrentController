@@ -11,11 +11,6 @@
 //#include "main.h"
 #include <stdint.h>
 
-#define MAX_SUM_OF_ERRORS			10000
-#define MIN_SUM_OF_ERRORS			-10000
-#define MAX_CONTROLLED_VARIABLE		4095
-#define MIN_CONTROLLED_VARIABLE		0
-
 typedef enum CONTROLLER_TOPOLOGY
 {
 	P_CONTROLLER = 0x00,
@@ -35,6 +30,10 @@ typedef struct
 	int32_t controlledVariable;
 	int32_t processVariable;
 	int32_t differenceOfErrors;
+	int32_t minSumOfErrors;
+	int32_t maxSumOfErrors;
+	int32_t minControlledVariable;
+	int32_t maxControlledVariable;
 	ControllerTopology controllerTopology;
 } PidController;
 

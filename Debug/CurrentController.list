@@ -5,45 +5,45 @@ Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
   0 .isr_vector   000001c4  08000000  08000000  00010000  2**0
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  1 .text         00005e8c  080001c8  080001c8  000101c8  2**3
+  1 .text         00005eb4  080001c8  080001c8  000101c8  2**3
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .rodata       00000118  08006054  08006054  00016054  2**2
+  2 .rodata       00000118  0800607c  0800607c  0001607c  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  3 .ARM.extab    00000000  0800616c  0800616c  0002000c  2**0
+  3 .ARM.extab    00000000  08006194  08006194  0002000c  2**0
                   CONTENTS
-  4 .ARM          00000008  0800616c  0800616c  0001616c  2**2
+  4 .ARM          00000008  08006194  08006194  00016194  2**2
                   CONTENTS, ALLOC, LOAD, READONLY, DATA
-  5 .preinit_array 00000000  08006174  08006174  0002000c  2**0
+  5 .preinit_array 00000000  0800619c  0800619c  0002000c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  6 .init_array   00000004  08006174  08006174  00016174  2**2
+  6 .init_array   00000004  0800619c  0800619c  0001619c  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  7 .fini_array   00000004  08006178  08006178  00016178  2**2
+  7 .fini_array   00000004  080061a0  080061a0  000161a0  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  8 .data         0000000c  20000000  0800617c  00020000  2**2
+  8 .data         0000000c  20000000  080061a4  00020000  2**2
                   CONTENTS, ALLOC, LOAD, DATA
-  9 .bss          0000074c  2000000c  08006188  0002000c  2**2
+  9 .bss          0000075c  2000000c  080061b0  0002000c  2**2
                   ALLOC
- 10 ._user_heap_stack 00000600  20000758  08006188  00020758  2**0
+ 10 ._user_heap_stack 00000600  20000768  080061b0  00020768  2**0
                   ALLOC
  11 .ARM.attributes 00000030  00000000  00000000  0002000c  2**0
                   CONTENTS, READONLY
- 12 .debug_info   00013dae  00000000  00000000  0002003c  2**0
+ 12 .debug_info   00013e4a  00000000  00000000  0002003c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 00002d04  00000000  00000000  00033dea  2**0
+ 13 .debug_abbrev 00002d04  00000000  00000000  00033e86  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00001198  00000000  00000000  00036af0  2**3
+ 14 .debug_aranges 00001198  00000000  00000000  00036b90  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_ranges 00001060  00000000  00000000  00037c88  2**3
+ 15 .debug_ranges 00001060  00000000  00000000  00037d28  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  000244b1  00000000  00000000  00038ce8  2**0
+ 16 .debug_macro  00024473  00000000  00000000  00038d88  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   00015822  00000000  00000000  0005d199  2**0
+ 17 .debug_line   00015842  00000000  00000000  0005d1fb  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000def81  00000000  00000000  000729bb  2**0
+ 18 .debug_str    000def63  00000000  00000000  00072a3d  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  0015193c  2**0
+ 19 .comment      00000050  00000000  00000000  001519a0  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00004b38  00000000  00000000  0015198c  2**2
+ 20 .debug_frame  00004b38  00000000  00000000  001519f0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -62,7 +62,7 @@ Disassembly of section .text:
  80001de:	bd10      	pop	{r4, pc}
  80001e0:	2000000c 	.word	0x2000000c
  80001e4:	00000000 	.word	0x00000000
- 80001e8:	0800603c 	.word	0x0800603c
+ 80001e8:	08006064 	.word	0x08006064
 
 080001ec <frame_dummy>:
  80001ec:	b508      	push	{r3, lr}
@@ -74,7 +74,7 @@ Disassembly of section .text:
  80001fa:	bd08      	pop	{r3, pc}
  80001fc:	00000000 	.word	0x00000000
  8000200:	20000010 	.word	0x20000010
- 8000204:	0800603c 	.word	0x0800603c
+ 8000204:	08006064 	.word	0x08006064
 
 08000208 <__aeabi_drsub>:
  8000208:	f081 4100 	eor.w	r1, r1, #2147483648	; 0x80000000
@@ -1063,7 +1063,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
  8000d72:	f107 0124 	add.w	r1, r7, #36	; 0x24
  8000d76:	2244      	movs	r2, #68	; 0x44
  8000d78:	4618      	mov	r0, r3
- 8000d7a:	f005 f949 	bl	8006010 <memcpy>
+ 8000d7a:	f005 f95d 	bl	8006038 <memcpy>
 
 	// ======== DAC ============ //
 	app->hdac = hdac;
@@ -1090,19 +1090,19 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
  8000da6:	3364      	adds	r3, #100	; 0x64
  8000da8:	2100      	movs	r1, #0
  8000daa:	4618      	mov	r0, r3
- 8000dac:	f005 f8d8 	bl	8005f60 <pidSetSetpoint>
+ 8000dac:	f005 f8eb 	bl	8005f86 <pidSetSetpoint>
 	app->samplingDelay = DELAY_10_MILISECONDS;
  8000db0:	68fb      	ldr	r3, [r7, #12]
  8000db2:	2264      	movs	r2, #100	; 0x64
- 8000db4:	f8a3 2088 	strh.w	r2, [r3, #136]	; 0x88
+ 8000db4:	f8a3 2098 	strh.w	r2, [r3, #152]	; 0x98
 	app->pidComputeDelay = DELAY_10_MILISECONDS;
  8000db8:	68fb      	ldr	r3, [r7, #12]
  8000dba:	2264      	movs	r2, #100	; 0x64
- 8000dbc:	f8a3 208a 	strh.w	r2, [r3, #138]	; 0x8a
+ 8000dbc:	f8a3 209a 	strh.w	r2, [r3, #154]	; 0x9a
 	app->runPidController = FALSE;
  8000dc0:	68fb      	ldr	r3, [r7, #12]
  8000dc2:	2200      	movs	r2, #0
- 8000dc4:	f883 208c 	strb.w	r2, [r3, #140]	; 0x8c
+ 8000dc4:	f883 209c 	strb.w	r2, [r3, #156]	; 0x9c
 	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
  8000dc8:	68fb      	ldr	r3, [r7, #12]
  8000dca:	f103 0050 	add.w	r0, r3, #80	; 0x50
@@ -1114,7 +1114,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	// ======== Data Packet Tx =========== //
 	dataPacketTxInit(&app->dataPacketTx, 0xAA, 0x55);
  8000dd8:	68fb      	ldr	r3, [r7, #12]
- 8000dda:	338e      	adds	r3, #142	; 0x8e
+ 8000dda:	339e      	adds	r3, #158	; 0x9e
  8000ddc:	2255      	movs	r2, #85	; 0x55
  8000dde:	21aa      	movs	r1, #170	; 0xaa
  8000de0:	4618      	mov	r0, r3
@@ -1122,24 +1122,24 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->processVariableReadyToSend = FALSE;
  8000de6:	68fb      	ldr	r3, [r7, #12]
  8000de8:	2200      	movs	r2, #0
- 8000dea:	f883 20ce 	strb.w	r2, [r3, #206]	; 0xce
+ 8000dea:	f883 20de 	strb.w	r2, [r3, #222]	; 0xde
 	app->enableSendProcessVariable = FALSE;
  8000dee:	68fb      	ldr	r3, [r7, #12]
  8000df0:	2200      	movs	r2, #0
- 8000df2:	f883 20cf 	strb.w	r2, [r3, #207]	; 0xcf
+ 8000df2:	f883 20df 	strb.w	r2, [r3, #223]	; 0xdf
 	app->enableSendPidKsParameterValues = FALSE;
  8000df6:	68fb      	ldr	r3, [r7, #12]
  8000df8:	2200      	movs	r2, #0
- 8000dfa:	f883 20d0 	strb.w	r2, [r3, #208]	; 0xd0
+ 8000dfa:	f883 20e0 	strb.w	r2, [r3, #224]	; 0xe0
 	app->enableSendPidControllerParameterValues = FALSE;
  8000dfe:	68fb      	ldr	r3, [r7, #12]
  8000e00:	2200      	movs	r2, #0
- 8000e02:	f883 20d1 	strb.w	r2, [r3, #209]	; 0xd1
+ 8000e02:	f883 20e1 	strb.w	r2, [r3, #225]	; 0xe1
 
 	// ======== Data Packet Rx =========== //
 	dataPacketRxInit(&app->dataPacketRx, 0xAA, 0x55);
  8000e06:	68fb      	ldr	r3, [r7, #12]
- 8000e08:	33d2      	adds	r3, #210	; 0xd2
+ 8000e08:	33e2      	adds	r3, #226	; 0xe2
  8000e0a:	2255      	movs	r2, #85	; 0x55
  8000e0c:	21aa      	movs	r1, #170	; 0xaa
  8000e0e:	4618      	mov	r0, r3
@@ -1147,22 +1147,22 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->decodeCommandStatus = FALSE;
  8000e14:	68fb      	ldr	r3, [r7, #12]
  8000e16:	2200      	movs	r2, #0
- 8000e18:	f883 2118 	strb.w	r2, [r3, #280]	; 0x118
+ 8000e18:	f883 2128 	strb.w	r2, [r3, #296]	; 0x128
 	app->command = 0;
  8000e1c:	68fb      	ldr	r3, [r7, #12]
  8000e1e:	2200      	movs	r2, #0
- 8000e20:	f883 2119 	strb.w	r2, [r3, #281]	; 0x119
+ 8000e20:	f883 2129 	strb.w	r2, [r3, #297]	; 0x129
 	memset(app->data, 0x00, QTY_DATA_BYTES);
  8000e24:	68fb      	ldr	r3, [r7, #12]
- 8000e26:	f503 738d 	add.w	r3, r3, #282	; 0x11a
+ 8000e26:	f503 7395 	add.w	r3, r3, #298	; 0x12a
  8000e2a:	2219      	movs	r2, #25
  8000e2c:	2100      	movs	r1, #0
  8000e2e:	4618      	mov	r0, r3
- 8000e30:	f005 f8fc 	bl	800602c <memset>
+ 8000e30:	f005 f910 	bl	8006054 <memset>
 	app->dataLenght = 0;
  8000e34:	68fb      	ldr	r3, [r7, #12]
  8000e36:	2200      	movs	r2, #0
- 8000e38:	f883 2133 	strb.w	r2, [r3, #307]	; 0x133
+ 8000e38:	f883 2143 	strb.w	r2, [r3, #323]	; 0x143
 }
  8000e3c:	bf00      	nop
  8000e3e:	3710      	adds	r7, #16
@@ -1225,12 +1225,12 @@ void appRunController(App *app)
  8000e8a:	687b      	ldr	r3, [r7, #4]
  8000e8c:	3364      	adds	r3, #100	; 0x64
  8000e8e:	4618      	mov	r0, r3
- 8000e90:	f004 ffd4 	bl	8005e3c <pidCompute>
+ 8000e90:	f004 ffe4 	bl	8005e5c <pidCompute>
 	uint32_t controlledVariable = pidGetControlledVariable(&app->pid);
  8000e94:	687b      	ldr	r3, [r7, #4]
  8000e96:	3364      	adds	r3, #100	; 0x64
  8000e98:	4618      	mov	r0, r3
- 8000e9a:	f005 f889 	bl	8005fb0 <pidGetControlledVariable>
+ 8000e9a:	f005 f89c 	bl	8005fd6 <pidGetControlledVariable>
  8000e9e:	4603      	mov	r3, r0
  8000ea0:	60fb      	str	r3, [r7, #12]
 	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, controlledVariable);
@@ -1261,7 +1261,7 @@ void appSetProcessVariable(App *app, uint32_t value)
  8000ec8:	683a      	ldr	r2, [r7, #0]
  8000eca:	4611      	mov	r1, r2
  8000ecc:	4618      	mov	r0, r3
- 8000ece:	f005 f855 	bl	8005f7c <pidSetProcessVariable>
+ 8000ece:	f005 f868 	bl	8005fa2 <pidSetProcessVariable>
 }
  8000ed2:	bf00      	nop
  8000ed4:	3708      	adds	r7, #8
@@ -1280,7 +1280,7 @@ uint32_t appGetProcessVariable(App *app)
  8000ee2:	687b      	ldr	r3, [r7, #4]
  8000ee4:	3364      	adds	r3, #100	; 0x64
  8000ee6:	4618      	mov	r0, r3
- 8000ee8:	f005 f856 	bl	8005f98 <pidGetProcessVariable>
+ 8000ee8:	f005 f869 	bl	8005fbe <pidGetProcessVariable>
  8000eec:	4603      	mov	r3, r0
 }
  8000eee:	4618      	mov	r0, r3
@@ -1301,7 +1301,7 @@ void appAppendReceivedByte(App *app, uint8_t receivedByte)
  8000f00:	70fb      	strb	r3, [r7, #3]
 	dataPacketRxAppend(&app->dataPacketRx, receivedByte);
  8000f02:	687b      	ldr	r3, [r7, #4]
- 8000f04:	33d2      	adds	r3, #210	; 0xd2
+ 8000f04:	33e2      	adds	r3, #226	; 0xe2
  8000f06:	78fa      	ldrb	r2, [r7, #3]
  8000f08:	4611      	mov	r1, r2
  8000f0a:	4618      	mov	r0, r3
@@ -1322,7 +1322,7 @@ void appTryDecodeReceivedDataPacket(App *app)
  8000f1e:	6078      	str	r0, [r7, #4]
 	dataPacketRxDecode(&app->dataPacketRx);
  8000f20:	687b      	ldr	r3, [r7, #4]
- 8000f22:	33d2      	adds	r3, #210	; 0xd2
+ 8000f22:	33e2      	adds	r3, #226	; 0xe2
  8000f24:	4618      	mov	r0, r3
  8000f26:	f001 f996 	bl	8002256 <dataPacketRxDecode>
 }
@@ -1341,7 +1341,7 @@ void appTryExtractCommandAndPayloadFromDecodedDataPacket(App *app)
  8000f38:	6078      	str	r0, [r7, #4]
 	if (dataPacketRxGetDataPacketStatus(&app->dataPacketRx) == VALID_RX_DATA_PACKET)
  8000f3a:	687b      	ldr	r3, [r7, #4]
- 8000f3c:	33d2      	adds	r3, #210	; 0xd2
+ 8000f3c:	33e2      	adds	r3, #226	; 0xe2
  8000f3e:	4618      	mov	r0, r3
  8000f40:	f001 fac6 	bl	80024d0 <dataPacketRxGetDataPacketStatus>
  8000f44:	4603      	mov	r3, r0
@@ -1350,14 +1350,14 @@ void appTryExtractCommandAndPayloadFromDecodedDataPacket(App *app)
 	{
 		uint8_t receivedCmd = dataPacketRxGetCommand(&app->dataPacketRx);
  8000f4a:	687b      	ldr	r3, [r7, #4]
- 8000f4c:	33d2      	adds	r3, #210	; 0xd2
+ 8000f4c:	33e2      	adds	r3, #226	; 0xe2
  8000f4e:	4618      	mov	r0, r3
  8000f50:	f001 fa81 	bl	8002456 <dataPacketRxGetCommand>
  8000f54:	4603      	mov	r3, r0
  8000f56:	73fb      	strb	r3, [r7, #15]
 		uint8_t receivedPayloadDataLength = dataPacketRxGetPayloadDataLength(&app->dataPacketRx);
  8000f58:	687b      	ldr	r3, [r7, #4]
- 8000f5a:	33d2      	adds	r3, #210	; 0xd2
+ 8000f5a:	33e2      	adds	r3, #226	; 0xe2
  8000f5c:	4618      	mov	r0, r3
  8000f5e:	f001 faab 	bl	80024b8 <dataPacketRxGetPayloadDataLength>
  8000f62:	4603      	mov	r3, r0
@@ -1370,7 +1370,7 @@ void appTryExtractCommandAndPayloadFromDecodedDataPacket(App *app)
 		{
 			uint8_t *receivedPayloadData = dataPacketRxGetPayloadData(&app->dataPacketRx);
  8000f6c:	687b      	ldr	r3, [r7, #4]
- 8000f6e:	33d2      	adds	r3, #210	; 0xd2
+ 8000f6e:	33e2      	adds	r3, #226	; 0xe2
  8000f70:	4618      	mov	r0, r3
  8000f72:	f001 fa95 	bl	80024a0 <dataPacketRxGetPayloadData>
  8000f76:	60b8      	str	r0, [r7, #8]
@@ -1393,7 +1393,7 @@ void appTryExtractCommandAndPayloadFromDecodedDataPacket(App *app)
  8000f92:	f000 f911 	bl	80011b8 <appSetDecodeStatus>
 		dataPacketRxClear(&app->dataPacketRx);
  8000f96:	687b      	ldr	r3, [r7, #4]
- 8000f98:	33d2      	adds	r3, #210	; 0xd2
+ 8000f98:	33e2      	adds	r3, #226	; 0xe2
  8000f9a:	4618      	mov	r0, r3
  8000f9c:	f001 fa10 	bl	80023c0 <dataPacketRxClear>
 	}
@@ -1453,7 +1453,7 @@ void appDecodeReceivedCommand(App *app)
 
 	switch (app->command)
  8000fe8:	687b      	ldr	r3, [r7, #4]
- 8000fea:	f893 3119 	ldrb.w	r3, [r3, #281]	; 0x119
+ 8000fea:	f893 3129 	ldrb.w	r3, [r3, #297]	; 0x129
  8000fee:	3b10      	subs	r3, #16
  8000ff0:	2b12      	cmp	r3, #18
  8000ff2:	f200 80c0 	bhi.w	8001176 <appDecodeReceivedCommand+0x1a2>
@@ -1482,14 +1482,14 @@ void appDecodeReceivedCommand(App *app)
 		case CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE:
 			if (app->data[0] == 0x00)
  8001048:	687b      	ldr	r3, [r7, #4]
- 800104a:	f893 311a 	ldrb.w	r3, [r3, #282]	; 0x11a
+ 800104a:	f893 312a 	ldrb.w	r3, [r3, #298]	; 0x12a
  800104e:	2b00      	cmp	r3, #0
  8001050:	d104      	bne.n	800105c <appDecodeReceivedCommand+0x88>
 			{
 				app->enableSendProcessVariable = FALSE;
  8001052:	687b      	ldr	r3, [r7, #4]
  8001054:	2200      	movs	r2, #0
- 8001056:	f883 20cf 	strb.w	r2, [r3, #207]	; 0xcf
+ 8001056:	f883 20df 	strb.w	r2, [r3, #223]	; 0xdf
 			}
 			else if (app->data[0] == 0x01)
 			{
@@ -1499,13 +1499,13 @@ void appDecodeReceivedCommand(App *app)
  800105a:	e08e      	b.n	800117a <appDecodeReceivedCommand+0x1a6>
 			else if (app->data[0] == 0x01)
  800105c:	687b      	ldr	r3, [r7, #4]
- 800105e:	f893 311a 	ldrb.w	r3, [r3, #282]	; 0x11a
+ 800105e:	f893 312a 	ldrb.w	r3, [r3, #298]	; 0x12a
  8001062:	2b01      	cmp	r3, #1
  8001064:	f040 8089 	bne.w	800117a <appDecodeReceivedCommand+0x1a6>
 				app->enableSendProcessVariable = TRUE;
  8001068:	687b      	ldr	r3, [r7, #4]
  800106a:	2201      	movs	r2, #1
- 800106c:	f883 20cf 	strb.w	r2, [r3, #207]	; 0xcf
+ 800106c:	f883 20df 	strb.w	r2, [r3, #223]	; 0xdf
 			break;
  8001070:	e083      	b.n	800117a <appDecodeReceivedCommand+0x1a6>
 
@@ -1513,7 +1513,7 @@ void appDecodeReceivedCommand(App *app)
 			app->enableSendPidKsParameterValues = TRUE;
  8001072:	687b      	ldr	r3, [r7, #4]
  8001074:	2201      	movs	r2, #1
- 8001076:	f883 20d0 	strb.w	r2, [r3, #208]	; 0xd0
+ 8001076:	f883 20e0 	strb.w	r2, [r3, #224]	; 0xe0
 			break;
  800107a:	e087      	b.n	800118c <appDecodeReceivedCommand+0x1b8>
 
@@ -1521,14 +1521,14 @@ void appDecodeReceivedCommand(App *app)
 			app->enableSendPidControllerParameterValues = TRUE;
  800107c:	687b      	ldr	r3, [r7, #4]
  800107e:	2201      	movs	r2, #1
- 8001080:	f883 20d1 	strb.w	r2, [r3, #209]	; 0xd1
+ 8001080:	f883 20e1 	strb.w	r2, [r3, #225]	; 0xe1
 			break;
  8001084:	e082      	b.n	800118c <appDecodeReceivedCommand+0x1b8>
 
 		case CMD_RX_SET_PID_KP_PARAMETER:
 			app->pid.kp = app->data[0];
  8001086:	687b      	ldr	r3, [r7, #4]
- 8001088:	f893 211a 	ldrb.w	r2, [r3, #282]	; 0x11a
+ 8001088:	f893 212a 	ldrb.w	r2, [r3, #298]	; 0x12a
  800108c:	687b      	ldr	r3, [r7, #4]
  800108e:	f883 2064 	strb.w	r2, [r3, #100]	; 0x64
 			break;
@@ -1537,7 +1537,7 @@ void appDecodeReceivedCommand(App *app)
 		case CMD_RX_SET_PID_KI_PARAMETER:
 			app->pid.ki = app->data[0];
  8001094:	687b      	ldr	r3, [r7, #4]
- 8001096:	f893 211a 	ldrb.w	r2, [r3, #282]	; 0x11a
+ 8001096:	f893 212a 	ldrb.w	r2, [r3, #298]	; 0x12a
  800109a:	687b      	ldr	r3, [r7, #4]
  800109c:	f883 2065 	strb.w	r2, [r3, #101]	; 0x65
 			break;
@@ -1546,7 +1546,7 @@ void appDecodeReceivedCommand(App *app)
 		case CMD_RX_SET_PID_KD_PARAMETER:
 			app->pid.kd = app->data[0];
  80010a2:	687b      	ldr	r3, [r7, #4]
- 80010a4:	f893 211a 	ldrb.w	r2, [r3, #282]	; 0x11a
+ 80010a4:	f893 212a 	ldrb.w	r2, [r3, #298]	; 0x12a
  80010a8:	687b      	ldr	r3, [r7, #4]
  80010aa:	f883 2066 	strb.w	r2, [r3, #102]	; 0x66
 			break;
@@ -1555,12 +1555,12 @@ void appDecodeReceivedCommand(App *app)
 		case CMD_RX_SET_SAMPLING_DELAY:
 			receivedSamplingDelay = (app->data[0] << 8) + app->data[1];
  80010b0:	687b      	ldr	r3, [r7, #4]
- 80010b2:	f893 311a 	ldrb.w	r3, [r3, #282]	; 0x11a
+ 80010b2:	f893 312a 	ldrb.w	r3, [r3, #298]	; 0x12a
  80010b6:	b29b      	uxth	r3, r3
  80010b8:	021b      	lsls	r3, r3, #8
  80010ba:	b29a      	uxth	r2, r3
  80010bc:	687b      	ldr	r3, [r7, #4]
- 80010be:	f893 311b 	ldrb.w	r3, [r3, #283]	; 0x11b
+ 80010be:	f893 312b 	ldrb.w	r3, [r3, #299]	; 0x12b
  80010c2:	b29b      	uxth	r3, r3
  80010c4:	4413      	add	r3, r2
  80010c6:	81fb      	strh	r3, [r7, #14]
@@ -1573,7 +1573,7 @@ void appDecodeReceivedCommand(App *app)
 				app->samplingDelay = receivedSamplingDelay;
  80010d2:	687b      	ldr	r3, [r7, #4]
  80010d4:	89fa      	ldrh	r2, [r7, #14]
- 80010d6:	f8a3 2088 	strh.w	r2, [r3, #136]	; 0x88
+ 80010d6:	f8a3 2098 	strh.w	r2, [r3, #152]	; 0x98
 			}
 			break;
  80010da:	e050      	b.n	800117e <appDecodeReceivedCommand+0x1aa>
@@ -1581,12 +1581,12 @@ void appDecodeReceivedCommand(App *app)
 		case CMD_RX_SET_PID_DELAY:
 			receivedPidComputeDelay = (app->data[0] << 8) + app->data[1];
  80010dc:	687b      	ldr	r3, [r7, #4]
- 80010de:	f893 311a 	ldrb.w	r3, [r3, #282]	; 0x11a
+ 80010de:	f893 312a 	ldrb.w	r3, [r3, #298]	; 0x12a
  80010e2:	b29b      	uxth	r3, r3
  80010e4:	021b      	lsls	r3, r3, #8
  80010e6:	b29a      	uxth	r2, r3
  80010e8:	687b      	ldr	r3, [r7, #4]
- 80010ea:	f893 311b 	ldrb.w	r3, [r3, #283]	; 0x11b
+ 80010ea:	f893 312b 	ldrb.w	r3, [r3, #299]	; 0x12b
  80010ee:	b29b      	uxth	r3, r3
  80010f0:	4413      	add	r3, r2
  80010f2:	81bb      	strh	r3, [r7, #12]
@@ -1599,7 +1599,7 @@ void appDecodeReceivedCommand(App *app)
 				app->pidComputeDelay = receivedPidComputeDelay;
  80010fe:	687b      	ldr	r3, [r7, #4]
  8001100:	89ba      	ldrh	r2, [r7, #12]
- 8001102:	f8a3 208a 	strh.w	r2, [r3, #138]	; 0x8a
+ 8001102:	f8a3 209a 	strh.w	r2, [r3, #154]	; 0x9a
 			}
 			break;
  8001106:	e03c      	b.n	8001182 <appDecodeReceivedCommand+0x1ae>
@@ -1607,18 +1607,18 @@ void appDecodeReceivedCommand(App *app)
 		case CMD_RX_SET_PID_SETPOINT:
 			receivedPidSetpoint = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
  8001108:	687b      	ldr	r3, [r7, #4]
- 800110a:	f893 311a 	ldrb.w	r3, [r3, #282]	; 0x11a
+ 800110a:	f893 312a 	ldrb.w	r3, [r3, #298]	; 0x12a
  800110e:	061a      	lsls	r2, r3, #24
  8001110:	687b      	ldr	r3, [r7, #4]
- 8001112:	f893 311b 	ldrb.w	r3, [r3, #283]	; 0x11b
+ 8001112:	f893 312b 	ldrb.w	r3, [r3, #299]	; 0x12b
  8001116:	041b      	lsls	r3, r3, #16
  8001118:	441a      	add	r2, r3
  800111a:	687b      	ldr	r3, [r7, #4]
- 800111c:	f893 311c 	ldrb.w	r3, [r3, #284]	; 0x11c
+ 800111c:	f893 312c 	ldrb.w	r3, [r3, #300]	; 0x12c
  8001120:	021b      	lsls	r3, r3, #8
  8001122:	4413      	add	r3, r2
  8001124:	687a      	ldr	r2, [r7, #4]
- 8001126:	f892 211d 	ldrb.w	r2, [r2, #285]	; 0x11d
+ 8001126:	f892 212d 	ldrb.w	r2, [r2, #301]	; 0x12d
  800112a:	4413      	add	r3, r2
  800112c:	60bb      	str	r3, [r7, #8]
 			if ((receivedPidSetpoint >= 0) && (receivedPidSetpoint <= 300000))
@@ -1638,14 +1638,14 @@ void appDecodeReceivedCommand(App *app)
 		case CMD_RX_ASK_FOR_RUN_PID_CONTROLLER:
 			if (app->data[0] == 0x00)
  800113e:	687b      	ldr	r3, [r7, #4]
- 8001140:	f893 311a 	ldrb.w	r3, [r3, #282]	; 0x11a
+ 8001140:	f893 312a 	ldrb.w	r3, [r3, #298]	; 0x12a
  8001144:	2b00      	cmp	r3, #0
  8001146:	d10c      	bne.n	8001162 <appDecodeReceivedCommand+0x18e>
 			{
 				app->runPidController = FALSE;
  8001148:	687b      	ldr	r3, [r7, #4]
  800114a:	2200      	movs	r2, #0
- 800114c:	f883 208c 	strb.w	r2, [r3, #140]	; 0x8c
+ 800114c:	f883 209c 	strb.w	r2, [r3, #156]	; 0x9c
 				HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
  8001150:	687b      	ldr	r3, [r7, #4]
  8001152:	f103 0050 	add.w	r0, r3, #80	; 0x50
@@ -1662,13 +1662,13 @@ void appDecodeReceivedCommand(App *app)
  8001160:	e013      	b.n	800118a <appDecodeReceivedCommand+0x1b6>
 			else if (app->data[0] == 0x01)
  8001162:	687b      	ldr	r3, [r7, #4]
- 8001164:	f893 311a 	ldrb.w	r3, [r3, #282]	; 0x11a
+ 8001164:	f893 312a 	ldrb.w	r3, [r3, #298]	; 0x12a
  8001168:	2b01      	cmp	r3, #1
  800116a:	d10e      	bne.n	800118a <appDecodeReceivedCommand+0x1b6>
 				app->runPidController = TRUE;
  800116c:	687b      	ldr	r3, [r7, #4]
  800116e:	2201      	movs	r2, #1
- 8001170:	f883 208c 	strb.w	r2, [r3, #140]	; 0x8c
+ 8001170:	f883 209c 	strb.w	r2, [r3, #156]	; 0x9c
 			break;
  8001174:	e009      	b.n	800118a <appDecodeReceivedCommand+0x1b6>
 
@@ -1711,7 +1711,7 @@ void appSetCommand(App *app, uint8_t command)
 	app->command = command;
  80011a4:	687b      	ldr	r3, [r7, #4]
  80011a6:	78fa      	ldrb	r2, [r7, #3]
- 80011a8:	f883 2119 	strb.w	r2, [r3, #281]	; 0x119
+ 80011a8:	f883 2129 	strb.w	r2, [r3, #297]	; 0x129
 }
  80011ac:	bf00      	nop
  80011ae:	370c      	adds	r7, #12
@@ -1732,7 +1732,7 @@ void appSetDecodeStatus(App *app, Bool status)
 	app->decodeCommandStatus = status;
  80011c4:	687b      	ldr	r3, [r7, #4]
  80011c6:	78fa      	ldrb	r2, [r7, #3]
- 80011c8:	f883 2118 	strb.w	r2, [r3, #280]	; 0x118
+ 80011c8:	f883 2128 	strb.w	r2, [r3, #296]	; 0x128
 }
  80011cc:	bf00      	nop
  80011ce:	370c      	adds	r7, #12
@@ -1750,7 +1750,7 @@ Bool appGetDecodeStatus(App *app)
  80011de:	6078      	str	r0, [r7, #4]
 	return app->decodeCommandStatus;
  80011e0:	687b      	ldr	r3, [r7, #4]
- 80011e2:	f893 3118 	ldrb.w	r3, [r3, #280]	; 0x118
+ 80011e2:	f893 3128 	ldrb.w	r3, [r3, #296]	; 0x128
 }
  80011e6:	4618      	mov	r0, r3
  80011e8:	370c      	adds	r7, #12
@@ -1777,14 +1777,14 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength)
 		app->dataLenght = dataLength;
  8001206:	68fb      	ldr	r3, [r7, #12]
  8001208:	79fa      	ldrb	r2, [r7, #7]
- 800120a:	f883 2133 	strb.w	r2, [r3, #307]	; 0x133
+ 800120a:	f883 2143 	strb.w	r2, [r3, #323]	; 0x143
 		memcpy(app->data, data, dataLength);
  800120e:	68fb      	ldr	r3, [r7, #12]
- 8001210:	f503 738d 	add.w	r3, r3, #282	; 0x11a
+ 8001210:	f503 7395 	add.w	r3, r3, #298	; 0x12a
  8001214:	79fa      	ldrb	r2, [r7, #7]
  8001216:	68b9      	ldr	r1, [r7, #8]
  8001218:	4618      	mov	r0, r3
- 800121a:	f004 fef9 	bl	8006010 <memcpy>
+ 800121a:	f004 ff0d 	bl	8006038 <memcpy>
 	}
 }
  800121e:	bf00      	nop
@@ -1867,25 +1867,25 @@ void appSendProcessVariable(App *app)
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PROCESS_VARIABLE_VALUE);
  80012b4:	687b      	ldr	r3, [r7, #4]
- 80012b6:	338e      	adds	r3, #142	; 0x8e
+ 80012b6:	339e      	adds	r3, #158	; 0x9e
  80012b8:	2121      	movs	r1, #33	; 0x21
  80012ba:	4618      	mov	r0, r3
  80012bc:	f001 f9e4 	bl	8002688 <dataPacketTxSetCommand>
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
  80012c0:	687b      	ldr	r3, [r7, #4]
- 80012c2:	338e      	adds	r3, #142	; 0x8e
+ 80012c2:	339e      	adds	r3, #158	; 0x9e
  80012c4:	7cfa      	ldrb	r2, [r7, #19]
  80012c6:	68b9      	ldr	r1, [r7, #8]
  80012c8:	4618      	mov	r0, r3
  80012ca:	f001 f9f7 	bl	80026bc <dataPacketTxSetPayloadData>
 	dataPacketTxMount(&app->dataPacketTx);
  80012ce:	687b      	ldr	r3, [r7, #4]
- 80012d0:	338e      	adds	r3, #142	; 0x8e
+ 80012d0:	339e      	adds	r3, #158	; 0x9e
  80012d2:	4618      	mov	r0, r3
  80012d4:	f001 f939 	bl	800254a <dataPacketTxMount>
 	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
  80012d8:	687b      	ldr	r3, [r7, #4]
- 80012da:	f103 0c8e 	add.w	ip, r3, #142	; 0x8e
+ 80012da:	f103 0c9e 	add.w	ip, r3, #158	; 0x9e
  80012de:	687e      	ldr	r6, [r7, #4]
  80012e0:	466d      	mov	r5, sp
  80012e2:	f106 0418 	add.w	r4, r6, #24
@@ -1903,12 +1903,12 @@ void appSendProcessVariable(App *app)
  8001302:	f001 f969 	bl	80025d8 <dataPacketTxUartSend>
 	dataPacketTxPayloadDataClear(&app->dataPacketTx);
  8001306:	687b      	ldr	r3, [r7, #4]
- 8001308:	338e      	adds	r3, #142	; 0x8e
+ 8001308:	339e      	adds	r3, #158	; 0x9e
  800130a:	4618      	mov	r0, r3
  800130c:	f001 f9a0 	bl	8002650 <dataPacketTxPayloadDataClear>
 	dataPacketTxClear(&app->dataPacketTx);
  8001310:	687b      	ldr	r3, [r7, #4]
- 8001312:	338e      	adds	r3, #142	; 0x8e
+ 8001312:	339e      	adds	r3, #158	; 0x9e
  8001314:	4618      	mov	r0, r3
  8001316:	f001 f97f 	bl	8002618 <dataPacketTxClear>
  800131a:	46d5      	mov	sp, sl
@@ -1980,25 +1980,25 @@ void appSendPidKsParameterValues(App *app)
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_KS_PARAMETER_VALUES);
  80013a4:	687b      	ldr	r3, [r7, #4]
- 80013a6:	338e      	adds	r3, #142	; 0x8e
+ 80013a6:	339e      	adds	r3, #158	; 0x9e
  80013a8:	2114      	movs	r1, #20
  80013aa:	4618      	mov	r0, r3
  80013ac:	f001 f96c 	bl	8002688 <dataPacketTxSetCommand>
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
  80013b0:	687b      	ldr	r3, [r7, #4]
- 80013b2:	338e      	adds	r3, #142	; 0x8e
+ 80013b2:	339e      	adds	r3, #158	; 0x9e
  80013b4:	7dfa      	ldrb	r2, [r7, #23]
  80013b6:	68f9      	ldr	r1, [r7, #12]
  80013b8:	4618      	mov	r0, r3
  80013ba:	f001 f97f 	bl	80026bc <dataPacketTxSetPayloadData>
 	dataPacketTxMount(&app->dataPacketTx);
  80013be:	687b      	ldr	r3, [r7, #4]
- 80013c0:	338e      	adds	r3, #142	; 0x8e
+ 80013c0:	339e      	adds	r3, #158	; 0x9e
  80013c2:	4618      	mov	r0, r3
  80013c4:	f001 f8c1 	bl	800254a <dataPacketTxMount>
 	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
  80013c8:	687b      	ldr	r3, [r7, #4]
- 80013ca:	f103 0c8e 	add.w	ip, r3, #142	; 0x8e
+ 80013ca:	f103 0c9e 	add.w	ip, r3, #158	; 0x9e
  80013ce:	687e      	ldr	r6, [r7, #4]
  80013d0:	466d      	mov	r5, sp
  80013d2:	f106 0418 	add.w	r4, r6, #24
@@ -2016,12 +2016,12 @@ void appSendPidKsParameterValues(App *app)
  80013f2:	f001 f8f1 	bl	80025d8 <dataPacketTxUartSend>
 	dataPacketTxPayloadDataClear(&app->dataPacketTx);
  80013f6:	687b      	ldr	r3, [r7, #4]
- 80013f8:	338e      	adds	r3, #142	; 0x8e
+ 80013f8:	339e      	adds	r3, #158	; 0x9e
  80013fa:	4618      	mov	r0, r3
  80013fc:	f001 f928 	bl	8002650 <dataPacketTxPayloadDataClear>
 	dataPacketTxClear(&app->dataPacketTx);
  8001400:	687b      	ldr	r3, [r7, #4]
- 8001402:	338e      	adds	r3, #142	; 0x8e
+ 8001402:	339e      	adds	r3, #158	; 0x9e
  8001404:	4618      	mov	r0, r3
  8001406:	f001 f907 	bl	8002618 <dataPacketTxClear>
  800140a:	46d5      	mov	sp, sl
@@ -2078,7 +2078,7 @@ void appSendPidControllerParameterValues(App *app)
 
 	bytes[0] = ((app->samplingDelay >> 8) & 0x00FF);
  8001476:	687b      	ldr	r3, [r7, #4]
- 8001478:	f8b3 3088 	ldrh.w	r3, [r3, #136]	; 0x88
+ 8001478:	f8b3 3098 	ldrh.w	r3, [r3, #152]	; 0x98
  800147c:	0a1b      	lsrs	r3, r3, #8
  800147e:	b29b      	uxth	r3, r3
  8001480:	b2da      	uxtb	r2, r3
@@ -2086,13 +2086,13 @@ void appSendPidControllerParameterValues(App *app)
  8001484:	701a      	strb	r2, [r3, #0]
 	bytes[1] = (app->samplingDelay & 0x00FF);
  8001486:	687b      	ldr	r3, [r7, #4]
- 8001488:	f8b3 3088 	ldrh.w	r3, [r3, #136]	; 0x88
+ 8001488:	f8b3 3098 	ldrh.w	r3, [r3, #152]	; 0x98
  800148c:	b2da      	uxtb	r2, r3
  800148e:	68fb      	ldr	r3, [r7, #12]
  8001490:	705a      	strb	r2, [r3, #1]
 	bytes[2] = ((app->pidComputeDelay >> 8) & 0x00FF);
  8001492:	687b      	ldr	r3, [r7, #4]
- 8001494:	f8b3 308a 	ldrh.w	r3, [r3, #138]	; 0x8a
+ 8001494:	f8b3 309a 	ldrh.w	r3, [r3, #154]	; 0x9a
  8001498:	0a1b      	lsrs	r3, r3, #8
  800149a:	b29b      	uxth	r3, r3
  800149c:	b2da      	uxtb	r2, r3
@@ -2100,7 +2100,7 @@ void appSendPidControllerParameterValues(App *app)
  80014a0:	709a      	strb	r2, [r3, #2]
 	bytes[3] = (app->pidComputeDelay & 0x00FF);
  80014a2:	687b      	ldr	r3, [r7, #4]
- 80014a4:	f8b3 308a 	ldrh.w	r3, [r3, #138]	; 0x8a
+ 80014a4:	f8b3 309a 	ldrh.w	r3, [r3, #154]	; 0x9a
  80014a8:	b2da      	uxtb	r2, r3
  80014aa:	68fb      	ldr	r3, [r7, #12]
  80014ac:	70da      	strb	r2, [r3, #3]
@@ -2134,25 +2134,25 @@ void appSendPidControllerParameterValues(App *app)
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_CONTROLLER_PARAMETER_VALUES);
  80014dc:	687b      	ldr	r3, [r7, #4]
- 80014de:	338e      	adds	r3, #142	; 0x8e
+ 80014de:	339e      	adds	r3, #158	; 0x9e
  80014e0:	2117      	movs	r1, #23
  80014e2:	4618      	mov	r0, r3
  80014e4:	f001 f8d0 	bl	8002688 <dataPacketTxSetCommand>
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
  80014e8:	687b      	ldr	r3, [r7, #4]
- 80014ea:	338e      	adds	r3, #142	; 0x8e
+ 80014ea:	339e      	adds	r3, #158	; 0x9e
  80014ec:	7dfa      	ldrb	r2, [r7, #23]
  80014ee:	68f9      	ldr	r1, [r7, #12]
  80014f0:	4618      	mov	r0, r3
  80014f2:	f001 f8e3 	bl	80026bc <dataPacketTxSetPayloadData>
 	dataPacketTxMount(&app->dataPacketTx);
  80014f6:	687b      	ldr	r3, [r7, #4]
- 80014f8:	338e      	adds	r3, #142	; 0x8e
+ 80014f8:	339e      	adds	r3, #158	; 0x9e
  80014fa:	4618      	mov	r0, r3
  80014fc:	f001 f825 	bl	800254a <dataPacketTxMount>
 	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
  8001500:	687b      	ldr	r3, [r7, #4]
- 8001502:	f103 0c8e 	add.w	ip, r3, #142	; 0x8e
+ 8001502:	f103 0c9e 	add.w	ip, r3, #158	; 0x9e
  8001506:	687e      	ldr	r6, [r7, #4]
  8001508:	466d      	mov	r5, sp
  800150a:	f106 0418 	add.w	r4, r6, #24
@@ -2170,12 +2170,12 @@ void appSendPidControllerParameterValues(App *app)
  800152a:	f001 f855 	bl	80025d8 <dataPacketTxUartSend>
 	dataPacketTxPayloadDataClear(&app->dataPacketTx);
  800152e:	687b      	ldr	r3, [r7, #4]
- 8001530:	338e      	adds	r3, #142	; 0x8e
+ 8001530:	339e      	adds	r3, #158	; 0x9e
  8001532:	4618      	mov	r0, r3
  8001534:	f001 f88c 	bl	8002650 <dataPacketTxPayloadDataClear>
 	dataPacketTxClear(&app->dataPacketTx);
  8001538:	687b      	ldr	r3, [r7, #4]
- 800153a:	338e      	adds	r3, #142	; 0x8e
+ 800153a:	339e      	adds	r3, #158	; 0x9e
  800153c:	4618      	mov	r0, r3
  800153e:	f001 f86b 	bl	8002618 <dataPacketTxClear>
  8001542:	46d5      	mov	sp, sl
@@ -2257,7 +2257,7 @@ Bool appGetEnableSendProcessVariable(App *app)
  80015ae:	6078      	str	r0, [r7, #4]
 	return app->enableSendProcessVariable;
  80015b0:	687b      	ldr	r3, [r7, #4]
- 80015b2:	f893 30cf 	ldrb.w	r3, [r3, #207]	; 0xcf
+ 80015b2:	f893 30df 	ldrb.w	r3, [r3, #223]	; 0xdf
 }
  80015b6:	4618      	mov	r0, r3
  80015b8:	370c      	adds	r7, #12
@@ -2278,7 +2278,7 @@ Bool appGetEnableSendPidKsParameterValues(App *app)
  80015c8:	6078      	str	r0, [r7, #4]
 	return app->enableSendPidKsParameterValues;
  80015ca:	687b      	ldr	r3, [r7, #4]
- 80015cc:	f893 30d0 	ldrb.w	r3, [r3, #208]	; 0xd0
+ 80015cc:	f893 30e0 	ldrb.w	r3, [r3, #224]	; 0xe0
 }
  80015d0:	4618      	mov	r0, r3
  80015d2:	370c      	adds	r7, #12
@@ -2299,7 +2299,7 @@ void appSetEnableSendPidKsParameterValues(App *app, Bool status)
 	app->enableSendPidKsParameterValues = status;
  80015e8:	687b      	ldr	r3, [r7, #4]
  80015ea:	78fa      	ldrb	r2, [r7, #3]
- 80015ec:	f883 20d0 	strb.w	r2, [r3, #208]	; 0xd0
+ 80015ec:	f883 20e0 	strb.w	r2, [r3, #224]	; 0xe0
 }
  80015f0:	bf00      	nop
  80015f2:	370c      	adds	r7, #12
@@ -2320,7 +2320,7 @@ uint16_t appGetSamplingDelay(App *app)
  8001602:	6078      	str	r0, [r7, #4]
 	return app->samplingDelay;
  8001604:	687b      	ldr	r3, [r7, #4]
- 8001606:	f8b3 3088 	ldrh.w	r3, [r3, #136]	; 0x88
+ 8001606:	f8b3 3098 	ldrh.w	r3, [r3, #152]	; 0x98
 }
  800160a:	4618      	mov	r0, r3
  800160c:	370c      	adds	r7, #12
@@ -2341,7 +2341,7 @@ uint16_t appGetPidComputeDelay(App *app)
  800161c:	6078      	str	r0, [r7, #4]
 	return app->pidComputeDelay;
  800161e:	687b      	ldr	r3, [r7, #4]
- 8001620:	f8b3 308a 	ldrh.w	r3, [r3, #138]	; 0x8a
+ 8001620:	f8b3 309a 	ldrh.w	r3, [r3, #154]	; 0x9a
 }
  8001624:	4618      	mov	r0, r3
  8001626:	370c      	adds	r7, #12
@@ -2359,7 +2359,7 @@ Bool appGetEnableSendPidControllerParameterValues(App *app)
  8001636:	6078      	str	r0, [r7, #4]
 	return app->enableSendPidControllerParameterValues;
  8001638:	687b      	ldr	r3, [r7, #4]
- 800163a:	f893 30d1 	ldrb.w	r3, [r3, #209]	; 0xd1
+ 800163a:	f893 30e1 	ldrb.w	r3, [r3, #225]	; 0xe1
 }
  800163e:	4618      	mov	r0, r3
  8001640:	370c      	adds	r7, #12
@@ -2380,7 +2380,7 @@ void appSetEnableSendPidControllerParameterValues(App *app, Bool status)
 	app->enableSendPidControllerParameterValues = status;
  8001656:	687b      	ldr	r3, [r7, #4]
  8001658:	78fa      	ldrb	r2, [r7, #3]
- 800165a:	f883 20d1 	strb.w	r2, [r3, #209]	; 0xd1
+ 800165a:	f883 20e1 	strb.w	r2, [r3, #225]	; 0xe1
 }
  800165e:	bf00      	nop
  8001660:	370c      	adds	r7, #12
@@ -2398,7 +2398,7 @@ Bool appGetRunPidControllerStatus(App *app)
  8001670:	6078      	str	r0, [r7, #4]
 	return app->runPidController;
  8001672:	687b      	ldr	r3, [r7, #4]
- 8001674:	f893 308c 	ldrb.w	r3, [r3, #140]	; 0x8c
+ 8001674:	f893 309c 	ldrb.w	r3, [r3, #156]	; 0x9c
 }
  8001678:	4618      	mov	r0, r3
  800167a:	370c      	adds	r7, #12
@@ -2856,13 +2856,13 @@ int main(void)
  8001978:	200000cc 	.word	0x200000cc
  800197c:	40020000 	.word	0x40020000
  8001980:	20000160 	.word	0x20000160
- 8001984:	20000298 	.word	0x20000298
+ 8001984:	200002a8 	.word	0x200002a8
  8001988:	20000154 	.word	0x20000154
  800198c:	2000015c 	.word	0x2000015c
  8001990:	20000028 	.word	0x20000028
  8001994:	447a0000 	.word	0x447a0000
  8001998:	2000015e 	.word	0x2000015e
- 800199c:	20000294 	.word	0x20000294
+ 800199c:	200002a4 	.word	0x200002a4
  80019a0:	20000156 	.word	0x20000156
  80019a4:	20000158 	.word	0x20000158
  80019a8:	2000015a 	.word	0x2000015a
@@ -2882,7 +2882,7 @@ void SystemClock_Config(void)
  80019b6:	2234      	movs	r2, #52	; 0x34
  80019b8:	2100      	movs	r1, #0
  80019ba:	4618      	mov	r0, r3
- 80019bc:	f004 fb36 	bl	800602c <memset>
+ 80019bc:	f004 fb4a 	bl	8006054 <memset>
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
  80019c0:	f107 0308 	add.w	r3, r7, #8
  80019c4:	2200      	movs	r2, #0
@@ -4317,7 +4317,7 @@ LoopFillZerobss:
  80020da:	f7ff ffd7 	bl	800208c <SystemInit>
 /* Call static constructors */
     bl __libc_init_array
- 80020de:	f003 ff73 	bl	8005fc8 <__libc_init_array>
+ 80020de:	f003 ff87 	bl	8005ff0 <__libc_init_array>
 /* Call the application's entry point.*/
   bl  main
  80020e2:	f7ff fb29 	bl	8001738 <main>
@@ -4330,11 +4330,11 @@ LoopFillZerobss:
   ldr r1, =_edata
  80020f0:	2000000c 	.word	0x2000000c
   ldr r2, =_sidata
- 80020f4:	0800617c 	.word	0x0800617c
+ 80020f4:	080061a4 	.word	0x080061a4
   ldr r2, =_sbss
  80020f8:	2000000c 	.word	0x2000000c
   ldr r4, =_ebss
- 80020fc:	20000758 	.word	0x20000758
+ 80020fc:	20000768 	.word	0x20000768
 
 08002100 <ADC_IRQHandler>:
  * @retval None       
@@ -4441,7 +4441,7 @@ static uint8_t calcCrc8(uint8_t crc3, uint8_t b)
  8002180:	46bd      	mov	sp, r7
  8002182:	f85d 7b04 	ldr.w	r7, [sp], #4
  8002186:	4770      	bx	lr
- 8002188:	0800606c 	.word	0x0800606c
+ 8002188:	08006094 	.word	0x08006094
 
 0800218c <dataPacketRxInit>:
  */
@@ -4480,7 +4480,7 @@ void dataPacketRxInit(DataPacketRx *dataPacketRx, uint8_t start_1, uint8_t start
  80021b8:	2219      	movs	r2, #25
  80021ba:	2100      	movs	r1, #0
  80021bc:	4618      	mov	r0, r3
- 80021be:	f003 ff35 	bl	800602c <memset>
+ 80021be:	f003 ff49 	bl	8006054 <memset>
 	dataPacketRx->crc8 = 0x00;
  80021c2:	687b      	ldr	r3, [r7, #4]
  80021c4:	2200      	movs	r2, #0
@@ -4491,7 +4491,7 @@ void dataPacketRxInit(DataPacketRx *dataPacketRx, uint8_t start_1, uint8_t start
  80021cc:	221e      	movs	r2, #30
  80021ce:	2100      	movs	r1, #0
  80021d0:	4618      	mov	r0, r3
- 80021d2:	f003 ff2b 	bl	800602c <memset>
+ 80021d2:	f003 ff3f 	bl	8006054 <memset>
 	dataPacketRx->dataPacketLength = 0x00;
  80021d6:	687b      	ldr	r3, [r7, #4]
  80021d8:	2200      	movs	r2, #0
@@ -4826,14 +4826,14 @@ void dataPacketRxClear(DataPacketRx *dataPacketRx)
  8002402:	2219      	movs	r2, #25
  8002404:	2100      	movs	r1, #0
  8002406:	4618      	mov	r0, r3
- 8002408:	f003 fe10 	bl	800602c <memset>
+ 8002408:	f003 fe24 	bl	8006054 <memset>
 	memset(dataPacketRx->dataPacket, 0x00, QTY_PACKET_RX_BYTES);
  800240c:	687b      	ldr	r3, [r7, #4]
  800240e:	331e      	adds	r3, #30
  8002410:	221e      	movs	r2, #30
  8002412:	2100      	movs	r1, #0
  8002414:	4618      	mov	r0, r3
- 8002416:	f003 fe09 	bl	800602c <memset>
+ 8002416:	f003 fe1d 	bl	8006054 <memset>
 }
  800241a:	bf00      	nop
  800241c:	3708      	adds	r7, #8
@@ -4921,7 +4921,7 @@ void dataPacketRxSetPayloadData(DataPacketRx *dataPacketRx, uint8_t *payloadData
  8002488:	79fa      	ldrb	r2, [r7, #7]
  800248a:	68b9      	ldr	r1, [r7, #8]
  800248c:	4618      	mov	r0, r3
- 800248e:	f003 fdbf 	bl	8006010 <memcpy>
+ 800248e:	f003 fdd3 	bl	8006038 <memcpy>
 	dataPacketRx->payloadDataLength = payloadDataLength;
  8002492:	68fb      	ldr	r3, [r7, #12]
  8002494:	79fa      	ldrb	r2, [r7, #7]
@@ -5026,7 +5026,7 @@ void dataPacketTxInit(DataPacketTx *dataPacketTx, uint8_t start_1, uint8_t start
  8002516:	2219      	movs	r2, #25
  8002518:	2100      	movs	r1, #0
  800251a:	4618      	mov	r0, r3
- 800251c:	f003 fd86 	bl	800602c <memset>
+ 800251c:	f003 fd9a 	bl	8006054 <memset>
 	dataPacketTx->crc8 = 0x00;
  8002520:	687b      	ldr	r3, [r7, #4]
  8002522:	2200      	movs	r2, #0
@@ -5037,7 +5037,7 @@ void dataPacketTxInit(DataPacketTx *dataPacketTx, uint8_t start_1, uint8_t start
  800252a:	221e      	movs	r2, #30
  800252c:	2100      	movs	r1, #0
  800252e:	4618      	mov	r0, r3
- 8002530:	f003 fd7c 	bl	800602c <memset>
+ 8002530:	f003 fd90 	bl	8006054 <memset>
 	dataPacketTx->dataPacketLength = 0x00;
  8002534:	687b      	ldr	r3, [r7, #4]
  8002536:	2200      	movs	r2, #0
@@ -5089,7 +5089,7 @@ void dataPacketTxMount(DataPacketTx *dataPacketTx)
  8002580:	687b      	ldr	r3, [r7, #4]
  8002582:	78db      	ldrb	r3, [r3, #3]
  8002584:	461a      	mov	r2, r3
- 8002586:	f003 fd43 	bl	8006010 <memcpy>
+ 8002586:	f003 fd57 	bl	8006038 <memcpy>
 	dataPacketTx->dataPacketLength = dataPacketTx->payloadDataLength + 4 + 1;
  800258a:	687b      	ldr	r3, [r7, #4]
  800258c:	78db      	ldrb	r3, [r3, #3]
@@ -5196,7 +5196,7 @@ void dataPacketTxClear(DataPacketTx *dataPacketTx)
  800263e:	221e      	movs	r2, #30
  8002640:	2100      	movs	r1, #0
  8002642:	4618      	mov	r0, r3
- 8002644:	f003 fcf2 	bl	800602c <memset>
+ 8002644:	f003 fd06 	bl	8006054 <memset>
 }
  8002648:	bf00      	nop
  800264a:	3708      	adds	r7, #8
@@ -5233,7 +5233,7 @@ void dataPacketTxPayloadDataClear(DataPacketTx *dataPacketTx)
  8002676:	2219      	movs	r2, #25
  8002678:	2100      	movs	r1, #0
  800267a:	4618      	mov	r0, r3
- 800267c:	f003 fcd6 	bl	800602c <memset>
+ 800267c:	f003 fcea 	bl	8006054 <memset>
 }
  8002680:	bf00      	nop
  8002682:	3708      	adds	r7, #8
@@ -5303,7 +5303,7 @@ void dataPacketTxSetPayloadData(DataPacketTx *dataPacketTx, uint8_t *payloadData
  80026d6:	79fa      	ldrb	r2, [r7, #7]
  80026d8:	68b9      	ldr	r1, [r7, #8]
  80026da:	4618      	mov	r0, r3
- 80026dc:	f003 fc98 	bl	8006010 <memcpy>
+ 80026dc:	f003 fcac 	bl	8006038 <memcpy>
 	dataPacketTx->payloadDataLength = payloadDataLength;
  80026e0:	68fb      	ldr	r3, [r7, #12]
  80026e2:	79fa      	ldrb	r2, [r7, #7]
@@ -5466,7 +5466,7 @@ __weak void HAL_IncTick(void)
  80027b0:	4770      	bx	lr
  80027b2:	bf00      	nop
  80027b4:	20000008 	.word	0x20000008
- 80027b8:	20000754 	.word	0x20000754
+ 80027b8:	20000764 	.word	0x20000764
 
 080027bc <HAL_GetTick>:
   * @note This function is declared as __weak to be overwritten in case of other 
@@ -5486,7 +5486,7 @@ __weak uint32_t HAL_GetTick(void)
  80027c8:	f85d 7b04 	ldr.w	r7, [sp], #4
  80027cc:	4770      	bx	lr
  80027ce:	bf00      	nop
- 80027d0:	20000754 	.word	0x20000754
+ 80027d0:	20000764 	.word	0x20000764
 
 080027d4 <HAL_ADC_Init>:
   * @param  hadc pointer to a ADC_HandleTypeDef structure that contains
@@ -8918,7 +8918,7 @@ HAL_StatusTypeDef HAL_RCC_ClockConfig(RCC_ClkInitTypeDef  *RCC_ClkInitStruct, ui
  8003af2:	bf00      	nop
  8003af4:	40023c00 	.word	0x40023c00
  8003af8:	40023800 	.word	0x40023800
- 8003afc:	08006054 	.word	0x08006054
+ 8003afc:	0800607c 	.word	0x0800607c
  8003b00:	20000000 	.word	0x20000000
  8003b04:	20000004 	.word	0x20000004
 
@@ -8966,7 +8966,7 @@ uint32_t HAL_RCC_GetPCLK1Freq(void)
  8003b3c:	4618      	mov	r0, r3
  8003b3e:	bd80      	pop	{r7, pc}
  8003b40:	40023800 	.word	0x40023800
- 8003b44:	08006064 	.word	0x08006064
+ 8003b44:	0800608c 	.word	0x0800608c
 
 08003b48 <HAL_RCC_GetPCLK2Freq>:
   * @note   Each time PCLK2 changes, this function must be called to update the
@@ -8992,7 +8992,7 @@ uint32_t HAL_RCC_GetPCLK2Freq(void)
  8003b64:	4618      	mov	r0, r3
  8003b66:	bd80      	pop	{r7, pc}
  8003b68:	40023800 	.word	0x40023800
- 8003b6c:	08006064 	.word	0x08006064
+ 8003b6c:	0800608c 	.word	0x0800608c
 
 08003b70 <HAL_RCC_GetSysClockFreq>:
   *
@@ -14385,7 +14385,7 @@ void movingAverageInit(MovingAverage *movingAverage, int16_t length)
  8005d18:	f44f 6296 	mov.w	r2, #1200	; 0x4b0
  8005d1c:	2100      	movs	r1, #0
  8005d1e:	4618      	mov	r0, r3
- 8005d20:	f000 f984 	bl	800602c <memset>
+ 8005d20:	f000 f998 	bl	8006054 <memset>
 	movingAverage->sum = 0;
  8005d24:	687b      	ldr	r3, [r7, #4]
  8005d26:	2200      	movs	r2, #0
@@ -14511,7 +14511,7 @@ void pidInit(PidController *pidController, uint8_t kp, uint8_t ki, uint8_t kd, C
 	pidController->controllerTopology = controllerTopology;
  8005dfc:	687b      	ldr	r3, [r7, #4]
  8005dfe:	7c3a      	ldrb	r2, [r7, #16]
- 8005e00:	f883 2020 	strb.w	r2, [r3, #32]
+ 8005e00:	f883 2030 	strb.w	r2, [r3, #48]	; 0x30
 	pidController->currentError = 0;
  8005e04:	687b      	ldr	r3, [r7, #4]
  8005e06:	2200      	movs	r2, #0
@@ -14540,335 +14540,361 @@ void pidInit(PidController *pidController, uint8_t kp, uint8_t ki, uint8_t kd, C
  8005e28:	687b      	ldr	r3, [r7, #4]
  8005e2a:	2200      	movs	r2, #0
  8005e2c:	61da      	str	r2, [r3, #28]
+	pidController->minSumOfErrors = -10000;
+ 8005e2e:	687b      	ldr	r3, [r7, #4]
+ 8005e30:	4a09      	ldr	r2, [pc, #36]	; (8005e58 <pidInit+0x88>)
+ 8005e32:	621a      	str	r2, [r3, #32]
+	pidController->maxSumOfErrors = 10000;
+ 8005e34:	687b      	ldr	r3, [r7, #4]
+ 8005e36:	f242 7210 	movw	r2, #10000	; 0x2710
+ 8005e3a:	625a      	str	r2, [r3, #36]	; 0x24
+	pidController->minControlledVariable = 0;
+ 8005e3c:	687b      	ldr	r3, [r7, #4]
+ 8005e3e:	2200      	movs	r2, #0
+ 8005e40:	629a      	str	r2, [r3, #40]	; 0x28
+	pidController->maxControlledVariable = 4095;
+ 8005e42:	687b      	ldr	r3, [r7, #4]
+ 8005e44:	f640 72ff 	movw	r2, #4095	; 0xfff
+ 8005e48:	62da      	str	r2, [r3, #44]	; 0x2c
 }
- 8005e2e:	bf00      	nop
- 8005e30:	370c      	adds	r7, #12
- 8005e32:	46bd      	mov	sp, r7
- 8005e34:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8005e38:	4770      	bx	lr
-	...
+ 8005e4a:	bf00      	nop
+ 8005e4c:	370c      	adds	r7, #12
+ 8005e4e:	46bd      	mov	sp, r7
+ 8005e50:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8005e54:	4770      	bx	lr
+ 8005e56:	bf00      	nop
+ 8005e58:	ffffd8f0 	.word	0xffffd8f0
 
-08005e3c <pidCompute>:
+08005e5c <pidCompute>:
 
 void pidCompute(PidController *pidController)
 {
- 8005e3c:	b480      	push	{r7}
- 8005e3e:	b083      	sub	sp, #12
- 8005e40:	af00      	add	r7, sp, #0
- 8005e42:	6078      	str	r0, [r7, #4]
+ 8005e5c:	b480      	push	{r7}
+ 8005e5e:	b083      	sub	sp, #12
+ 8005e60:	af00      	add	r7, sp, #0
+ 8005e62:	6078      	str	r0, [r7, #4]
 	pidController->currentError = pidController->setpoint - pidController->processVariable;
- 8005e44:	687b      	ldr	r3, [r7, #4]
- 8005e46:	691a      	ldr	r2, [r3, #16]
- 8005e48:	687b      	ldr	r3, [r7, #4]
- 8005e4a:	699b      	ldr	r3, [r3, #24]
- 8005e4c:	1ad2      	subs	r2, r2, r3
- 8005e4e:	687b      	ldr	r3, [r7, #4]
- 8005e50:	605a      	str	r2, [r3, #4]
-	pidController->sumOfErrors += pidController->currentError;
- 8005e52:	687b      	ldr	r3, [r7, #4]
- 8005e54:	68da      	ldr	r2, [r3, #12]
- 8005e56:	687b      	ldr	r3, [r7, #4]
- 8005e58:	685b      	ldr	r3, [r3, #4]
- 8005e5a:	441a      	add	r2, r3
- 8005e5c:	687b      	ldr	r3, [r7, #4]
- 8005e5e:	60da      	str	r2, [r3, #12]
-	pidController->differenceOfErrors = pidController->currentError - pidController->previousError;
- 8005e60:	687b      	ldr	r3, [r7, #4]
- 8005e62:	685a      	ldr	r2, [r3, #4]
  8005e64:	687b      	ldr	r3, [r7, #4]
- 8005e66:	689b      	ldr	r3, [r3, #8]
- 8005e68:	1ad2      	subs	r2, r2, r3
- 8005e6a:	687b      	ldr	r3, [r7, #4]
- 8005e6c:	61da      	str	r2, [r3, #28]
-
-	if (pidController->sumOfErrors > MAX_SUM_OF_ERRORS)
+ 8005e66:	691a      	ldr	r2, [r3, #16]
+ 8005e68:	687b      	ldr	r3, [r7, #4]
+ 8005e6a:	699b      	ldr	r3, [r3, #24]
+ 8005e6c:	1ad2      	subs	r2, r2, r3
  8005e6e:	687b      	ldr	r3, [r7, #4]
- 8005e70:	68db      	ldr	r3, [r3, #12]
- 8005e72:	f242 7210 	movw	r2, #10000	; 0x2710
- 8005e76:	4293      	cmp	r3, r2
- 8005e78:	dd04      	ble.n	8005e84 <pidCompute+0x48>
-	{
-		pidController->sumOfErrors = MAX_SUM_OF_ERRORS;
- 8005e7a:	687b      	ldr	r3, [r7, #4]
- 8005e7c:	f242 7210 	movw	r2, #10000	; 0x2710
- 8005e80:	60da      	str	r2, [r3, #12]
- 8005e82:	e007      	b.n	8005e94 <pidCompute+0x58>
-	}
-	else if (pidController->sumOfErrors < MIN_SUM_OF_ERRORS)
+ 8005e70:	605a      	str	r2, [r3, #4]
+	pidController->sumOfErrors += pidController->currentError;
+ 8005e72:	687b      	ldr	r3, [r7, #4]
+ 8005e74:	68da      	ldr	r2, [r3, #12]
+ 8005e76:	687b      	ldr	r3, [r7, #4]
+ 8005e78:	685b      	ldr	r3, [r3, #4]
+ 8005e7a:	441a      	add	r2, r3
+ 8005e7c:	687b      	ldr	r3, [r7, #4]
+ 8005e7e:	60da      	str	r2, [r3, #12]
+	pidController->differenceOfErrors = pidController->currentError - pidController->previousError;
+ 8005e80:	687b      	ldr	r3, [r7, #4]
+ 8005e82:	685a      	ldr	r2, [r3, #4]
  8005e84:	687b      	ldr	r3, [r7, #4]
- 8005e86:	68db      	ldr	r3, [r3, #12]
- 8005e88:	4a34      	ldr	r2, [pc, #208]	; (8005f5c <pidCompute+0x120>)
- 8005e8a:	4293      	cmp	r3, r2
- 8005e8c:	da02      	bge.n	8005e94 <pidCompute+0x58>
-	{
-		pidController->sumOfErrors = MIN_SUM_OF_ERRORS;
+ 8005e86:	689b      	ldr	r3, [r3, #8]
+ 8005e88:	1ad2      	subs	r2, r2, r3
+ 8005e8a:	687b      	ldr	r3, [r7, #4]
+ 8005e8c:	61da      	str	r2, [r3, #28]
+
+	if (pidController->sumOfErrors > pidController->maxSumOfErrors)
  8005e8e:	687b      	ldr	r3, [r7, #4]
- 8005e90:	4a32      	ldr	r2, [pc, #200]	; (8005f5c <pidCompute+0x120>)
- 8005e92:	60da      	str	r2, [r3, #12]
+ 8005e90:	68da      	ldr	r2, [r3, #12]
+ 8005e92:	687b      	ldr	r3, [r7, #4]
+ 8005e94:	6a5b      	ldr	r3, [r3, #36]	; 0x24
+ 8005e96:	429a      	cmp	r2, r3
+ 8005e98:	dd04      	ble.n	8005ea4 <pidCompute+0x48>
+	{
+		pidController->sumOfErrors = pidController->maxSumOfErrors;
+ 8005e9a:	687b      	ldr	r3, [r7, #4]
+ 8005e9c:	6a5a      	ldr	r2, [r3, #36]	; 0x24
+ 8005e9e:	687b      	ldr	r3, [r7, #4]
+ 8005ea0:	60da      	str	r2, [r3, #12]
+ 8005ea2:	e009      	b.n	8005eb8 <pidCompute+0x5c>
+	}
+	else if (pidController->sumOfErrors < pidController->minSumOfErrors)
+ 8005ea4:	687b      	ldr	r3, [r7, #4]
+ 8005ea6:	68da      	ldr	r2, [r3, #12]
+ 8005ea8:	687b      	ldr	r3, [r7, #4]
+ 8005eaa:	6a1b      	ldr	r3, [r3, #32]
+ 8005eac:	429a      	cmp	r2, r3
+ 8005eae:	da03      	bge.n	8005eb8 <pidCompute+0x5c>
+	{
+		pidController->sumOfErrors = pidController->minSumOfErrors;
+ 8005eb0:	687b      	ldr	r3, [r7, #4]
+ 8005eb2:	6a1a      	ldr	r2, [r3, #32]
+ 8005eb4:	687b      	ldr	r3, [r7, #4]
+ 8005eb6:	60da      	str	r2, [r3, #12]
 	}
 
 	if (pidController->controllerTopology == P_CONTROLLER)
- 8005e94:	687b      	ldr	r3, [r7, #4]
- 8005e96:	f893 3020 	ldrb.w	r3, [r3, #32]
- 8005e9a:	2b00      	cmp	r3, #0
- 8005e9c:	d109      	bne.n	8005eb2 <pidCompute+0x76>
+ 8005eb8:	687b      	ldr	r3, [r7, #4]
+ 8005eba:	f893 3030 	ldrb.w	r3, [r3, #48]	; 0x30
+ 8005ebe:	2b00      	cmp	r3, #0
+ 8005ec0:	d109      	bne.n	8005ed6 <pidCompute+0x7a>
 	{
 		pidController->controlledVariable = (pidController->kp * pidController->currentError);
- 8005e9e:	687b      	ldr	r3, [r7, #4]
- 8005ea0:	781b      	ldrb	r3, [r3, #0]
- 8005ea2:	461a      	mov	r2, r3
- 8005ea4:	687b      	ldr	r3, [r7, #4]
- 8005ea6:	685b      	ldr	r3, [r3, #4]
- 8005ea8:	fb03 f202 	mul.w	r2, r3, r2
- 8005eac:	687b      	ldr	r3, [r7, #4]
- 8005eae:	615a      	str	r2, [r3, #20]
- 8005eb0:	e038      	b.n	8005f24 <pidCompute+0xe8>
+ 8005ec2:	687b      	ldr	r3, [r7, #4]
+ 8005ec4:	781b      	ldrb	r3, [r3, #0]
+ 8005ec6:	461a      	mov	r2, r3
+ 8005ec8:	687b      	ldr	r3, [r7, #4]
+ 8005eca:	685b      	ldr	r3, [r3, #4]
+ 8005ecc:	fb03 f202 	mul.w	r2, r3, r2
+ 8005ed0:	687b      	ldr	r3, [r7, #4]
+ 8005ed2:	615a      	str	r2, [r3, #20]
+ 8005ed4:	e038      	b.n	8005f48 <pidCompute+0xec>
 	}
 	else if (pidController->controllerTopology == PI_CONTROLLER)
- 8005eb2:	687b      	ldr	r3, [r7, #4]
- 8005eb4:	f893 3020 	ldrb.w	r3, [r3, #32]
- 8005eb8:	2b01      	cmp	r3, #1
- 8005eba:	d111      	bne.n	8005ee0 <pidCompute+0xa4>
+ 8005ed6:	687b      	ldr	r3, [r7, #4]
+ 8005ed8:	f893 3030 	ldrb.w	r3, [r3, #48]	; 0x30
+ 8005edc:	2b01      	cmp	r3, #1
+ 8005ede:	d111      	bne.n	8005f04 <pidCompute+0xa8>
 	{
 		pidController->controlledVariable = (pidController->kp * pidController->currentError) + (pidController->ki * pidController->sumOfErrors);
- 8005ebc:	687b      	ldr	r3, [r7, #4]
- 8005ebe:	781b      	ldrb	r3, [r3, #0]
- 8005ec0:	461a      	mov	r2, r3
- 8005ec2:	687b      	ldr	r3, [r7, #4]
- 8005ec4:	685b      	ldr	r3, [r3, #4]
- 8005ec6:	fb03 f202 	mul.w	r2, r3, r2
- 8005eca:	687b      	ldr	r3, [r7, #4]
- 8005ecc:	785b      	ldrb	r3, [r3, #1]
- 8005ece:	4619      	mov	r1, r3
- 8005ed0:	687b      	ldr	r3, [r7, #4]
- 8005ed2:	68db      	ldr	r3, [r3, #12]
- 8005ed4:	fb01 f303 	mul.w	r3, r1, r3
- 8005ed8:	441a      	add	r2, r3
- 8005eda:	687b      	ldr	r3, [r7, #4]
- 8005edc:	615a      	str	r2, [r3, #20]
- 8005ede:	e021      	b.n	8005f24 <pidCompute+0xe8>
+ 8005ee0:	687b      	ldr	r3, [r7, #4]
+ 8005ee2:	781b      	ldrb	r3, [r3, #0]
+ 8005ee4:	461a      	mov	r2, r3
+ 8005ee6:	687b      	ldr	r3, [r7, #4]
+ 8005ee8:	685b      	ldr	r3, [r3, #4]
+ 8005eea:	fb03 f202 	mul.w	r2, r3, r2
+ 8005eee:	687b      	ldr	r3, [r7, #4]
+ 8005ef0:	785b      	ldrb	r3, [r3, #1]
+ 8005ef2:	4619      	mov	r1, r3
+ 8005ef4:	687b      	ldr	r3, [r7, #4]
+ 8005ef6:	68db      	ldr	r3, [r3, #12]
+ 8005ef8:	fb01 f303 	mul.w	r3, r1, r3
+ 8005efc:	441a      	add	r2, r3
+ 8005efe:	687b      	ldr	r3, [r7, #4]
+ 8005f00:	615a      	str	r2, [r3, #20]
+ 8005f02:	e021      	b.n	8005f48 <pidCompute+0xec>
 	}
 	else if (pidController->controllerTopology == PID_CONTROLLER)
- 8005ee0:	687b      	ldr	r3, [r7, #4]
- 8005ee2:	f893 3020 	ldrb.w	r3, [r3, #32]
- 8005ee6:	2b02      	cmp	r3, #2
- 8005ee8:	d119      	bne.n	8005f1e <pidCompute+0xe2>
+ 8005f04:	687b      	ldr	r3, [r7, #4]
+ 8005f06:	f893 3030 	ldrb.w	r3, [r3, #48]	; 0x30
+ 8005f0a:	2b02      	cmp	r3, #2
+ 8005f0c:	d119      	bne.n	8005f42 <pidCompute+0xe6>
 	{
 		pidController->controlledVariable = (pidController->kp * pidController->currentError) + (pidController->ki * pidController->sumOfErrors) + (pidController->kd * pidController->differenceOfErrors);
- 8005eea:	687b      	ldr	r3, [r7, #4]
- 8005eec:	781b      	ldrb	r3, [r3, #0]
- 8005eee:	461a      	mov	r2, r3
- 8005ef0:	687b      	ldr	r3, [r7, #4]
- 8005ef2:	685b      	ldr	r3, [r3, #4]
- 8005ef4:	fb03 f202 	mul.w	r2, r3, r2
- 8005ef8:	687b      	ldr	r3, [r7, #4]
- 8005efa:	785b      	ldrb	r3, [r3, #1]
- 8005efc:	4619      	mov	r1, r3
- 8005efe:	687b      	ldr	r3, [r7, #4]
- 8005f00:	68db      	ldr	r3, [r3, #12]
- 8005f02:	fb01 f303 	mul.w	r3, r1, r3
- 8005f06:	441a      	add	r2, r3
- 8005f08:	687b      	ldr	r3, [r7, #4]
- 8005f0a:	789b      	ldrb	r3, [r3, #2]
- 8005f0c:	4619      	mov	r1, r3
  8005f0e:	687b      	ldr	r3, [r7, #4]
- 8005f10:	69db      	ldr	r3, [r3, #28]
- 8005f12:	fb01 f303 	mul.w	r3, r1, r3
- 8005f16:	441a      	add	r2, r3
- 8005f18:	687b      	ldr	r3, [r7, #4]
- 8005f1a:	615a      	str	r2, [r3, #20]
- 8005f1c:	e002      	b.n	8005f24 <pidCompute+0xe8>
+ 8005f10:	781b      	ldrb	r3, [r3, #0]
+ 8005f12:	461a      	mov	r2, r3
+ 8005f14:	687b      	ldr	r3, [r7, #4]
+ 8005f16:	685b      	ldr	r3, [r3, #4]
+ 8005f18:	fb03 f202 	mul.w	r2, r3, r2
+ 8005f1c:	687b      	ldr	r3, [r7, #4]
+ 8005f1e:	785b      	ldrb	r3, [r3, #1]
+ 8005f20:	4619      	mov	r1, r3
+ 8005f22:	687b      	ldr	r3, [r7, #4]
+ 8005f24:	68db      	ldr	r3, [r3, #12]
+ 8005f26:	fb01 f303 	mul.w	r3, r1, r3
+ 8005f2a:	441a      	add	r2, r3
+ 8005f2c:	687b      	ldr	r3, [r7, #4]
+ 8005f2e:	789b      	ldrb	r3, [r3, #2]
+ 8005f30:	4619      	mov	r1, r3
+ 8005f32:	687b      	ldr	r3, [r7, #4]
+ 8005f34:	69db      	ldr	r3, [r3, #28]
+ 8005f36:	fb01 f303 	mul.w	r3, r1, r3
+ 8005f3a:	441a      	add	r2, r3
+ 8005f3c:	687b      	ldr	r3, [r7, #4]
+ 8005f3e:	615a      	str	r2, [r3, #20]
+ 8005f40:	e002      	b.n	8005f48 <pidCompute+0xec>
 	}
 	else
 	{
 		pidController->controlledVariable = 0;
- 8005f1e:	687b      	ldr	r3, [r7, #4]
- 8005f20:	2200      	movs	r2, #0
- 8005f22:	615a      	str	r2, [r3, #20]
+ 8005f42:	687b      	ldr	r3, [r7, #4]
+ 8005f44:	2200      	movs	r2, #0
+ 8005f46:	615a      	str	r2, [r3, #20]
 	}
 
-	if (pidController->controlledVariable > MAX_CONTROLLED_VARIABLE)
- 8005f24:	687b      	ldr	r3, [r7, #4]
- 8005f26:	695b      	ldr	r3, [r3, #20]
- 8005f28:	f5b3 5f80 	cmp.w	r3, #4096	; 0x1000
- 8005f2c:	db04      	blt.n	8005f38 <pidCompute+0xfc>
+	if (pidController->controlledVariable > pidController->maxControlledVariable)
+ 8005f48:	687b      	ldr	r3, [r7, #4]
+ 8005f4a:	695a      	ldr	r2, [r3, #20]
+ 8005f4c:	687b      	ldr	r3, [r7, #4]
+ 8005f4e:	6adb      	ldr	r3, [r3, #44]	; 0x2c
+ 8005f50:	429a      	cmp	r2, r3
+ 8005f52:	dd04      	ble.n	8005f5e <pidCompute+0x102>
 	{
-		pidController->controlledVariable = MAX_CONTROLLED_VARIABLE;
- 8005f2e:	687b      	ldr	r3, [r7, #4]
- 8005f30:	f640 72ff 	movw	r2, #4095	; 0xfff
- 8005f34:	615a      	str	r2, [r3, #20]
- 8005f36:	e006      	b.n	8005f46 <pidCompute+0x10a>
+		pidController->controlledVariable = pidController->maxControlledVariable;
+ 8005f54:	687b      	ldr	r3, [r7, #4]
+ 8005f56:	6ada      	ldr	r2, [r3, #44]	; 0x2c
+ 8005f58:	687b      	ldr	r3, [r7, #4]
+ 8005f5a:	615a      	str	r2, [r3, #20]
+ 8005f5c:	e009      	b.n	8005f72 <pidCompute+0x116>
 	}
-	else if (pidController->controlledVariable < MIN_CONTROLLED_VARIABLE)
- 8005f38:	687b      	ldr	r3, [r7, #4]
- 8005f3a:	695b      	ldr	r3, [r3, #20]
- 8005f3c:	2b00      	cmp	r3, #0
- 8005f3e:	da02      	bge.n	8005f46 <pidCompute+0x10a>
+	else if (pidController->controlledVariable < pidController->minControlledVariable)
+ 8005f5e:	687b      	ldr	r3, [r7, #4]
+ 8005f60:	695a      	ldr	r2, [r3, #20]
+ 8005f62:	687b      	ldr	r3, [r7, #4]
+ 8005f64:	6a9b      	ldr	r3, [r3, #40]	; 0x28
+ 8005f66:	429a      	cmp	r2, r3
+ 8005f68:	da03      	bge.n	8005f72 <pidCompute+0x116>
 	{
-		pidController->controlledVariable = MIN_CONTROLLED_VARIABLE;
- 8005f40:	687b      	ldr	r3, [r7, #4]
- 8005f42:	2200      	movs	r2, #0
- 8005f44:	615a      	str	r2, [r3, #20]
+		pidController->controlledVariable = pidController->minControlledVariable;
+ 8005f6a:	687b      	ldr	r3, [r7, #4]
+ 8005f6c:	6a9a      	ldr	r2, [r3, #40]	; 0x28
+ 8005f6e:	687b      	ldr	r3, [r7, #4]
+ 8005f70:	615a      	str	r2, [r3, #20]
 	}
 
 	pidController->previousError = pidController->currentError;
- 8005f46:	687b      	ldr	r3, [r7, #4]
- 8005f48:	685a      	ldr	r2, [r3, #4]
- 8005f4a:	687b      	ldr	r3, [r7, #4]
- 8005f4c:	609a      	str	r2, [r3, #8]
+ 8005f72:	687b      	ldr	r3, [r7, #4]
+ 8005f74:	685a      	ldr	r2, [r3, #4]
+ 8005f76:	687b      	ldr	r3, [r7, #4]
+ 8005f78:	609a      	str	r2, [r3, #8]
 }
- 8005f4e:	bf00      	nop
- 8005f50:	370c      	adds	r7, #12
- 8005f52:	46bd      	mov	sp, r7
- 8005f54:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8005f58:	4770      	bx	lr
- 8005f5a:	bf00      	nop
- 8005f5c:	ffffd8f0 	.word	0xffffd8f0
+ 8005f7a:	bf00      	nop
+ 8005f7c:	370c      	adds	r7, #12
+ 8005f7e:	46bd      	mov	sp, r7
+ 8005f80:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8005f84:	4770      	bx	lr
 
-08005f60 <pidSetSetpoint>:
+08005f86 <pidSetSetpoint>:
 
 void pidSetSetpoint(PidController *pidController, int32_t setpoint)
 {
- 8005f60:	b480      	push	{r7}
- 8005f62:	b083      	sub	sp, #12
- 8005f64:	af00      	add	r7, sp, #0
- 8005f66:	6078      	str	r0, [r7, #4]
- 8005f68:	6039      	str	r1, [r7, #0]
+ 8005f86:	b480      	push	{r7}
+ 8005f88:	b083      	sub	sp, #12
+ 8005f8a:	af00      	add	r7, sp, #0
+ 8005f8c:	6078      	str	r0, [r7, #4]
+ 8005f8e:	6039      	str	r1, [r7, #0]
 	pidController->setpoint = setpoint;
- 8005f6a:	687b      	ldr	r3, [r7, #4]
- 8005f6c:	683a      	ldr	r2, [r7, #0]
- 8005f6e:	611a      	str	r2, [r3, #16]
+ 8005f90:	687b      	ldr	r3, [r7, #4]
+ 8005f92:	683a      	ldr	r2, [r7, #0]
+ 8005f94:	611a      	str	r2, [r3, #16]
 }
- 8005f70:	bf00      	nop
- 8005f72:	370c      	adds	r7, #12
- 8005f74:	46bd      	mov	sp, r7
- 8005f76:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8005f7a:	4770      	bx	lr
+ 8005f96:	bf00      	nop
+ 8005f98:	370c      	adds	r7, #12
+ 8005f9a:	46bd      	mov	sp, r7
+ 8005f9c:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8005fa0:	4770      	bx	lr
 
-08005f7c <pidSetProcessVariable>:
+08005fa2 <pidSetProcessVariable>:
 {
 	return pidController->setpoint;
 }
 
 void pidSetProcessVariable(PidController *pidController, int32_t processVariable)
 {
- 8005f7c:	b480      	push	{r7}
- 8005f7e:	b083      	sub	sp, #12
- 8005f80:	af00      	add	r7, sp, #0
- 8005f82:	6078      	str	r0, [r7, #4]
- 8005f84:	6039      	str	r1, [r7, #0]
+ 8005fa2:	b480      	push	{r7}
+ 8005fa4:	b083      	sub	sp, #12
+ 8005fa6:	af00      	add	r7, sp, #0
+ 8005fa8:	6078      	str	r0, [r7, #4]
+ 8005faa:	6039      	str	r1, [r7, #0]
 	pidController->processVariable = processVariable;
- 8005f86:	687b      	ldr	r3, [r7, #4]
- 8005f88:	683a      	ldr	r2, [r7, #0]
- 8005f8a:	619a      	str	r2, [r3, #24]
+ 8005fac:	687b      	ldr	r3, [r7, #4]
+ 8005fae:	683a      	ldr	r2, [r7, #0]
+ 8005fb0:	619a      	str	r2, [r3, #24]
 }
- 8005f8c:	bf00      	nop
- 8005f8e:	370c      	adds	r7, #12
- 8005f90:	46bd      	mov	sp, r7
- 8005f92:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8005f96:	4770      	bx	lr
+ 8005fb2:	bf00      	nop
+ 8005fb4:	370c      	adds	r7, #12
+ 8005fb6:	46bd      	mov	sp, r7
+ 8005fb8:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8005fbc:	4770      	bx	lr
 
-08005f98 <pidGetProcessVariable>:
+08005fbe <pidGetProcessVariable>:
 
 int32_t pidGetProcessVariable(PidController *pidController)
 {
- 8005f98:	b480      	push	{r7}
- 8005f9a:	b083      	sub	sp, #12
- 8005f9c:	af00      	add	r7, sp, #0
- 8005f9e:	6078      	str	r0, [r7, #4]
+ 8005fbe:	b480      	push	{r7}
+ 8005fc0:	b083      	sub	sp, #12
+ 8005fc2:	af00      	add	r7, sp, #0
+ 8005fc4:	6078      	str	r0, [r7, #4]
 	return pidController->processVariable;
- 8005fa0:	687b      	ldr	r3, [r7, #4]
- 8005fa2:	699b      	ldr	r3, [r3, #24]
+ 8005fc6:	687b      	ldr	r3, [r7, #4]
+ 8005fc8:	699b      	ldr	r3, [r3, #24]
 }
- 8005fa4:	4618      	mov	r0, r3
- 8005fa6:	370c      	adds	r7, #12
- 8005fa8:	46bd      	mov	sp, r7
- 8005faa:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8005fae:	4770      	bx	lr
+ 8005fca:	4618      	mov	r0, r3
+ 8005fcc:	370c      	adds	r7, #12
+ 8005fce:	46bd      	mov	sp, r7
+ 8005fd0:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8005fd4:	4770      	bx	lr
 
-08005fb0 <pidGetControlledVariable>:
+08005fd6 <pidGetControlledVariable>:
 
 int32_t pidGetControlledVariable(PidController *pidController)
 {
- 8005fb0:	b480      	push	{r7}
- 8005fb2:	b083      	sub	sp, #12
- 8005fb4:	af00      	add	r7, sp, #0
- 8005fb6:	6078      	str	r0, [r7, #4]
+ 8005fd6:	b480      	push	{r7}
+ 8005fd8:	b083      	sub	sp, #12
+ 8005fda:	af00      	add	r7, sp, #0
+ 8005fdc:	6078      	str	r0, [r7, #4]
 	return pidController->controlledVariable;
- 8005fb8:	687b      	ldr	r3, [r7, #4]
- 8005fba:	695b      	ldr	r3, [r3, #20]
+ 8005fde:	687b      	ldr	r3, [r7, #4]
+ 8005fe0:	695b      	ldr	r3, [r3, #20]
 }
- 8005fbc:	4618      	mov	r0, r3
- 8005fbe:	370c      	adds	r7, #12
- 8005fc0:	46bd      	mov	sp, r7
- 8005fc2:	f85d 7b04 	ldr.w	r7, [sp], #4
- 8005fc6:	4770      	bx	lr
+ 8005fe2:	4618      	mov	r0, r3
+ 8005fe4:	370c      	adds	r7, #12
+ 8005fe6:	46bd      	mov	sp, r7
+ 8005fe8:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8005fec:	4770      	bx	lr
+	...
 
-08005fc8 <__libc_init_array>:
- 8005fc8:	b570      	push	{r4, r5, r6, lr}
- 8005fca:	4d0d      	ldr	r5, [pc, #52]	; (8006000 <__libc_init_array+0x38>)
- 8005fcc:	4c0d      	ldr	r4, [pc, #52]	; (8006004 <__libc_init_array+0x3c>)
- 8005fce:	1b64      	subs	r4, r4, r5
- 8005fd0:	10a4      	asrs	r4, r4, #2
- 8005fd2:	2600      	movs	r6, #0
- 8005fd4:	42a6      	cmp	r6, r4
- 8005fd6:	d109      	bne.n	8005fec <__libc_init_array+0x24>
- 8005fd8:	4d0b      	ldr	r5, [pc, #44]	; (8006008 <__libc_init_array+0x40>)
- 8005fda:	4c0c      	ldr	r4, [pc, #48]	; (800600c <__libc_init_array+0x44>)
- 8005fdc:	f000 f82e 	bl	800603c <_init>
- 8005fe0:	1b64      	subs	r4, r4, r5
- 8005fe2:	10a4      	asrs	r4, r4, #2
- 8005fe4:	2600      	movs	r6, #0
- 8005fe6:	42a6      	cmp	r6, r4
- 8005fe8:	d105      	bne.n	8005ff6 <__libc_init_array+0x2e>
- 8005fea:	bd70      	pop	{r4, r5, r6, pc}
- 8005fec:	f855 3b04 	ldr.w	r3, [r5], #4
- 8005ff0:	4798      	blx	r3
- 8005ff2:	3601      	adds	r6, #1
- 8005ff4:	e7ee      	b.n	8005fd4 <__libc_init_array+0xc>
- 8005ff6:	f855 3b04 	ldr.w	r3, [r5], #4
- 8005ffa:	4798      	blx	r3
- 8005ffc:	3601      	adds	r6, #1
- 8005ffe:	e7f2      	b.n	8005fe6 <__libc_init_array+0x1e>
- 8006000:	08006174 	.word	0x08006174
- 8006004:	08006174 	.word	0x08006174
- 8006008:	08006174 	.word	0x08006174
- 800600c:	08006178 	.word	0x08006178
+08005ff0 <__libc_init_array>:
+ 8005ff0:	b570      	push	{r4, r5, r6, lr}
+ 8005ff2:	4d0d      	ldr	r5, [pc, #52]	; (8006028 <__libc_init_array+0x38>)
+ 8005ff4:	4c0d      	ldr	r4, [pc, #52]	; (800602c <__libc_init_array+0x3c>)
+ 8005ff6:	1b64      	subs	r4, r4, r5
+ 8005ff8:	10a4      	asrs	r4, r4, #2
+ 8005ffa:	2600      	movs	r6, #0
+ 8005ffc:	42a6      	cmp	r6, r4
+ 8005ffe:	d109      	bne.n	8006014 <__libc_init_array+0x24>
+ 8006000:	4d0b      	ldr	r5, [pc, #44]	; (8006030 <__libc_init_array+0x40>)
+ 8006002:	4c0c      	ldr	r4, [pc, #48]	; (8006034 <__libc_init_array+0x44>)
+ 8006004:	f000 f82e 	bl	8006064 <_init>
+ 8006008:	1b64      	subs	r4, r4, r5
+ 800600a:	10a4      	asrs	r4, r4, #2
+ 800600c:	2600      	movs	r6, #0
+ 800600e:	42a6      	cmp	r6, r4
+ 8006010:	d105      	bne.n	800601e <__libc_init_array+0x2e>
+ 8006012:	bd70      	pop	{r4, r5, r6, pc}
+ 8006014:	f855 3b04 	ldr.w	r3, [r5], #4
+ 8006018:	4798      	blx	r3
+ 800601a:	3601      	adds	r6, #1
+ 800601c:	e7ee      	b.n	8005ffc <__libc_init_array+0xc>
+ 800601e:	f855 3b04 	ldr.w	r3, [r5], #4
+ 8006022:	4798      	blx	r3
+ 8006024:	3601      	adds	r6, #1
+ 8006026:	e7f2      	b.n	800600e <__libc_init_array+0x1e>
+ 8006028:	0800619c 	.word	0x0800619c
+ 800602c:	0800619c 	.word	0x0800619c
+ 8006030:	0800619c 	.word	0x0800619c
+ 8006034:	080061a0 	.word	0x080061a0
 
-08006010 <memcpy>:
- 8006010:	440a      	add	r2, r1
- 8006012:	4291      	cmp	r1, r2
- 8006014:	f100 33ff 	add.w	r3, r0, #4294967295
- 8006018:	d100      	bne.n	800601c <memcpy+0xc>
- 800601a:	4770      	bx	lr
- 800601c:	b510      	push	{r4, lr}
- 800601e:	f811 4b01 	ldrb.w	r4, [r1], #1
- 8006022:	f803 4f01 	strb.w	r4, [r3, #1]!
- 8006026:	4291      	cmp	r1, r2
- 8006028:	d1f9      	bne.n	800601e <memcpy+0xe>
- 800602a:	bd10      	pop	{r4, pc}
+08006038 <memcpy>:
+ 8006038:	440a      	add	r2, r1
+ 800603a:	4291      	cmp	r1, r2
+ 800603c:	f100 33ff 	add.w	r3, r0, #4294967295
+ 8006040:	d100      	bne.n	8006044 <memcpy+0xc>
+ 8006042:	4770      	bx	lr
+ 8006044:	b510      	push	{r4, lr}
+ 8006046:	f811 4b01 	ldrb.w	r4, [r1], #1
+ 800604a:	f803 4f01 	strb.w	r4, [r3, #1]!
+ 800604e:	4291      	cmp	r1, r2
+ 8006050:	d1f9      	bne.n	8006046 <memcpy+0xe>
+ 8006052:	bd10      	pop	{r4, pc}
 
-0800602c <memset>:
- 800602c:	4402      	add	r2, r0
- 800602e:	4603      	mov	r3, r0
- 8006030:	4293      	cmp	r3, r2
- 8006032:	d100      	bne.n	8006036 <memset+0xa>
- 8006034:	4770      	bx	lr
- 8006036:	f803 1b01 	strb.w	r1, [r3], #1
- 800603a:	e7f9      	b.n	8006030 <memset+0x4>
+08006054 <memset>:
+ 8006054:	4402      	add	r2, r0
+ 8006056:	4603      	mov	r3, r0
+ 8006058:	4293      	cmp	r3, r2
+ 800605a:	d100      	bne.n	800605e <memset+0xa>
+ 800605c:	4770      	bx	lr
+ 800605e:	f803 1b01 	strb.w	r1, [r3], #1
+ 8006062:	e7f9      	b.n	8006058 <memset+0x4>
 
-0800603c <_init>:
- 800603c:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
- 800603e:	bf00      	nop
- 8006040:	bcf8      	pop	{r3, r4, r5, r6, r7}
- 8006042:	bc08      	pop	{r3}
- 8006044:	469e      	mov	lr, r3
- 8006046:	4770      	bx	lr
+08006064 <_init>:
+ 8006064:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 8006066:	bf00      	nop
+ 8006068:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 800606a:	bc08      	pop	{r3}
+ 800606c:	469e      	mov	lr, r3
+ 800606e:	4770      	bx	lr
 
-08006048 <_fini>:
- 8006048:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
- 800604a:	bf00      	nop
- 800604c:	bcf8      	pop	{r3, r4, r5, r6, r7}
- 800604e:	bc08      	pop	{r3}
- 8006050:	469e      	mov	lr, r3
- 8006052:	4770      	bx	lr
+08006070 <_fini>:
+ 8006070:	b5f8      	push	{r3, r4, r5, r6, r7, lr}
+ 8006072:	bf00      	nop
+ 8006074:	bcf8      	pop	{r3, r4, r5, r6, r7}
+ 8006076:	bc08      	pop	{r3}
+ 8006078:	469e      	mov	lr, r3
+ 800607a:	4770      	bx	lr
