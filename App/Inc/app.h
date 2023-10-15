@@ -52,6 +52,9 @@ typedef struct
 	uint16_t pidComputeDelay;
 	Bool runPidController;
 
+	// ======== Filter =========== //
+	MovingAverage movingAverageFilter;
+
 	// ======== Data Packet Tx =========== //
 	DataPacketTx dataPacketTx;
 	Bool processVariableReadyToSend;
@@ -84,6 +87,11 @@ void appSetPidComputeDelay(App *app, uint16_t pidComputeDelay);
 uint16_t appGetPidComputeDelay(App *app);
 Bool appGetRunPidControllerStatus(App *app);
 void appSetRunPidControllerStatus(App *app, Bool status);
+uint32_t appGetCurrentInMiliAmps(uint16_t adcValue);
+
+// ======== Filter =========== //
+void appAddNewValueToFilter(App *app, uint32_t newValue);
+uint32_t appGetFilterResult(App *app);
 
 // ======== Data Packet Rx =========== //
 void appAppendReceivedByte(App *app, uint8_t receivedByte);

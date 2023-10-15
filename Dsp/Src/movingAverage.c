@@ -7,10 +7,10 @@
 
 #include "movingAverage.h"
 
-void movingAverageInit(MovingAverage *movingAverage, int16_t length)
+void movingAverageInit(MovingAverage *movingAverage, int16_t window)
 {
 	movingAverage->index = 0;
-	movingAverage->length = length;
+	movingAverage->window = window;
 	memset(movingAverage->buffer, 0x00, MAX_QTY_OF_ELEMENTS * sizeof(int32_t));
 	movingAverage->sum = 0;
 	movingAverage->movingAverage = 0;
@@ -20,8 +20,8 @@ void movingAverageAddValue(MovingAverage *movingAverage, int32_t newValue)
 {
 	movingAverage->sum = movingAverage->sum - movingAverage->buffer[movingAverage->index] + newValue;
 	movingAverage->buffer[movingAverage->index] = newValue;
-	movingAverage->movingAverage = movingAverage->sum / movingAverage->length;
-	movingAverage->index = (movingAverage->index + 1) % movingAverage->length;
+	movingAverage->movingAverage = movingAverage->sum / movingAverage->window;
+	movingAverage->index = (movingAverage->index + 1) % movingAverage->window;
 }
 
 int32_t movingAverageGetMean(MovingAverage *movingAverage)

@@ -29,6 +29,9 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->runPidController = FALSE;
 	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 
+	// ======== Filter =========== //
+	movingAverageInit(&app->movingAverageFilter, 64);
+
 	// ======== Data Packet Tx =========== //
 	dataPacketTxInit(&app->dataPacketTx, 0xAA, 0x55);
 	app->processVariableReadyToSend = FALSE;
@@ -71,6 +74,29 @@ void appSetProcessVariable(App *app, uint32_t value)
 uint32_t appGetProcessVariable(App *app)
 {
 	return pidGetProcessVariable(&app->pid);
+}
+
+uint32_t appGetCurrentInMiliAmps(uint16_t adcValue)
+{
+	uint32_t electronicCircuitGain = 10;
+	uint32_t shuntResistorInOhms = 1;
+  	float measuredSignalInVolts = ((3.3 * adcValue) / 4095);
+  	float conditionedSignalInVolts = measuredSignalInVolts / electronicCircuitGain;
+  	float calculatedCurrentInAmps = conditionedSignalInVolts / shuntResistorInOhms;
+  	float calculatedCurrentInMiliAmpsAux = 1000 * calculatedCurrentInAmps;
+  	uint32_t calculatedCurrentInMiliAmps = (uint32_t) calculatedCurrentInMiliAmpsAux;
+  	return calculatedCurrentInMiliAmps;
+}
+
+// ======== Filter =========== //
+void appAddNewValueToFilter(App *app, uint32_t newValue)
+{
+	movingAverageAddValue(&app->movingAverageFilter, newValue);
+}
+
+uint32_t appGetFilterResult(App *app)
+{
+	return movingAverageGetMean(&app->movingAverageFilter);
 }
 
 // ======== Data Packet Rx =========== //
@@ -179,6 +205,12 @@ void appDecodeReceivedCommand(App *app)
 			if (app->data[0] == 0x00)
 			{
 				app->runPidController = FALSE;
+				app->pid.controlledVariable = 0;
+				app->pid.currentError = 0;
+				app->pid.differenceOfErrors = 0;
+				app->pid.previousError = 0;
+				app->pid.processVariable = 0;
+				app->pid.sumOfErrors = 0;
 				HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 			}
 			else if (app->data[0] == 0x01)
