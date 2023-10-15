@@ -285,7 +285,7 @@ void appSendPidKsParameterValues(App *app)
 
 void appSendPidControllerParameterValues(App *app)
 {
-	uint8_t qtyOfBytes = 8;
+	uint8_t qtyOfBytes = 9;
 	uint8_t bytes[qtyOfBytes];
 
 	bytes[0] = ((app->samplingDelay >> 8) & 0x00FF);
@@ -296,6 +296,7 @@ void appSendPidControllerParameterValues(App *app)
 	bytes[5] = ((app->pid.setpoint >> 16) & 0x000000FF);
 	bytes[6] = ((app->pid.setpoint >> 8) & 0x000000FF);
 	bytes[7] = (app->pid.setpoint & 0x000000FF);
+	bytes[8] = (uint8_t) app->movingAverageFilter.window;
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_CONTROLLER_PARAMETER_VALUES);
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
