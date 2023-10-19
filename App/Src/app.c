@@ -269,11 +269,26 @@ void appSendProcessVariable(App *app)
 
 void appSendPidKsParameterValues(App *app)
 {
-	uint8_t qtyOfBytes = 3;
+	uint8_t qtyOfBytes = 12;
 	uint8_t bytes[qtyOfBytes];
-	bytes[0] = app->pid.kp;
-	bytes[1] = app->pid.ki;
-	bytes[2] = app->pid.kd;
+	uint32_t kpTimes1000 = (uint32_t)(1000 * app->pid.kp);
+	uint32_t kiTimes1000 = (uint32_t)(1000 * app->pid.ki);
+	uint32_t kdTimes1000 = (uint32_t)(1000 * app->pid.kd);
+
+	bytes[0] = ((kpTimes1000 >> 24) & 0x000000FF);
+	bytes[1] = ((kpTimes1000 >> 16) & 0x000000FF);
+	bytes[2] = ((kpTimes1000 >> 8) & 0x000000FF);
+	bytes[3] = (kpTimes1000 & 0x000000FF);
+
+	bytes[4] = ((kiTimes1000 >> 24) & 0x000000FF);
+	bytes[5] = ((kiTimes1000 >> 16) & 0x000000FF);
+	bytes[6] = ((kiTimes1000 >> 8) & 0x000000FF);
+	bytes[7] = (kiTimes1000 & 0x000000FF);
+
+	bytes[8] = ((kdTimes1000 >> 24) & 0x000000FF);
+	bytes[9] = ((kdTimes1000 >> 16) & 0x000000FF);
+	bytes[10] = ((kdTimes1000 >> 8) & 0x000000FF);
+	bytes[11] = (kdTimes1000 & 0x000000FF);
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_KS_PARAMETER_VALUES);
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
@@ -287,15 +302,16 @@ void appSendPidControllerParameterValues(App *app)
 {
 	uint8_t qtyOfBytes = 9;
 	uint8_t bytes[qtyOfBytes];
+	uint32_t setpointTimes1000 = (uint32_t)(1000 * app->pid.setpoint);
 
 	bytes[0] = ((app->samplingDelay >> 8) & 0x00FF);
 	bytes[1] = (app->samplingDelay & 0x00FF);
 	bytes[2] = ((app->pidComputeDelay >> 8) & 0x00FF);
 	bytes[3] = (app->pidComputeDelay & 0x00FF);
-	bytes[4] = ((app->pid.setpoint >> 24) & 0x000000FF);
-	bytes[5] = ((app->pid.setpoint >> 16) & 0x000000FF);
-	bytes[6] = ((app->pid.setpoint >> 8) & 0x000000FF);
-	bytes[7] = (app->pid.setpoint & 0x000000FF);
+	bytes[4] = ((setpointTimes1000 >> 24) & 0x000000FF);
+	bytes[5] = ((setpointTimes1000 >> 16) & 0x000000FF);
+	bytes[6] = ((setpointTimes1000 >> 8) & 0x000000FF);
+	bytes[7] = (setpointTimes1000 & 0x000000FF);
 	bytes[8] = (uint8_t) app->movingAverageFilter.window;
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_CONTROLLER_PARAMETER_VALUES);

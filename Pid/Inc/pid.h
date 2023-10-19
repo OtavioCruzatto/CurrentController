@@ -20,16 +20,16 @@ typedef enum CONTROLLER_TOPOLOGY
 
 typedef struct
 {
-	uint8_t kp;
-	uint8_t ki;
-	uint8_t kd;
-	int32_t currentError;
-	int32_t previousError;
-	int32_t sumOfErrors;
-	int32_t setpoint;
-	int32_t controlledVariable;
-	int32_t processVariable;
-	int32_t differenceOfErrors;
+	float kp;
+	float ki;
+	float kd;
+	float currentError;
+	float previousError;
+	float sumOfErrors;
+	float setpoint;
+	float controlledVariable;
+	float processVariable;
+	float differenceOfErrors;
 	int32_t minSumOfErrors;
 	int32_t maxSumOfErrors;
 	int32_t minControlledVariable;
@@ -37,12 +37,12 @@ typedef struct
 	ControllerTopology controllerTopology;
 } PidController;
 
-void pidInit(PidController *pidController, uint8_t kp, uint8_t ki, uint8_t kd, ControllerTopology controllerTopology);
+void pidInit(PidController *pidController, float kp, float ki, float kd, ControllerTopology controllerTopology);
 void pidCompute(PidController *pidController);
-void pidSetSetpoint(PidController *pidController, int32_t setpoint);
-int32_t pidGetSetpoint(PidController *pidController);
-void pidSetProcessVariable(PidController *pidController, int32_t processVariable);
-int32_t pidGetProcessVariable(PidController *pidController);
-int32_t pidGetControlledVariable(PidController *pidController);
+void pidSetSetpoint(PidController *pidController, float setpoint);
+float pidGetSetpoint(PidController *pidController);
+void pidSetProcessVariable(PidController *pidController, float processVariable);
+float pidGetProcessVariable(PidController *pidController);
+float pidGetControlledVariable(PidController *pidController);
 
 #endif /* INC_PID_H_ */

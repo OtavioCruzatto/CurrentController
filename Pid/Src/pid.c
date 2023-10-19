@@ -7,7 +7,7 @@
 
 #include "pid.h"
 
-void pidInit(PidController *pidController, uint8_t kp, uint8_t ki, uint8_t kd, ControllerTopology controllerTopology)
+void pidInit(PidController *pidController, float kp, float ki, float kd, ControllerTopology controllerTopology)
 {
 	pidController->kp = kp;
 	pidController->ki = ki;
@@ -70,27 +70,27 @@ void pidCompute(PidController *pidController)
 	pidController->previousError = pidController->currentError;
 }
 
-void pidSetSetpoint(PidController *pidController, int32_t setpoint)
+void pidSetSetpoint(PidController *pidController, float setpoint)
 {
 	pidController->setpoint = setpoint;
 }
 
-int32_t pidGetSetpoint(PidController *pidController)
+float pidGetSetpoint(PidController *pidController)
 {
 	return pidController->setpoint;
 }
 
-void pidSetProcessVariable(PidController *pidController, int32_t processVariable)
+void pidSetProcessVariable(PidController *pidController, float processVariable)
 {
 	pidController->processVariable = processVariable;
 }
 
-int32_t pidGetProcessVariable(PidController *pidController)
+float pidGetProcessVariable(PidController *pidController)
 {
 	return pidController->processVariable;
 }
 
-int32_t pidGetControlledVariable(PidController *pidController)
+float pidGetControlledVariable(PidController *pidController)
 {
 	return pidController->controlledVariable;
 }
