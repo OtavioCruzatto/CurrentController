@@ -49,7 +49,6 @@ typedef struct
 	// ======== Controller =========== //
 	PidController pid;
 	uint16_t samplingInterval;
-	uint16_t pidInterval;
 	Bool runPidController;
 
 	// ======== Filter =========== //

@@ -25,7 +25,6 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	pidInit(&app->pid, 0, 0, 0, PID_CONTROLLER);
 	pidSetSetpoint(&app->pid, 0);
 	app->samplingInterval = DELAY_10_MILISECONDS;
-	app->pidInterval = DELAY_10_MILISECONDS;
 	app->runPidController = FALSE;
 	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 
@@ -62,13 +61,13 @@ uint32_t appGetBlinkDelay(App *app)
 void appRunController(App *app)
 {
 	pidCompute(&app->pid);
-	uint32_t controlledVariable = pidGetControlledVariable(&app->pid);
+	uint32_t controlledVariable = (uint32_t) pidGetControlledVariable(&app->pid);
 	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, controlledVariable);
 }
 
 void appSetProcessVariable(App *app, uint32_t value)
 {
-	pidSetProcessVariable(&app->pid, value);
+	pidSetProcessVariable(&app->pid, (float) value);
 }
 
 uint32_t appGetProcessVariable(App *app)
@@ -206,7 +205,7 @@ void appDecodeReceivedCommand(App *app)
 			receivedPidInterval = (app->data[0] << 8) + app->data[1];
 			if ((receivedPidInterval >= 0) && (receivedPidInterval <= 50000))
 			{
-				app->pidInterval = receivedPidInterval;
+				appSetPidInterval(app, receivedPidInterval);
 			}
 			break;
 
@@ -321,11 +320,12 @@ void appSendPidControllerParameterValues(App *app)
 	uint8_t qtyOfBytes = 9;
 	uint8_t bytes[qtyOfBytes];
 	uint32_t setpointTimes1000 = (uint32_t)(1000 * app->pid.setpoint);
+	uint16_t pidInterval = (uint16_t) (10000 * pidGetInterval(&app->pid));
 
 	bytes[0] = ((app->samplingInterval >> 8) & 0x00FF);
 	bytes[1] = (app->samplingInterval & 0x00FF);
-	bytes[2] = ((app->pidInterval >> 8) & 0x00FF);
-	bytes[3] = (app->pidInterval & 0x00FF);
+	bytes[2] = ((pidInterval >> 8) & 0x00FF);
+	bytes[3] = (pidInterval & 0x00FF);
 	bytes[4] = ((setpointTimes1000 >> 24) & 0x000000FF);
 	bytes[5] = ((setpointTimes1000 >> 16) & 0x000000FF);
 	bytes[6] = ((setpointTimes1000 >> 8) & 0x000000FF);
@@ -400,12 +400,12 @@ uint16_t appGetSamplingInterval(App *app)
 
 void appSetPidInterval(App *app, uint16_t pidInterval)
 {
-	app->pidInterval = pidInterval;
+	pidSetInterval(&app->pid, ((float) pidInterval) / 10000);
 }
 
 uint16_t appGetPidInterval(App *app)
 {
-	return app->pidInterval;
+	return (uint16_t) (10000 * pidGetInterval(&app->pid));
 }
 
 Bool appGetEnableSendPidControllerParameterValues(App *app)

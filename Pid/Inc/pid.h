@@ -30,6 +30,7 @@ typedef struct
 	float controlledVariable;
 	float processVariable;
 	float differenceOfErrors;
+	float interval;
 	int32_t minSumOfErrors;
 	int32_t maxSumOfErrors;
 	int32_t minControlledVariable;
@@ -44,5 +45,7 @@ float pidGetSetpoint(PidController *pidController);
 void pidSetProcessVariable(PidController *pidController, float processVariable);
 float pidGetProcessVariable(PidController *pidController);
 float pidGetControlledVariable(PidController *pidController);
+float pidGetInterval(PidController *pidController);
+void pidSetInterval(PidController *pidController, float interval);
 
 #endif /* INC_PID_H_ */

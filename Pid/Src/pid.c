@@ -6,6 +6,7 @@
  */
 
 #include "pid.h"
+#include "defs.h"
 
 void pidInit(PidController *pidController, float kp, float ki, float kd, ControllerTopology controllerTopology)
 {
@@ -24,6 +25,7 @@ void pidInit(PidController *pidController, float kp, float ki, float kd, Control
 	pidController->maxSumOfErrors = 10000;
 	pidController->minControlledVariable = 0;
 	pidController->maxControlledVariable = 4095;
+	pidController->interval = ((float) DELAY_10_MILISECONDS) / 10000;
 }
 
 void pidCompute(PidController *pidController)
@@ -43,15 +45,21 @@ void pidCompute(PidController *pidController)
 
 	if (pidController->controllerTopology == P_CONTROLLER)
 	{
-		pidController->controlledVariable = (pidController->kp * pidController->currentError);
+		float proportionalTerm = pidController->kp * pidController->currentError;
+		pidController->controlledVariable = proportionalTerm;
 	}
 	else if (pidController->controllerTopology == PI_CONTROLLER)
 	{
-		pidController->controlledVariable = (pidController->kp * pidController->currentError) + (pidController->ki * pidController->sumOfErrors);
+		float proportionalTerm = pidController->kp * pidController->currentError;
+		float integralTerm = pidController->ki * pidController->sumOfErrors;
+		pidController->controlledVariable = proportionalTerm + integralTerm;
 	}
 	else if (pidController->controllerTopology == PID_CONTROLLER)
 	{
-		pidController->controlledVariable = (pidController->kp * pidController->currentError) + (pidController->ki * pidController->sumOfErrors) + (pidController->kd * pidController->differenceOfErrors);
+		float proportionalTerm = pidController->kp * pidController->currentError;
+		float integralTerm = pidController->ki * pidController->sumOfErrors;
+		float derivativeTerm = pidController->kd * pidController->differenceOfErrors;
+		pidController->controlledVariable = proportionalTerm + integralTerm + derivativeTerm;
 	}
 	else
 	{
@@ -93,4 +101,14 @@ float pidGetProcessVariable(PidController *pidController)
 float pidGetControlledVariable(PidController *pidController)
 {
 	return pidController->controlledVariable;
+}
+
+float pidGetInterval(PidController *pidController)
+{
+	return pidController->interval;
+}
+
+void pidSetInterval(PidController *pidController, float interval)
+{
+	pidController->interval = interval;
 }
