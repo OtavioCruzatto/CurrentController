@@ -50,8 +50,8 @@ uint8_t receivedByte = 0x00;
 uint16_t decodeDataPacketDelay = 0;
 uint16_t blinkLedDelay = 0;
 uint16_t sendDataDelay1 = 0;
-uint16_t samplingDelay = 0;
-uint16_t controllerDelay = 0;
+uint16_t samplingInterval = 0;
+uint16_t controllerInterval = 0;
 
 App app;
 uint8_t stateMachine = 0x00;
@@ -83,8 +83,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		decodeDataPacketDelay++;
 		blinkLedDelay++;
 		sendDataDelay1++;
-		samplingDelay++;
-		controllerDelay++;
+		samplingInterval++;
+		controllerInterval++;
 	}
 }
 
@@ -160,7 +160,7 @@ int main(void)
 
 	  /* Put here the code to be executed in all cycles before the state machine */
 
-	  if (samplingDelay >= appGetSamplingDelay(&app))
+	  if (samplingInterval >= appGetSamplingInterval(&app))
 	  {
 		  HAL_ADC_Start(&hadc1);
 		  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
@@ -172,16 +172,16 @@ int main(void)
 		  uint32_t filteredCurrentInMiliAmps = appGetFilterResult(&app);
 		  appSetProcessVariable(&app, filteredCurrentInMiliAmps);
 
-		  samplingDelay = 0;
+		  samplingInterval = 0;
 	  }
 
-	  if (controllerDelay >= appGetPidComputeDelay(&app))
+	  if (controllerInterval >= appGetPidInterval(&app))
 	  {
 		  if (appGetRunPidControllerStatus(&app) == TRUE)
 		  {
 			  appRunController(&app);
 		  }
-		  controllerDelay = 0;
+		  controllerInterval = 0;
 	  }
 
 	  /********************************** TOP SLOT END *********************************/

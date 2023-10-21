@@ -20,8 +20,8 @@ typedef enum APP_RX_COMMANDS
 	CMD_RX_SET_PID_KP_PARAMETER = 0x10,
 	CMD_RX_SET_PID_KI_PARAMETER = 0x11,
 	CMD_RX_SET_PID_KD_PARAMETER = 0x12,
-	CMD_RX_SET_SAMPLING_DELAY = 0x18,
-	CMD_RX_SET_PID_DELAY = 0x19,
+	CMD_RX_SET_SAMPLING_INTERVAL = 0x18,
+	CMD_RX_SET_PID_INTERVAL = 0x19,
 	CMD_RX_SET_PID_SETPOINT = 0x20,
 	CMD_RX_ASK_FOR_RUN_PID_CONTROLLER = 0x15
 } CommandsFromComputer;
@@ -48,8 +48,8 @@ typedef struct
 
 	// ======== Controller =========== //
 	PidController pid;
-	uint16_t samplingDelay;
-	uint16_t pidComputeDelay;
+	uint16_t samplingInterval;
+	uint16_t pidInterval;
 	Bool runPidController;
 
 	// ======== Filter =========== //
@@ -81,10 +81,10 @@ uint32_t appGetBlinkDelay(App *app);
 void appRunController(App *app);
 void appSetProcessVariable(App *app, uint32_t value);
 uint32_t appGetProcessVariable(App *app);
-void appSetSamplingDelay(App *app, uint16_t samplingDelay);
-uint16_t appGetSamplingDelay(App *app);
-void appSetPidComputeDelay(App *app, uint16_t pidComputeDelay);
-uint16_t appGetPidComputeDelay(App *app);
+void appSetSamplingInterval(App *app, uint16_t samplingInterval);
+uint16_t appGetSamplingInterval(App *app);
+void appSetPidInterval(App *app, uint16_t pidInterval);
+uint16_t appGetPidInterval(App *app);
 Bool appGetRunPidControllerStatus(App *app);
 void appSetRunPidControllerStatus(App *app, Bool status);
 uint32_t appGetCurrentInMiliAmps(uint16_t adcValue);

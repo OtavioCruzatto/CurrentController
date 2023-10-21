@@ -24,8 +24,8 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	// ======== Controller =========== //
 	pidInit(&app->pid, 0, 0, 0, PID_CONTROLLER);
 	pidSetSetpoint(&app->pid, 0);
-	app->samplingDelay = DELAY_10_MILISECONDS;
-	app->pidComputeDelay = DELAY_10_MILISECONDS;
+	app->samplingInterval = DELAY_10_MILISECONDS;
+	app->pidInterval = DELAY_10_MILISECONDS;
 	app->runPidController = FALSE;
 	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 
@@ -140,8 +140,8 @@ void appTryDecodeExtractedCommand(App *app)
 
 void appDecodeReceivedCommand(App *app)
 {
-	uint16_t receivedSamplingDelay = 0;
-	uint16_t receivedPidComputeDelay = 0;
+	uint16_t receivedSamplingInterval = 0;
+	uint16_t receivedPidInterval = 0;
 
 	uint32_t receivedPidSetpointTimes1000 = 0;
 	float receivedPidSetpoint = 0;
@@ -194,19 +194,19 @@ void appDecodeReceivedCommand(App *app)
 			app->pid.kd = pidKd;
 			break;
 
-		case CMD_RX_SET_SAMPLING_DELAY:
-			receivedSamplingDelay = (app->data[0] << 8) + app->data[1];
-			if ((receivedSamplingDelay >= 0) && (receivedSamplingDelay <= 50000))
+		case CMD_RX_SET_SAMPLING_INTERVAL:
+			receivedSamplingInterval = (app->data[0] << 8) + app->data[1];
+			if ((receivedSamplingInterval >= 0) && (receivedSamplingInterval <= 50000))
 			{
-				app->samplingDelay = receivedSamplingDelay;
+				app->samplingInterval = receivedSamplingInterval;
 			}
 			break;
 
-		case CMD_RX_SET_PID_DELAY:
-			receivedPidComputeDelay = (app->data[0] << 8) + app->data[1];
-			if ((receivedPidComputeDelay >= 0) && (receivedPidComputeDelay <= 50000))
+		case CMD_RX_SET_PID_INTERVAL:
+			receivedPidInterval = (app->data[0] << 8) + app->data[1];
+			if ((receivedPidInterval >= 0) && (receivedPidInterval <= 50000))
 			{
-				app->pidComputeDelay = receivedPidComputeDelay;
+				app->pidInterval = receivedPidInterval;
 			}
 			break;
 
@@ -322,10 +322,10 @@ void appSendPidControllerParameterValues(App *app)
 	uint8_t bytes[qtyOfBytes];
 	uint32_t setpointTimes1000 = (uint32_t)(1000 * app->pid.setpoint);
 
-	bytes[0] = ((app->samplingDelay >> 8) & 0x00FF);
-	bytes[1] = (app->samplingDelay & 0x00FF);
-	bytes[2] = ((app->pidComputeDelay >> 8) & 0x00FF);
-	bytes[3] = (app->pidComputeDelay & 0x00FF);
+	bytes[0] = ((app->samplingInterval >> 8) & 0x00FF);
+	bytes[1] = (app->samplingInterval & 0x00FF);
+	bytes[2] = ((app->pidInterval >> 8) & 0x00FF);
+	bytes[3] = (app->pidInterval & 0x00FF);
 	bytes[4] = ((setpointTimes1000 >> 24) & 0x000000FF);
 	bytes[5] = ((setpointTimes1000 >> 16) & 0x000000FF);
 	bytes[6] = ((setpointTimes1000 >> 8) & 0x000000FF);
@@ -388,24 +388,24 @@ void appSetEnableSendPidKsParameterValues(App *app, Bool status)
 	app->enableSendPidKsParameterValues = status;
 }
 
-void appSetSamplingDelay(App *app, uint16_t samplingDelay)
+void appSetSamplingInterval(App *app, uint16_t samplingInterval)
 {
-	app->samplingDelay = samplingDelay;
+	app->samplingInterval = samplingInterval;
 }
 
-uint16_t appGetSamplingDelay(App *app)
+uint16_t appGetSamplingInterval(App *app)
 {
-	return app->samplingDelay;
+	return app->samplingInterval;
 }
 
-void appSetPidComputeDelay(App *app, uint16_t pidComputeDelay)
+void appSetPidInterval(App *app, uint16_t pidInterval)
 {
-	app->pidComputeDelay = pidComputeDelay;
+	app->pidInterval = pidInterval;
 }
 
-uint16_t appGetPidComputeDelay(App *app)
+uint16_t appGetPidInterval(App *app)
 {
-	return app->pidComputeDelay;
+	return app->pidInterval;
 }
 
 Bool appGetEnableSendPidControllerParameterValues(App *app)

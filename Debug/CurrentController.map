@@ -117,9 +117,9 @@ Discarded input sections
                 0x0000000000000000       0x1a ./App/Src/app.o
  .text.appSetEnableSendProcessVariable
                 0x0000000000000000       0x20 ./App/Src/app.o
- .text.appSetSamplingDelay
+ .text.appSetSamplingInterval
                 0x0000000000000000       0x20 ./App/Src/app.o
- .text.appSetPidComputeDelay
+ .text.appSetPidInterval
                 0x0000000000000000       0x20 ./App/Src/app.o
  .text.appSetRunPidControllerStatus
                 0x0000000000000000       0x20 ./App/Src/app.o
@@ -4184,12 +4184,12 @@ LOAD c:/st/stm32cubeide_1.9.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
  .text.appSetEnableSendPidKsParameterValues
                 0x0000000008001926       0x20 ./App/Src/app.o
                 0x0000000008001926                appSetEnableSendPidKsParameterValues
- .text.appGetSamplingDelay
+ .text.appGetSamplingInterval
                 0x0000000008001946       0x1a ./App/Src/app.o
-                0x0000000008001946                appGetSamplingDelay
- .text.appGetPidComputeDelay
+                0x0000000008001946                appGetSamplingInterval
+ .text.appGetPidInterval
                 0x0000000008001960       0x1a ./App/Src/app.o
-                0x0000000008001960                appGetPidComputeDelay
+                0x0000000008001960                appGetPidInterval
  .text.appGetEnableSendPidControllerParameterValues
                 0x000000000800197a       0x1a ./App/Src/app.o
                 0x000000000800197a                appGetEnableSendPidControllerParameterValues
@@ -4783,12 +4783,12 @@ LOAD c:/st/stm32cubeide_1.9.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
  .bss.sendDataDelay1
                 0x000000002000015a        0x2 ./Core/Src/main.o
                 0x000000002000015a                sendDataDelay1
- .bss.samplingDelay
+ .bss.samplingInterval
                 0x000000002000015c        0x2 ./Core/Src/main.o
-                0x000000002000015c                samplingDelay
- .bss.controllerDelay
+                0x000000002000015c                samplingInterval
+ .bss.controllerInterval
                 0x000000002000015e        0x2 ./Core/Src/main.o
-                0x000000002000015e                controllerDelay
+                0x000000002000015e                controllerInterval
  .bss.app       0x0000000020000160      0x60c ./Core/Src/main.o
                 0x0000000020000160                app
  .bss.stateMachine
@@ -5138,52 +5138,52 @@ LOAD c:/st/stm32cubeide_1.9.0/stm32cubeide/plugins/com.st.stm32cube.ide.mcu.exte
  .debug_line    0x00000000000149c1      0x5b0 ./Dsp/Src/movingAverage.o
  .debug_line    0x0000000000014f71      0x545 ./Pid/Src/pid.o
 
-.debug_str      0x0000000000000000    0xdf02b
- .debug_str     0x0000000000000000    0xdab83 ./App/Src/app.o
-                                      0xdaedb (size before relaxing)
- .debug_str     0x00000000000dab83      0x9ac ./Core/Src/main.o
-                                      0xdb157 (size before relaxing)
- .debug_str     0x00000000000db52f      0x627 ./Core/Src/stm32f4xx_hal_msp.o
+.debug_str      0x0000000000000000    0xdf030
+ .debug_str     0x0000000000000000    0xdab85 ./App/Src/app.o
+                                      0xdaedd (size before relaxing)
+ .debug_str     0x00000000000dab85      0x9af ./Core/Src/main.o
+                                      0xdb158 (size before relaxing)
+ .debug_str     0x00000000000db534      0x627 ./Core/Src/stm32f4xx_hal_msp.o
                                       0xdacf6 (size before relaxing)
- .debug_str     0x00000000000dbb56      0x11b ./Core/Src/stm32f4xx_it.o
+ .debug_str     0x00000000000dbb5b      0x11b ./Core/Src/stm32f4xx_it.o
                                       0xda394 (size before relaxing)
- .debug_str     0x00000000000dbc71       0xdb ./Core/Src/system_stm32f4xx.o
+ .debug_str     0x00000000000dbc76       0xdb ./Core/Src/system_stm32f4xx.o
                                       0xd6a94 (size before relaxing)
- .debug_str     0x00000000000dbd4c       0x36 ./Core/Startup/startup_stm32f446retx.o
+ .debug_str     0x00000000000dbd51       0x36 ./Core/Startup/startup_stm32f446retx.o
                                          0x7c (size before relaxing)
- .debug_str     0x00000000000dbd82       0x45 ./DataPacket/Src/crc8.o
+ .debug_str     0x00000000000dbd87       0x45 ./DataPacket/Src/crc8.o
                                        0x3c6f (size before relaxing)
- .debug_str     0x00000000000dbdc7       0xd3 ./DataPacket/Src/dataPacketRx.o
+ .debug_str     0x00000000000dbdcc       0xd3 ./DataPacket/Src/dataPacketRx.o
                                        0x717d (size before relaxing)
- .debug_str     0x00000000000dbe9a       0xf4 ./DataPacket/Src/dataPacketTx.o
+ .debug_str     0x00000000000dbe9f       0xf4 ./DataPacket/Src/dataPacketTx.o
                                       0xd9ee0 (size before relaxing)
- .debug_str     0x00000000000dbf8e      0x617 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
+ .debug_str     0x00000000000dbf93      0x617 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal.o
                                       0xd7659 (size before relaxing)
- .debug_str     0x00000000000dc5a5      0x285 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.o
+ .debug_str     0x00000000000dc5aa      0x285 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.o
                                       0xd705c (size before relaxing)
- .debug_str     0x00000000000dc82a      0x31c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
+ .debug_str     0x00000000000dc82f      0x31c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_cortex.o
                                       0xd7367 (size before relaxing)
- .debug_str     0x00000000000dcb46      0x1dd ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dac.o
+ .debug_str     0x00000000000dcb4b      0x1dd ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dac.o
                                       0xd6ee1 (size before relaxing)
- .debug_str     0x00000000000dcd23      0x2f9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
+ .debug_str     0x00000000000dcd28      0x2f9 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_dma.o
                                       0xd6e89 (size before relaxing)
- .debug_str     0x00000000000dd01c      0x10e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
+ .debug_str     0x00000000000dd021      0x10e ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_gpio.o
                                       0xd6c0f (size before relaxing)
- .debug_str     0x00000000000dd12a      0x12d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.o
+ .debug_str     0x00000000000dd12f      0x12d ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pwr_ex.o
                                       0xd6c6c (size before relaxing)
- .debug_str     0x00000000000dd257      0x233 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
+ .debug_str     0x00000000000dd25c      0x233 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc.o
                                       0xd6ecd (size before relaxing)
- .debug_str     0x00000000000dd48a      0x31c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
+ .debug_str     0x00000000000dd48f      0x31c ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rcc_ex.o
                                       0xd6f00 (size before relaxing)
- .debug_str     0x00000000000dd7a6      0xd95 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
+ .debug_str     0x00000000000dd7ab      0xd95 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim.o
                                       0xd7de9 (size before relaxing)
- .debug_str     0x00000000000de53b      0x503 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
+ .debug_str     0x00000000000de540      0x503 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_tim_ex.o
                                       0xd7605 (size before relaxing)
- .debug_str     0x00000000000dea3e      0x5a4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
+ .debug_str     0x00000000000dea43      0x5a4 ./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_uart.o
                                       0xd7442 (size before relaxing)
- .debug_str     0x00000000000defe2       0x1b ./Dsp/Src/movingAverage.o
+ .debug_str     0x00000000000defe7       0x1b ./Dsp/Src/movingAverage.o
                                        0x6e42 (size before relaxing)
- .debug_str     0x00000000000deffd       0x2e ./Pid/Src/pid.o
+ .debug_str     0x00000000000df002       0x2e ./Pid/Src/pid.o
                                        0x3dc1 (size before relaxing)
 
 .comment        0x0000000000000000       0x50

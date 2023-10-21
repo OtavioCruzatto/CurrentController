@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   000154b6  00000000  00000000  0005d1fe  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000df02b  00000000  00000000  000726b4  2**0
+ 18 .debug_str    000df030  00000000  00000000  000726b4  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  001516df  2**0
+ 19 .comment      00000050  00000000  00000000  001516e4  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00004ba8  00000000  00000000  00151730  2**2
+ 20 .debug_frame  00004ba8  00000000  00000000  00151734  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1091,11 +1091,11 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
  8000dac:	ed9f 0a2c 	vldr	s0, [pc, #176]	; 8000e60 <appInit+0x118>
  8000db0:	4618      	mov	r0, r3
  8000db2:	f005 fa8f 	bl	80062d4 <pidSetSetpoint>
-	app->samplingDelay = DELAY_10_MILISECONDS;
+	app->samplingInterval = DELAY_10_MILISECONDS;
  8000db6:	68fb      	ldr	r3, [r7, #12]
  8000db8:	2264      	movs	r2, #100	; 0x64
  8000dba:	f8a3 20a0 	strh.w	r2, [r3, #160]	; 0xa0
-	app->pidComputeDelay = DELAY_10_MILISECONDS;
+	app->pidInterval = DELAY_10_MILISECONDS;
  8000dbe:	68fb      	ldr	r3, [r7, #12]
  8000dc0:	2264      	movs	r2, #100	; 0x64
  8000dc2:	f8a3 20a2 	strh.w	r2, [r3, #162]	; 0xa2
@@ -1575,10 +1575,10 @@ void appDecodeReceivedCommand(App *app)
  800110e:	b08c      	sub	sp, #48	; 0x30
  8001110:	af00      	add	r7, sp, #0
  8001112:	6078      	str	r0, [r7, #4]
-	uint16_t receivedSamplingDelay = 0;
+	uint16_t receivedSamplingInterval = 0;
  8001114:	2300      	movs	r3, #0
  8001116:	85fb      	strh	r3, [r7, #46]	; 0x2e
-	uint16_t receivedPidComputeDelay = 0;
+	uint16_t receivedPidInterval = 0;
  8001118:	2300      	movs	r3, #0
  800111a:	85bb      	strh	r3, [r7, #44]	; 0x2c
 
@@ -1777,8 +1777,8 @@ void appDecodeReceivedCommand(App *app)
 			break;
  80012ac:	e0a0      	b.n	80013f0 <appDecodeReceivedCommand+0x2e4>
 
-		case CMD_RX_SET_SAMPLING_DELAY:
-			receivedSamplingDelay = (app->data[0] << 8) + app->data[1];
+		case CMD_RX_SET_SAMPLING_INTERVAL:
+			receivedSamplingInterval = (app->data[0] << 8) + app->data[1];
  80012ae:	687b      	ldr	r3, [r7, #4]
  80012b0:	f893 35f0 	ldrb.w	r3, [r3, #1520]	; 0x5f0
  80012b4:	b29b      	uxth	r3, r3
@@ -1789,13 +1789,13 @@ void appDecodeReceivedCommand(App *app)
  80012c0:	b29b      	uxth	r3, r3
  80012c2:	4413      	add	r3, r2
  80012c4:	85fb      	strh	r3, [r7, #46]	; 0x2e
-			if ((receivedSamplingDelay >= 0) && (receivedSamplingDelay <= 50000))
+			if ((receivedSamplingInterval >= 0) && (receivedSamplingInterval <= 50000))
  80012c6:	8dfb      	ldrh	r3, [r7, #46]	; 0x2e
  80012c8:	f24c 3250 	movw	r2, #50000	; 0xc350
  80012cc:	4293      	cmp	r3, r2
  80012ce:	f200 808a 	bhi.w	80013e6 <appDecodeReceivedCommand+0x2da>
 			{
-				app->samplingDelay = receivedSamplingDelay;
+				app->samplingInterval = receivedSamplingInterval;
  80012d2:	687b      	ldr	r3, [r7, #4]
  80012d4:	8dfa      	ldrh	r2, [r7, #46]	; 0x2e
  80012d6:	f8a3 20a0 	strh.w	r2, [r3, #160]	; 0xa0
@@ -1803,8 +1803,8 @@ void appDecodeReceivedCommand(App *app)
 			break;
  80012da:	e084      	b.n	80013e6 <appDecodeReceivedCommand+0x2da>
 
-		case CMD_RX_SET_PID_DELAY:
-			receivedPidComputeDelay = (app->data[0] << 8) + app->data[1];
+		case CMD_RX_SET_PID_INTERVAL:
+			receivedPidInterval = (app->data[0] << 8) + app->data[1];
  80012dc:	687b      	ldr	r3, [r7, #4]
  80012de:	f893 35f0 	ldrb.w	r3, [r3, #1520]	; 0x5f0
  80012e2:	b29b      	uxth	r3, r3
@@ -1815,13 +1815,13 @@ void appDecodeReceivedCommand(App *app)
  80012ee:	b29b      	uxth	r3, r3
  80012f0:	4413      	add	r3, r2
  80012f2:	85bb      	strh	r3, [r7, #44]	; 0x2c
-			if ((receivedPidComputeDelay >= 0) && (receivedPidComputeDelay <= 50000))
+			if ((receivedPidInterval >= 0) && (receivedPidInterval <= 50000))
  80012f4:	8dbb      	ldrh	r3, [r7, #44]	; 0x2c
  80012f6:	f24c 3250 	movw	r2, #50000	; 0xc350
  80012fa:	4293      	cmp	r3, r2
  80012fc:	d875      	bhi.n	80013ea <appDecodeReceivedCommand+0x2de>
 			{
-				app->pidComputeDelay = receivedPidComputeDelay;
+				app->pidInterval = receivedPidInterval;
  80012fe:	687b      	ldr	r3, [r7, #4]
  8001300:	8dba      	ldrh	r2, [r7, #44]	; 0x2c
  8001302:	f8a3 20a2 	strh.w	r2, [r3, #162]	; 0xa2
@@ -2432,7 +2432,7 @@ void appSendPidControllerParameterValues(App *app)
  80017a6:	ee17 3a90 	vmov	r3, s15
  80017aa:	60bb      	str	r3, [r7, #8]
 
-	bytes[0] = ((app->samplingDelay >> 8) & 0x00FF);
+	bytes[0] = ((app->samplingInterval >> 8) & 0x00FF);
  80017ac:	687b      	ldr	r3, [r7, #4]
  80017ae:	f8b3 30a0 	ldrh.w	r3, [r3, #160]	; 0xa0
  80017b2:	0a1b      	lsrs	r3, r3, #8
@@ -2440,13 +2440,13 @@ void appSendPidControllerParameterValues(App *app)
  80017b6:	b2da      	uxtb	r2, r3
  80017b8:	68fb      	ldr	r3, [r7, #12]
  80017ba:	701a      	strb	r2, [r3, #0]
-	bytes[1] = (app->samplingDelay & 0x00FF);
+	bytes[1] = (app->samplingInterval & 0x00FF);
  80017bc:	687b      	ldr	r3, [r7, #4]
  80017be:	f8b3 30a0 	ldrh.w	r3, [r3, #160]	; 0xa0
  80017c2:	b2da      	uxtb	r2, r3
  80017c4:	68fb      	ldr	r3, [r7, #12]
  80017c6:	705a      	strb	r2, [r3, #1]
-	bytes[2] = ((app->pidComputeDelay >> 8) & 0x00FF);
+	bytes[2] = ((app->pidInterval >> 8) & 0x00FF);
  80017c8:	687b      	ldr	r3, [r7, #4]
  80017ca:	f8b3 30a2 	ldrh.w	r3, [r3, #162]	; 0xa2
  80017ce:	0a1b      	lsrs	r3, r3, #8
@@ -2454,7 +2454,7 @@ void appSendPidControllerParameterValues(App *app)
  80017d2:	b2da      	uxtb	r2, r3
  80017d4:	68fb      	ldr	r3, [r7, #12]
  80017d6:	709a      	strb	r2, [r3, #2]
-	bytes[3] = (app->pidComputeDelay & 0x00FF);
+	bytes[3] = (app->pidInterval & 0x00FF);
  80017d8:	687b      	ldr	r3, [r7, #4]
  80017da:	f8b3 30a2 	ldrh.w	r3, [r3, #162]	; 0xa2
  80017de:	b2da      	uxtb	r2, r3
@@ -2667,18 +2667,18 @@ void appSetEnableSendPidKsParameterValues(App *app, Bool status)
  8001940:	f85d 7b04 	ldr.w	r7, [sp], #4
  8001944:	4770      	bx	lr
 
-08001946 <appGetSamplingDelay>:
+08001946 <appGetSamplingInterval>:
 {
-	app->samplingDelay = samplingDelay;
+	app->samplingInterval = samplingInterval;
 }
 
-uint16_t appGetSamplingDelay(App *app)
+uint16_t appGetSamplingInterval(App *app)
 {
  8001946:	b480      	push	{r7}
  8001948:	b083      	sub	sp, #12
  800194a:	af00      	add	r7, sp, #0
  800194c:	6078      	str	r0, [r7, #4]
-	return app->samplingDelay;
+	return app->samplingInterval;
  800194e:	687b      	ldr	r3, [r7, #4]
  8001950:	f8b3 30a0 	ldrh.w	r3, [r3, #160]	; 0xa0
 }
@@ -2688,18 +2688,18 @@ uint16_t appGetSamplingDelay(App *app)
  800195a:	f85d 7b04 	ldr.w	r7, [sp], #4
  800195e:	4770      	bx	lr
 
-08001960 <appGetPidComputeDelay>:
+08001960 <appGetPidInterval>:
 {
-	app->pidComputeDelay = pidComputeDelay;
+	app->pidInterval = pidInterval;
 }
 
-uint16_t appGetPidComputeDelay(App *app)
+uint16_t appGetPidInterval(App *app)
 {
  8001960:	b480      	push	{r7}
  8001962:	b083      	sub	sp, #12
  8001964:	af00      	add	r7, sp, #0
  8001966:	6078      	str	r0, [r7, #4]
-	return app->pidComputeDelay;
+	return app->pidInterval;
  8001968:	687b      	ldr	r3, [r7, #4]
  800196a:	f8b3 30a2 	ldrh.w	r3, [r3, #162]	; 0xa2
 }
@@ -2805,14 +2805,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  80019fe:	b29a      	uxth	r2, r3
  8001a00:	4b0c      	ldr	r3, [pc, #48]	; (8001a34 <HAL_TIM_PeriodElapsedCallback+0x64>)
  8001a02:	801a      	strh	r2, [r3, #0]
-		samplingDelay++;
+		samplingInterval++;
  8001a04:	4b0c      	ldr	r3, [pc, #48]	; (8001a38 <HAL_TIM_PeriodElapsedCallback+0x68>)
  8001a06:	881b      	ldrh	r3, [r3, #0]
  8001a08:	3301      	adds	r3, #1
  8001a0a:	b29a      	uxth	r2, r3
  8001a0c:	4b0a      	ldr	r3, [pc, #40]	; (8001a38 <HAL_TIM_PeriodElapsedCallback+0x68>)
  8001a0e:	801a      	strh	r2, [r3, #0]
-		controllerDelay++;
+		controllerInterval++;
  8001a10:	4b0a      	ldr	r3, [pc, #40]	; (8001a3c <HAL_TIM_PeriodElapsedCallback+0x6c>)
  8001a12:	881b      	ldrh	r3, [r3, #0]
  8001a14:	3301      	adds	r3, #1
@@ -2959,9 +2959,9 @@ int main(void)
 
 	  /* Put here the code to be executed in all cycles before the state machine */
 
-	  if (samplingDelay >= appGetSamplingDelay(&app))
+	  if (samplingInterval >= appGetSamplingInterval(&app))
  8001af2:	484f      	ldr	r0, [pc, #316]	; (8001c30 <main+0x1b0>)
- 8001af4:	f7ff ff27 	bl	8001946 <appGetSamplingDelay>
+ 8001af4:	f7ff ff27 	bl	8001946 <appGetSamplingInterval>
  8001af8:	4603      	mov	r3, r0
  8001afa:	461a      	mov	r2, r3
  8001afc:	4b4e      	ldr	r3, [pc, #312]	; (8001c38 <main+0x1b8>)
@@ -3003,15 +3003,15 @@ int main(void)
  8001b40:	483b      	ldr	r0, [pc, #236]	; (8001c30 <main+0x1b0>)
  8001b42:	f7ff f9cc 	bl	8000ede <appSetProcessVariable>
 
-		  samplingDelay = 0;
+		  samplingInterval = 0;
  8001b46:	4b3c      	ldr	r3, [pc, #240]	; (8001c38 <main+0x1b8>)
  8001b48:	2200      	movs	r2, #0
  8001b4a:	801a      	strh	r2, [r3, #0]
 	  }
 
-	  if (controllerDelay >= appGetPidComputeDelay(&app))
+	  if (controllerInterval >= appGetPidInterval(&app))
  8001b4c:	4838      	ldr	r0, [pc, #224]	; (8001c30 <main+0x1b0>)
- 8001b4e:	f7ff ff07 	bl	8001960 <appGetPidComputeDelay>
+ 8001b4e:	f7ff ff07 	bl	8001960 <appGetPidInterval>
  8001b52:	4603      	mov	r3, r0
  8001b54:	461a      	mov	r2, r3
  8001b56:	4b3a      	ldr	r3, [pc, #232]	; (8001c40 <main+0x1c0>)
@@ -3030,7 +3030,7 @@ int main(void)
  8001b6a:	4831      	ldr	r0, [pc, #196]	; (8001c30 <main+0x1b0>)
  8001b6c:	f7ff f996 	bl	8000e9c <appRunController>
 		  }
-		  controllerDelay = 0;
+		  controllerInterval = 0;
  8001b70:	4b33      	ldr	r3, [pc, #204]	; (8001c40 <main+0x1c0>)
  8001b72:	2200      	movs	r2, #0
  8001b74:	801a      	strh	r2, [r3, #0]
@@ -3151,7 +3151,7 @@ int main(void)
  8001c18:	701a      	strb	r2, [r3, #0]
 			  break;
  8001c1a:	bf00      	nop
-	  if (samplingDelay >= appGetSamplingDelay(&app))
+	  if (samplingInterval >= appGetSamplingInterval(&app))
  8001c1c:	e769      	b.n	8001af2 <main+0x72>
  8001c1e:	bf00      	nop
  8001c20:	20000084 	.word	0x20000084

@@ -26,10 +26,10 @@
 ../App/Src/app.c:376:6:appSetEnableSendProcessVariable	16	static
 ../App/Src/app.c:381:6:appGetEnableSendPidKsParameterValues	16	static
 ../App/Src/app.c:386:6:appSetEnableSendPidKsParameterValues	16	static
-../App/Src/app.c:391:6:appSetSamplingDelay	16	static
-../App/Src/app.c:396:10:appGetSamplingDelay	16	static
-../App/Src/app.c:401:6:appSetPidComputeDelay	16	static
-../App/Src/app.c:406:10:appGetPidComputeDelay	16	static
+../App/Src/app.c:391:6:appSetSamplingInterval	16	static
+../App/Src/app.c:396:10:appGetSamplingInterval	16	static
+../App/Src/app.c:401:6:appSetPidInterval	16	static
+../App/Src/app.c:406:10:appGetPidInterval	16	static
 ../App/Src/app.c:411:6:appGetEnableSendPidControllerParameterValues	16	static
 ../App/Src/app.c:416:6:appSetEnableSendPidControllerParameterValues	16	static
 ../App/Src/app.c:421:6:appGetRunPidControllerStatus	16	static
