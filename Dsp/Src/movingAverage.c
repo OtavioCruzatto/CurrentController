@@ -7,11 +7,11 @@
 
 #include "movingAverage.h"
 
-void movingAverageInit(MovingAverage *movingAverage, int16_t window)
+void movingAverageInit(MovingAverage *movingAverage, uint16_t window)
 {
 	movingAverage->index = 0;
 	movingAverage->window = window;
-	memset(movingAverage->buffer, 0x00, MAX_QTY_OF_ELEMENTS * sizeof(int32_t));
+	memset(movingAverage->buffer, 0x00, MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS * sizeof(int32_t));
 	movingAverage->sum = 0;
 	movingAverage->movingAverage = 0;
 }

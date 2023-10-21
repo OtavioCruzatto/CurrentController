@@ -22,14 +22,14 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->hdac = hdac;
 
 	// ======== Controller =========== //
-	pidInit(&app->pid, 0, 0, 0, PID_CONTROLLER);
+	pidInit(&app->pid, 50, 2, 100, PID_CONTROLLER);
 	pidSetSetpoint(&app->pid, 0);
-	app->samplingInterval = DELAY_10_MILISECONDS;
+	app->samplingInterval = DELAY_5_MILISECONDS;
 	app->runPidController = FALSE;
 	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 
 	// ======== Filter =========== //
-	movingAverageInit(&app->movingAverageFilter, 64);
+	movingAverageInit(&app->movingAverageFilter, 128);
 
 	// ======== Data Packet Tx =========== //
 	dataPacketTxInit(&app->dataPacketTx, 0xAA, 0x55);
@@ -141,6 +141,7 @@ void appDecodeReceivedCommand(App *app)
 {
 	uint16_t receivedSamplingInterval = 0;
 	uint16_t receivedPidInterval = 0;
+	uint16_t receivedMovingAverageWindow = 0;
 
 	uint32_t receivedPidSetpointTimes1000 = 0;
 	float receivedPidSetpoint = 0;
@@ -236,6 +237,15 @@ void appDecodeReceivedCommand(App *app)
 			}
 			break;
 
+		case CMD_RX_SET_MOVING_AVERAGE_WINDOW:
+			receivedMovingAverageWindow = (app->data[0] << 8) + app->data[1];
+			if (receivedMovingAverageWindow > MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS)
+			{
+				receivedMovingAverageWindow = MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS;
+			}
+			app->movingAverageFilter.window = receivedMovingAverageWindow;
+			break;
+
 		default:
 			break;
 	}
@@ -317,10 +327,11 @@ void appSendPidKsParameterValues(App *app)
 
 void appSendPidControllerParameterValues(App *app)
 {
-	uint8_t qtyOfBytes = 9;
+	uint8_t qtyOfBytes = 10;
 	uint8_t bytes[qtyOfBytes];
 	uint32_t setpointTimes1000 = (uint32_t)(1000 * app->pid.setpoint);
 	uint16_t pidInterval = (uint16_t) (10000 * pidGetInterval(&app->pid));
+	uint16_t movingAverageWindow = app->movingAverageFilter.window;
 
 	bytes[0] = ((app->samplingInterval >> 8) & 0x00FF);
 	bytes[1] = (app->samplingInterval & 0x00FF);
@@ -330,7 +341,8 @@ void appSendPidControllerParameterValues(App *app)
 	bytes[5] = ((setpointTimes1000 >> 16) & 0x000000FF);
 	bytes[6] = ((setpointTimes1000 >> 8) & 0x000000FF);
 	bytes[7] = (setpointTimes1000 & 0x000000FF);
-	bytes[8] = (uint8_t) app->movingAverageFilter.window;
+	bytes[8] = ((movingAverageWindow >> 8) & 0x00FF);
+	bytes[9] = (movingAverageWindow & 0x00FF);
 
 	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_CONTROLLER_PARAMETER_VALUES);
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
