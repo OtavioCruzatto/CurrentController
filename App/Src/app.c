@@ -142,7 +142,18 @@ void appDecodeReceivedCommand(App *app)
 {
 	uint16_t receivedSamplingDelay = 0;
 	uint16_t receivedPidComputeDelay = 0;
-	uint32_t receivedPidSetpoint = 0;
+
+	uint32_t receivedPidSetpointTimes1000 = 0;
+	float receivedPidSetpoint = 0;
+
+	uint32_t pidKpTimes1000 = 0;
+	float pidKp = 0;
+
+	uint32_t pidKiTimes1000 = 0;
+	float pidKi = 0;
+
+	uint32_t pidKdTimes1000 = 0;
+	float pidKd = 0;
 
 	switch (app->command)
 	{
@@ -166,15 +177,21 @@ void appDecodeReceivedCommand(App *app)
 			break;
 
 		case CMD_RX_SET_PID_KP_PARAMETER:
-			app->pid.kp = app->data[0];
+			pidKpTimes1000 = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			pidKp = ((float) pidKpTimes1000) / 1000;
+			app->pid.kp = pidKp;
 			break;
 
 		case CMD_RX_SET_PID_KI_PARAMETER:
-			app->pid.ki = app->data[0];
+			pidKiTimes1000 = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			pidKi = ((float) pidKiTimes1000) / 1000;
+			app->pid.ki = pidKi;
 			break;
 
 		case CMD_RX_SET_PID_KD_PARAMETER:
-			app->pid.kd = app->data[0];
+			pidKdTimes1000 = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			pidKd = ((float) pidKdTimes1000) / 1000;
+			app->pid.kd = pidKd;
 			break;
 
 		case CMD_RX_SET_SAMPLING_DELAY:
@@ -194,7 +211,8 @@ void appDecodeReceivedCommand(App *app)
 			break;
 
 		case CMD_RX_SET_PID_SETPOINT:
-			receivedPidSetpoint = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			receivedPidSetpointTimes1000 = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			receivedPidSetpoint = ((float) receivedPidSetpointTimes1000) / 1000;
 			if ((receivedPidSetpoint >= 0) && (receivedPidSetpoint <= 300000))
 			{
 				app->pid.setpoint = receivedPidSetpoint;
