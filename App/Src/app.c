@@ -144,6 +144,10 @@ void appDecodeReceivedCommand(App *app)
 	uint16_t receivedSamplingInterval = 0;
 	uint16_t receivedPidInterval = 0;
 	uint16_t receivedMovingAverageWindow = 0;
+	int32_t receivedPidMinSumOfErrors = 0;
+	int32_t receivedPidMaxSumOfErrors = 0;
+	int32_t receivedPidMinControlledVariable = 0;
+	int32_t receivedPidMaxControlledVariable = 0;
 
 	uint32_t receivedPidSetpointTimes1000 = 0;
 	float receivedPidSetpoint = 0;
@@ -254,6 +258,62 @@ void appDecodeReceivedCommand(App *app)
 
 		case CMD_RX_ASK_FOR_PID_MIN_AND_MAX_CONTROLLED_VARIABLE:
 			app->enableSendPidMinAndMaxControlledVariable = TRUE;
+			break;
+
+		case CMD_RX_SET_PID_MIN_SUM_OF_ERRORS:
+			receivedPidMinSumOfErrors = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			receivedPidMinSumOfErrors -= 1000000000;
+			if (receivedPidMinSumOfErrors < MIN_SUM_OF_ERRORS_ALLOWED)
+			{
+				receivedPidMinSumOfErrors = MIN_SUM_OF_ERRORS_ALLOWED;
+			}
+			else if (receivedPidMinSumOfErrors > MAX_SUM_OF_ERRORS_ALLOWED)
+			{
+				receivedPidMinSumOfErrors = MAX_SUM_OF_ERRORS_ALLOWED;
+			}
+			app->pid.minSumOfErrors = receivedPidMinSumOfErrors;
+			break;
+
+		case CMD_RX_SET_PID_MAX_SUM_OF_ERRORS:
+			receivedPidMaxSumOfErrors = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			receivedPidMaxSumOfErrors -= 1000000000;
+			if (receivedPidMaxSumOfErrors < MIN_SUM_OF_ERRORS_ALLOWED)
+			{
+				receivedPidMaxSumOfErrors = MIN_SUM_OF_ERRORS_ALLOWED;
+			}
+			else if (receivedPidMaxSumOfErrors > MAX_SUM_OF_ERRORS_ALLOWED)
+			{
+				receivedPidMaxSumOfErrors = MAX_SUM_OF_ERRORS_ALLOWED;
+			}
+			app->pid.maxSumOfErrors = receivedPidMaxSumOfErrors;
+			break;
+
+		case CMD_RX_SET_PID_MIN_CONTROLLED_VARIABLE:
+			receivedPidMinControlledVariable = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			receivedPidMinControlledVariable -= 1000000000;
+			if (receivedPidMinControlledVariable < MIN_CONTROLLED_VARIABLE_ALLOWED)
+			{
+				receivedPidMinControlledVariable = MIN_CONTROLLED_VARIABLE_ALLOWED;
+			}
+			else if (receivedPidMinControlledVariable > MAX_CONTROLLED_VARIABLE_ALLOWED)
+			{
+				receivedPidMinControlledVariable = MAX_CONTROLLED_VARIABLE_ALLOWED;
+			}
+			app->pid.minControlledVariable = receivedPidMinControlledVariable;
+			break;
+
+		case CMD_RX_SET_PID_MAX_CONTROLLED_VARIABLE:
+			receivedPidMaxControlledVariable = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			receivedPidMaxControlledVariable -= 1000000000;
+			if (receivedPidMaxControlledVariable < MIN_CONTROLLED_VARIABLE_ALLOWED)
+			{
+				receivedPidMaxControlledVariable = MIN_CONTROLLED_VARIABLE_ALLOWED;
+			}
+			else if (receivedPidMaxControlledVariable > MAX_CONTROLLED_VARIABLE_ALLOWED)
+			{
+				receivedPidMaxControlledVariable = MAX_CONTROLLED_VARIABLE_ALLOWED;
+			}
+			app->pid.maxControlledVariable = receivedPidMaxControlledVariable;
 			break;
 
 		default:
