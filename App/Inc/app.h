@@ -24,7 +24,9 @@ typedef enum APP_RX_COMMANDS
 	CMD_RX_SET_PID_INTERVAL = 0x19,
 	CMD_RX_SET_PID_SETPOINT = 0x20,
 	CMD_RX_ASK_FOR_RUN_PID_CONTROLLER = 0x15,
-	CMD_RX_SET_MOVING_AVERAGE_WINDOW = 0x23
+	CMD_RX_SET_MOVING_AVERAGE_WINDOW = 0x23,
+	CMD_RX_ASK_FOR_PID_MIN_AND_MAX_SUM_OF_ERRORS = 0x24,
+	CMD_RX_ASK_FOR_PID_MIN_AND_MAX_CONTROLLED_VARIABLE = 0x26
 } CommandsFromComputer;
 
 typedef enum APP_TX_COMMANDS
@@ -32,6 +34,8 @@ typedef enum APP_TX_COMMANDS
 	CMD_TX_PROCESS_VARIABLE_VALUE = 0x21,
 	CMD_TX_PID_KS_PARAMETER_VALUES = 0x14,
 	CMD_TX_PID_CONTROLLER_PARAMETER_VALUES = 0x17,
+	CMD_TX_PID_MIN_AND_MAX_SUM_OF_ERRORS = 0x25,
+	CMD_TX_PID_MIN_AND_MAX_CONTROLLED_VARIABLE = 0x27
 } CommandsToComputer;
 
 typedef struct
@@ -61,6 +65,8 @@ typedef struct
 	Bool enableSendProcessVariable;
 	Bool enableSendPidKsParameterValues;
 	Bool enableSendPidControllerParameterValues;
+	Bool enableSendPidMinAndMaxSumOfErrors;
+	Bool enableSendPidMinAndMaxControlledVariable;
 
 	// ======== Data Packet Rx =========== //
 	DataPacketRx dataPacketRx;
@@ -107,6 +113,9 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength);
 // ======== Data Packet Tx =========== //
 void appSendProcessVariable(App *app);
 void appSendPidKsParameterValues(App *app);
+void appSendPidControllerParameterValues(App *app);
+void appSendPidMinAndMaxSumOfErrorsValues(App *app);
+void appSendPidMinAndMaxControlledVariableValues(App *app);
 void appTrySendData(App *app);
 void appSetProcessVariableReadyToSend(App *app, Bool status);
 Bool appGetProcessVariableReadyToSend(App *app);
@@ -116,5 +125,9 @@ Bool appGetEnableSendPidKsParameterValues(App *app);
 void appSetEnableSendPidKsParameterValues(App *app, Bool status);
 Bool appGetEnableSendPidControllerParameterValues(App *app);
 void appSetEnableSendPidControllerParameterValues(App *app, Bool status);
+Bool appGetEnableSendPidMinAndMaxSumOfErrorsValues(App *app);
+void appSetEnableSendPidMinAndMaxSumOfErrorsValues(App *app, Bool status);
+Bool appGetEnableSendPidMinAndMaxControlledVariableValues(App *app);
+void appSetEnableSendPidMinAndMaxControlledVariableValues(App *app, Bool status);
 
 #endif /* INC_APP_H_ */

@@ -37,6 +37,8 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->enableSendProcessVariable = FALSE;
 	app->enableSendPidKsParameterValues = FALSE;
 	app->enableSendPidControllerParameterValues = FALSE;
+	app->enableSendPidMinAndMaxSumOfErrors = FALSE;
+	app->enableSendPidMinAndMaxControlledVariable = FALSE;
 
 	// ======== Data Packet Rx =========== //
 	dataPacketRxInit(&app->dataPacketRx, 0xAA, 0x55);
@@ -246,6 +248,14 @@ void appDecodeReceivedCommand(App *app)
 			app->movingAverageFilter.window = receivedMovingAverageWindow;
 			break;
 
+		case CMD_RX_ASK_FOR_PID_MIN_AND_MAX_SUM_OF_ERRORS:
+			app->enableSendPidMinAndMaxSumOfErrors = TRUE;
+			break;
+
+		case CMD_RX_ASK_FOR_PID_MIN_AND_MAX_CONTROLLED_VARIABLE:
+			app->enableSendPidMinAndMaxControlledVariable = TRUE;
+			break;
+
 		default:
 			break;
 	}
@@ -352,12 +362,72 @@ void appSendPidControllerParameterValues(App *app)
 	dataPacketTxClear(&app->dataPacketTx);
 }
 
+void appSendPidMinAndMaxSumOfErrorsValues(App *app)
+{
+	uint8_t qtyOfBytes = 8;
+	uint8_t bytes[qtyOfBytes];
+	uint32_t minSumOfErrors = (uint32_t) (app->pid.minSumOfErrors + 1000000000);
+	uint32_t maxSumOfErrors = (uint32_t) (app->pid.maxSumOfErrors + 1000000000);
+
+	bytes[0] = ((minSumOfErrors >> 24) & 0x000000FF);
+	bytes[1] = ((minSumOfErrors >> 16) & 0x000000FF);
+	bytes[2] = ((minSumOfErrors >> 8) & 0x000000FF);
+	bytes[3] = (minSumOfErrors & 0x000000FF);
+
+	bytes[4] = ((maxSumOfErrors >> 24) & 0x000000FF);
+	bytes[5] = ((maxSumOfErrors >> 16) & 0x000000FF);
+	bytes[6] = ((maxSumOfErrors >> 8) & 0x000000FF);
+	bytes[7] = (maxSumOfErrors & 0x000000FF);
+
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_MIN_AND_MAX_SUM_OF_ERRORS);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
+	dataPacketTxMount(&app->dataPacketTx);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
+	dataPacketTxPayloadDataClear(&app->dataPacketTx);
+	dataPacketTxClear(&app->dataPacketTx);
+}
+
+void appSendPidMinAndMaxControlledVariableValues(App *app)
+{
+	uint8_t qtyOfBytes = 8;
+	uint8_t bytes[qtyOfBytes];
+	uint32_t minControlledVariable = (uint32_t) (app->pid.minControlledVariable + 1000000000);
+	uint32_t maxControlledVariable = (uint32_t) (app->pid.maxControlledVariable + 1000000000);
+
+	bytes[0] = ((minControlledVariable >> 24) & 0x000000FF);
+	bytes[1] = ((minControlledVariable >> 16) & 0x000000FF);
+	bytes[2] = ((minControlledVariable >> 8) & 0x000000FF);
+	bytes[3] = (minControlledVariable & 0x000000FF);
+
+	bytes[4] = ((maxControlledVariable >> 24) & 0x000000FF);
+	bytes[5] = ((maxControlledVariable >> 16) & 0x000000FF);
+	bytes[6] = ((maxControlledVariable >> 8) & 0x000000FF);
+	bytes[7] = (maxControlledVariable & 0x000000FF);
+
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_MIN_AND_MAX_CONTROLLED_VARIABLE);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
+	dataPacketTxMount(&app->dataPacketTx);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
+	dataPacketTxPayloadDataClear(&app->dataPacketTx);
+	dataPacketTxClear(&app->dataPacketTx);
+}
+
 void appTrySendData(App *app)
 {
 	if (appGetEnableSendPidKsParameterValues(app) == TRUE)
 	{
 		appSendPidKsParameterValues(app);
 		appSetEnableSendPidKsParameterValues(app, FALSE);
+	}
+	else if (appGetEnableSendPidMinAndMaxSumOfErrorsValues(app) == TRUE)
+	{
+		appSendPidMinAndMaxSumOfErrorsValues(app);
+		appSetEnableSendPidMinAndMaxSumOfErrorsValues(app, FALSE);
+	}
+	else if (appGetEnableSendPidMinAndMaxControlledVariableValues(app) == TRUE)
+	{
+		appSendPidMinAndMaxControlledVariableValues(app);
+		appSetEnableSendPidMinAndMaxControlledVariableValues(app, FALSE);
 	}
 	else if (appGetEnableSendPidControllerParameterValues(app) == TRUE)
 	{
@@ -438,4 +508,24 @@ Bool appGetRunPidControllerStatus(App *app)
 void appSetRunPidControllerStatus(App *app, Bool status)
 {
 	app->runPidController = status;
+}
+
+Bool appGetEnableSendPidMinAndMaxSumOfErrorsValues(App *app)
+{
+	return app->enableSendPidMinAndMaxSumOfErrors;
+}
+
+void appSetEnableSendPidMinAndMaxSumOfErrorsValues(App *app, Bool status)
+{
+	app->enableSendPidMinAndMaxSumOfErrors = status;
+}
+
+Bool appGetEnableSendPidMinAndMaxControlledVariableValues(App *app)
+{
+	return app->enableSendPidMinAndMaxControlledVariable;
+}
+
+void appSetEnableSendPidMinAndMaxControlledVariableValues(App *app, Bool status)
+{
+	app->enableSendPidMinAndMaxControlledVariable = status;
 }
