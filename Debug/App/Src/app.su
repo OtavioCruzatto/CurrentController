@@ -3,7 +3,7 @@
 ../App/Src/app.c:57:10:appGetBlinkDelay	16	static
 ../App/Src/app.c:63:6:appRunController	24	static
 ../App/Src/app.c:70:6:appSetProcessVariable	16	static
-../App/Src/app.c:75:10:appGetProcessVariable	16	static
+../App/Src/app.c:75:7:appGetProcessVariable	16	static
 ../App/Src/app.c:80:10:appGetCurrentInMiliAmps	48	static
 ../App/Src/app.c:93:6:appAddNewValueToFilter	16	static
 ../App/Src/app.c:98:10:appGetFilterResult	16	static

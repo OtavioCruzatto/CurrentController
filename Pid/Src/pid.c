@@ -8,7 +8,7 @@
 #include "pid.h"
 #include "defs.h"
 
-void pidInit(PidController *pidController, float kp, float ki, float kd, ControllerTopology controllerTopology)
+void pidInit(PidController *pidController, float kp, float ki, float kd, float offset, float bias, ControllerTopology controllerTopology)
 {
 	pidController->kp = kp;
 	pidController->ki = ki;
@@ -25,6 +25,8 @@ void pidInit(PidController *pidController, float kp, float ki, float kd, Control
 	pidController->maxSumOfErrors = 10000;
 	pidController->minControlledVariable = 0;
 	pidController->maxControlledVariable = 4095;
+	pidController->offset = offset;
+	pidController->bias = bias;
 	pidController->interval = ((float) DELAY_25_MILISECONDS) / 10000;
 }
 
@@ -46,20 +48,20 @@ void pidCompute(PidController *pidController)
 	if (pidController->controllerTopology == P_CONTROLLER)
 	{
 		float proportionalTerm = pidController->kp * pidController->currentError;
-		pidController->controlledVariable = proportionalTerm;
+		pidController->controlledVariable = proportionalTerm + pidController->bias;
 	}
 	else if (pidController->controllerTopology == PI_CONTROLLER)
 	{
 		float proportionalTerm = pidController->kp * pidController->currentError;
 		float integralTerm = pidController->ki * pidController->sumOfErrors;
-		pidController->controlledVariable = proportionalTerm + integralTerm;
+		pidController->controlledVariable = proportionalTerm + integralTerm + pidController->bias;
 	}
 	else if (pidController->controllerTopology == PID_CONTROLLER)
 	{
 		float proportionalTerm = pidController->kp * pidController->currentError;
 		float integralTerm = pidController->ki * pidController->sumOfErrors;
 		float derivativeTerm = pidController->kd * pidController->differenceOfErrors;
-		pidController->controlledVariable = proportionalTerm + integralTerm + derivativeTerm;
+		pidController->controlledVariable = proportionalTerm + integralTerm + derivativeTerm + pidController->bias;
 	}
 	else
 	{
@@ -90,7 +92,7 @@ float pidGetSetpoint(PidController *pidController)
 
 void pidSetProcessVariable(PidController *pidController, float processVariable)
 {
-	pidController->processVariable = processVariable;
+	pidController->processVariable = processVariable + pidController->offset;
 }
 
 float pidGetProcessVariable(PidController *pidController)
@@ -111,4 +113,24 @@ float pidGetInterval(PidController *pidController)
 void pidSetInterval(PidController *pidController, float interval)
 {
 	pidController->interval = interval;
+}
+
+float pidGetOffset(PidController *pidController)
+{
+	return pidController->offset;
+}
+
+void pidSetOffset(PidController *pidController, float offset)
+{
+	pidController->offset = offset;
+}
+
+float pidGetBias(PidController *pidController)
+{
+	return pidController->bias;
+}
+
+void pidSetBias(PidController *pidController, float bias)
+{
+	pidController->bias = bias;
 }

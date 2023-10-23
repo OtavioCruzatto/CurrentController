@@ -22,7 +22,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->hdac = hdac;
 
 	// ======== Controller =========== //
-	pidInit(&app->pid, 50, 2, 100, PID_CONTROLLER);
+	pidInit(&app->pid, 50, 2, 100, 2, 0, PID_CONTROLLER);
 	pidSetSetpoint(&app->pid, 0);
 	app->samplingInterval = DELAY_5_MILISECONDS;
 	app->runPidController = FALSE;
@@ -72,7 +72,7 @@ void appSetProcessVariable(App *app, uint32_t value)
 	pidSetProcessVariable(&app->pid, (float) value);
 }
 
-uint32_t appGetProcessVariable(App *app)
+float appGetProcessVariable(App *app)
 {
 	return pidGetProcessVariable(&app->pid);
 }
@@ -348,7 +348,7 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength)
 // ======== Data Packet Tx =========== //
 void appSendProcessVariable(App *app)
 {
-	uint32_t processVariableValue = appGetProcessVariable(app);
+	uint32_t processVariableValue = (uint32_t) appGetProcessVariable(app);
 	uint8_t qtyOfBytes = 4;
 	uint8_t bytes[qtyOfBytes];
 	bytes[0] = ((processVariableValue >> 24) & 0x000000FF);

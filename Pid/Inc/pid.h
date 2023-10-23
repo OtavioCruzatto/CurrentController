@@ -37,6 +37,8 @@ typedef struct
 	float processVariable;
 	float differenceOfErrors;
 	float interval;
+	float offset;
+	float bias;
 	int32_t minSumOfErrors;
 	int32_t maxSumOfErrors;
 	int32_t minControlledVariable;
@@ -44,7 +46,7 @@ typedef struct
 	ControllerTopology controllerTopology;
 } PidController;
 
-void pidInit(PidController *pidController, float kp, float ki, float kd, ControllerTopology controllerTopology);
+void pidInit(PidController *pidController, float kp, float ki, float kd, float offset, float bias, ControllerTopology controllerTopology);
 void pidCompute(PidController *pidController);
 void pidSetSetpoint(PidController *pidController, float setpoint);
 float pidGetSetpoint(PidController *pidController);
@@ -53,5 +55,9 @@ float pidGetProcessVariable(PidController *pidController);
 float pidGetControlledVariable(PidController *pidController);
 float pidGetInterval(PidController *pidController);
 void pidSetInterval(PidController *pidController, float interval);
+float pidGetOffset(PidController *pidController);
+void pidSetOffset(PidController *pidController, float offset);
+float pidGetBias(PidController *pidController);
+void pidSetBias(PidController *pidController, float bias);
 
 #endif /* INC_PID_H_ */

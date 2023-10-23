@@ -90,7 +90,7 @@ uint32_t appGetBlinkDelay(App *app);
 // ======== Controller =========== //
 void appRunController(App *app);
 void appSetProcessVariable(App *app, uint32_t value);
-uint32_t appGetProcessVariable(App *app);
+float appGetProcessVariable(App *app);
 void appSetSamplingInterval(App *app, uint16_t samplingInterval);
 uint16_t appGetSamplingInterval(App *app);
 void appSetPidInterval(App *app, uint16_t pidInterval);
