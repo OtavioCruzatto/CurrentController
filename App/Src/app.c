@@ -162,6 +162,12 @@ void appDecodeReceivedCommand(App *app)
 	uint32_t pidKdTimes1000 = 0;
 	float pidKd = 0;
 
+	uint32_t receiveidPidOffset = 0;
+	float pidOffset = 0;
+
+	uint32_t receiveidPidBias = 0;
+	float pidBias = 0;
+
 	switch (app->command)
 	{
 		case CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE:
@@ -319,6 +325,18 @@ void appDecodeReceivedCommand(App *app)
 
 		case CMD_RX_ASK_FOR_PID_OFFSET_AND_BIAS:
 			app->enableSendPidOffsetAndBias = TRUE;
+			break;
+
+		case CMD_RX_SET_PID_OFFSET:
+			receiveidPidOffset = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			pidOffset = (((float) receiveidPidOffset) - 1000000) / 1000;
+			app->pid.offset = pidOffset;
+			break;
+
+		case CMD_RX_SET_PID_BIAS:
+			receiveidPidBias = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			pidBias = (((float) receiveidPidBias) - 1000000) / 1000;
+			app->pid.bias = pidBias;
 			break;
 
 		default:
