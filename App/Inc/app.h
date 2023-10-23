@@ -30,7 +30,10 @@ typedef enum APP_RX_COMMANDS
 	CMD_RX_SET_PID_MIN_SUM_OF_ERRORS = 0x28,
 	CMD_RX_SET_PID_MAX_SUM_OF_ERRORS = 0x29,
 	CMD_RX_SET_PID_MIN_CONTROLLED_VARIABLE = 0x30,
-	CMD_RX_SET_PID_MAX_CONTROLLED_VARIABLE = 0x31
+	CMD_RX_SET_PID_MAX_CONTROLLED_VARIABLE = 0x31,
+	CMD_RX_ASK_FOR_PID_OFFSET_AND_BIAS = 0x32,
+	CMD_RX_SET_PID_OFFSET = 0x34,
+	CMD_RX_SET_PID_BIAS = 0x35
 } CommandsFromComputer;
 
 typedef enum APP_TX_COMMANDS
@@ -39,7 +42,8 @@ typedef enum APP_TX_COMMANDS
 	CMD_TX_PID_KS_PARAMETER_VALUES = 0x14,
 	CMD_TX_PID_CONTROLLER_PARAMETER_VALUES = 0x17,
 	CMD_TX_PID_MIN_AND_MAX_SUM_OF_ERRORS = 0x25,
-	CMD_TX_PID_MIN_AND_MAX_CONTROLLED_VARIABLE = 0x27
+	CMD_TX_PID_MIN_AND_MAX_CONTROLLED_VARIABLE = 0x27,
+	CMD_TX_PID_OFFSET_AND_BIAS = 0x33
 } CommandsToComputer;
 
 typedef struct
@@ -71,6 +75,7 @@ typedef struct
 	Bool enableSendPidControllerParameterValues;
 	Bool enableSendPidMinAndMaxSumOfErrors;
 	Bool enableSendPidMinAndMaxControlledVariable;
+	Bool enableSendPidOffsetAndBias;
 
 	// ======== Data Packet Rx =========== //
 	DataPacketRx dataPacketRx;
@@ -120,6 +125,7 @@ void appSendPidKsParameterValues(App *app);
 void appSendPidControllerParameterValues(App *app);
 void appSendPidMinAndMaxSumOfErrorsValues(App *app);
 void appSendPidMinAndMaxControlledVariableValues(App *app);
+void appSendPidOffsetAndBiasValues(App *app);
 void appTrySendData(App *app);
 void appSetProcessVariableReadyToSend(App *app, Bool status);
 Bool appGetProcessVariableReadyToSend(App *app);
@@ -133,5 +139,7 @@ Bool appGetEnableSendPidMinAndMaxSumOfErrorsValues(App *app);
 void appSetEnableSendPidMinAndMaxSumOfErrorsValues(App *app, Bool status);
 Bool appGetEnableSendPidMinAndMaxControlledVariableValues(App *app);
 void appSetEnableSendPidMinAndMaxControlledVariableValues(App *app, Bool status);
+Bool appGetEnableSendPidOffsetAndBiasValues(App *app);
+void appSetEnableSendPidOffsetAndBiasValues(App *app, Bool status);
 
 #endif /* INC_APP_H_ */

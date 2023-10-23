@@ -39,6 +39,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->enableSendPidControllerParameterValues = FALSE;
 	app->enableSendPidMinAndMaxSumOfErrors = FALSE;
 	app->enableSendPidMinAndMaxControlledVariable = FALSE;
+	app->enableSendPidOffsetAndBias = FALSE;
 
 	// ======== Data Packet Rx =========== //
 	dataPacketRxInit(&app->dataPacketRx, 0xAA, 0x55);
@@ -316,6 +317,10 @@ void appDecodeReceivedCommand(App *app)
 			app->pid.maxControlledVariable = receivedPidMaxControlledVariable;
 			break;
 
+		case CMD_RX_ASK_FOR_PID_OFFSET_AND_BIAS:
+			app->enableSendPidOffsetAndBias = TRUE;
+			break;
+
 		default:
 			break;
 	}
@@ -472,6 +477,31 @@ void appSendPidMinAndMaxControlledVariableValues(App *app)
 	dataPacketTxClear(&app->dataPacketTx);
 }
 
+void appSendPidOffsetAndBiasValues(App *app)
+{
+	uint8_t qtyOfBytes = 8;
+	uint8_t bytes[qtyOfBytes];
+	uint32_t offset = (uint32_t) ((app->pid.offset * 1000) + 1000000);
+	uint32_t bias = (uint32_t) ((app->pid.bias * 1000) + 1000000);
+
+	bytes[0] = ((offset >> 24) & 0x000000FF);
+	bytes[1] = ((offset >> 16) & 0x000000FF);
+	bytes[2] = ((offset >> 8) & 0x000000FF);
+	bytes[3] = (offset & 0x000000FF);
+
+	bytes[4] = ((bias >> 24) & 0x000000FF);
+	bytes[5] = ((bias >> 16) & 0x000000FF);
+	bytes[6] = ((bias >> 8) & 0x000000FF);
+	bytes[7] = (bias & 0x000000FF);
+
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_OFFSET_AND_BIAS);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
+	dataPacketTxMount(&app->dataPacketTx);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
+	dataPacketTxPayloadDataClear(&app->dataPacketTx);
+	dataPacketTxClear(&app->dataPacketTx);
+}
+
 void appTrySendData(App *app)
 {
 	if (appGetEnableSendPidKsParameterValues(app) == TRUE)
@@ -493,6 +523,11 @@ void appTrySendData(App *app)
 	{
 		appSendPidControllerParameterValues(app);
 		appSetEnableSendPidControllerParameterValues(app, FALSE);
+	}
+	else if (appGetEnableSendPidOffsetAndBiasValues(app) == TRUE)
+	{
+		appSendPidOffsetAndBiasValues(app);
+		appSetEnableSendPidOffsetAndBiasValues(app, FALSE);
 	}
 	else if (appGetEnableSendProcessVariable(app) == TRUE)
 	{
@@ -588,4 +623,14 @@ Bool appGetEnableSendPidMinAndMaxControlledVariableValues(App *app)
 void appSetEnableSendPidMinAndMaxControlledVariableValues(App *app, Bool status)
 {
 	app->enableSendPidMinAndMaxControlledVariable = status;
+}
+
+Bool appGetEnableSendPidOffsetAndBiasValues(App *app)
+{
+	return app->enableSendPidOffsetAndBias;
+}
+
+void appSetEnableSendPidOffsetAndBiasValues(App *app, Bool status)
+{
+	app->enableSendPidOffsetAndBias = status;
 }
