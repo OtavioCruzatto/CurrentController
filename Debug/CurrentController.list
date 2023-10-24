@@ -4570,8 +4570,8 @@ static void MX_DAC_Init(void)
   sConfig.DAC_Trigger = DAC_TRIGGER_NONE;
  8002668:	2300      	movs	r3, #0
  800266a:	603b      	str	r3, [r7, #0]
-  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_ENABLE;
- 800266c:	2300      	movs	r3, #0
+  sConfig.DAC_OutputBuffer = DAC_OUTPUTBUFFER_DISABLE;
+ 800266c:	2302      	movs	r3, #2
  800266e:	607b      	str	r3, [r7, #4]
   if (HAL_DAC_ConfigChannel(&hdac, &sConfig, DAC_CHANNEL_1) != HAL_OK)
  8002670:	463b      	mov	r3, r7
