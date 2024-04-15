@@ -267,6 +267,9 @@ void appDecodeReceivedCommand(App *app)
 			receiveidPidBias = (app->data[38] << 24) + (app->data[39] << 16) + (app->data[40] << 8) + app->data[41];
 			pidBias = (((float) receiveidPidBias) - 1000000) / 1000;
 			app->pid.bias = pidBias;
+
+			/************* Send The New Config Data Values *************/
+			app->enableSendCurrentConfigDataValues = TRUE;
 			break;
 
 		case CMD_RX_ASK_FOR_CURRENT_CONFIG_DATA_VALUES:
