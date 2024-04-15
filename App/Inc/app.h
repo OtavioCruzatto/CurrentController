@@ -10,40 +10,22 @@
 
 #include "main.h"
 
-#define QTY_DATA_BYTES	25
+#define QTY_DATA_BYTES	QTY_PAYLOAD_RX_DATA_BYTES
 
 typedef enum APP_RX_COMMANDS
 {
-	CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE = 0x22,
-	CMD_RX_ASK_FOR_PID_KS_PARAMETERS = 0x13,
-	CMD_RX_ASK_FOR_PID_CONTROLLER_PARAMETERS = 0x16,
-	CMD_RX_SET_PID_KP_PARAMETER = 0x10,
-	CMD_RX_SET_PID_KI_PARAMETER = 0x11,
-	CMD_RX_SET_PID_KD_PARAMETER = 0x12,
-	CMD_RX_SET_SAMPLING_INTERVAL = 0x18,
-	CMD_RX_SET_PID_INTERVAL = 0x19,
-	CMD_RX_SET_PID_SETPOINT = 0x20,
-	CMD_RX_ASK_FOR_RUN_PID_CONTROLLER = 0x15,
-	CMD_RX_SET_MOVING_AVERAGE_WINDOW = 0x23,
-	CMD_RX_ASK_FOR_PID_MIN_AND_MAX_SUM_OF_ERRORS = 0x24,
-	CMD_RX_ASK_FOR_PID_MIN_AND_MAX_CONTROLLED_VARIABLE = 0x26,
-	CMD_RX_SET_PID_MIN_SUM_OF_ERRORS = 0x28,
-	CMD_RX_SET_PID_MAX_SUM_OF_ERRORS = 0x29,
-	CMD_RX_SET_PID_MIN_CONTROLLED_VARIABLE = 0x30,
-	CMD_RX_SET_PID_MAX_CONTROLLED_VARIABLE = 0x31,
-	CMD_RX_ASK_FOR_PID_OFFSET_AND_BIAS = 0x32,
-	CMD_RX_SET_PID_OFFSET = 0x34,
-	CMD_RX_SET_PID_BIAS = 0x35
+	CMD_RX_SET_CONFIG_DATA_VALUES = 0x01,
+	CMD_RX_ASK_FOR_CURRENT_CONFIG_DATA_VALUES = 0x02,
+	CMD_RX_SET_PID_SETPOINT = 0x03,
+	CMD_RX_SET_RUN_PID_CONTROLLER_STATUS = 0x04,
+	CMD_RX_SET_SEND_PROCESS_VARIABLE_STATUS = 0x05
 } CommandsFromComputer;
 
 typedef enum APP_TX_COMMANDS
 {
-	CMD_TX_PROCESS_VARIABLE_VALUE = 0x21,
-	CMD_TX_PID_KS_PARAMETER_VALUES = 0x14,
-	CMD_TX_PID_CONTROLLER_PARAMETER_VALUES = 0x17,
-	CMD_TX_PID_MIN_AND_MAX_SUM_OF_ERRORS = 0x25,
-	CMD_TX_PID_MIN_AND_MAX_CONTROLLED_VARIABLE = 0x27,
-	CMD_TX_PID_OFFSET_AND_BIAS = 0x33
+	CMD_TX_CURRENT_CONFIG_DATA_VALUES = 0x80,
+	CMD_TX_CURRENT_PID_SETPOINT = 0x81,
+	CMD_TX_CURRENT_PROCESS_VARIABLE_VALUE = 0x82
 } CommandsToComputer;
 
 typedef struct
@@ -55,6 +37,7 @@ typedef struct
 
 	// ======== UART =========== //
 	UART_HandleTypeDef huart;
+	UART_HandleTypeDef huartDebug;
 
 	// ======== DAC ============ //
 	DAC_HandleTypeDef hdac;
@@ -71,11 +54,8 @@ typedef struct
 	DataPacketTx dataPacketTx;
 	Bool processVariableReadyToSend;
 	Bool enableSendProcessVariable;
-	Bool enableSendPidKsParameterValues;
-	Bool enableSendPidControllerParameterValues;
-	Bool enableSendPidMinAndMaxSumOfErrors;
-	Bool enableSendPidMinAndMaxControlledVariable;
-	Bool enableSendPidOffsetAndBias;
+	Bool enableSendCurrentConfigDataValues;
+	Bool enableSendCurrentPidSetpointValue;
 
 	// ======== Data Packet Rx =========== //
 	DataPacketRx dataPacketRx;
@@ -86,7 +66,7 @@ typedef struct
 } App;
 
 // ======== Init =========== //
-void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac);
+void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac, UART_HandleTypeDef huartDebug);
 
 // ======== LED =========== //
 void appExecuteBlinkLed(App *app);
@@ -121,25 +101,16 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength);
 
 // ======== Data Packet Tx =========== //
 void appSendProcessVariable(App *app);
-void appSendPidKsParameterValues(App *app);
-void appSendPidControllerParameterValues(App *app);
-void appSendPidMinAndMaxSumOfErrorsValues(App *app);
-void appSendPidMinAndMaxControlledVariableValues(App *app);
-void appSendPidOffsetAndBiasValues(App *app);
+void appSendCurrentConfigDataValues(App *app);
+void appSendCurrentPidSetpointValue(App *app);
 void appTrySendData(App *app);
-void appSetProcessVariableReadyToSend(App *app, Bool status);
 Bool appGetProcessVariableReadyToSend(App *app);
+void appSetProcessVariableReadyToSend(App *app, Bool status);
 Bool appGetEnableSendProcessVariable(App *app);
 void appSetEnableSendProcessVariable(App *app, Bool status);
-Bool appGetEnableSendPidKsParameterValues(App *app);
-void appSetEnableSendPidKsParameterValues(App *app, Bool status);
-Bool appGetEnableSendPidControllerParameterValues(App *app);
-void appSetEnableSendPidControllerParameterValues(App *app, Bool status);
-Bool appGetEnableSendPidMinAndMaxSumOfErrorsValues(App *app);
-void appSetEnableSendPidMinAndMaxSumOfErrorsValues(App *app, Bool status);
-Bool appGetEnableSendPidMinAndMaxControlledVariableValues(App *app);
-void appSetEnableSendPidMinAndMaxControlledVariableValues(App *app, Bool status);
-Bool appGetEnableSendPidOffsetAndBiasValues(App *app);
-void appSetEnableSendPidOffsetAndBiasValues(App *app, Bool status);
+Bool appGetEnableSendCurrentConfigDataValues(App *app);
+void appSetEnableSendCurrentConfigDataValues(App *app, Bool status);
+Bool appGetEnableSendCurrentPidSetpointValue(App *app);
+void appSetEnableSendCurrentPidSetpointValue(App *app, Bool status);
 
 #endif /* INC_APP_H_ */

@@ -8,7 +8,7 @@
 #include "app.h"
 
 // ======== Init =========== //
-void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac)
+void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac, UART_HandleTypeDef huartDebug)
 {
 	// ======== LED =========== //
 	app->blinkDelay = DELAY_100_MILISECONDS;
@@ -17,6 +17,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 
 	// ======== UART =========== //
 	app->huart = huart;
+	app->huartDebug = huartDebug;
 
 	// ======== DAC ============ //
 	app->hdac = hdac;
@@ -35,11 +36,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	dataPacketTxInit(&app->dataPacketTx, 0xAA, 0x55);
 	app->processVariableReadyToSend = FALSE;
 	app->enableSendProcessVariable = FALSE;
-	app->enableSendPidKsParameterValues = FALSE;
-	app->enableSendPidControllerParameterValues = FALSE;
-	app->enableSendPidMinAndMaxSumOfErrors = FALSE;
-	app->enableSendPidMinAndMaxControlledVariable = FALSE;
-	app->enableSendPidOffsetAndBias = FALSE;
+	app->enableSendCurrentConfigDataValues = FALSE;
 
 	// ======== Data Packet Rx =========== //
 	dataPacketRxInit(&app->dataPacketRx, 0xAA, 0x55);
@@ -170,57 +167,110 @@ void appDecodeReceivedCommand(App *app)
 
 	switch (app->command)
 	{
-		case CMD_RX_ASK_FOR_SEND_PROCESS_VARIABLE:
-			if (app->data[0] == 0x00)
-			{
-				app->enableSendProcessVariable = FALSE;
-			}
-			else if (app->data[0] == 0x01)
-			{
-				app->enableSendProcessVariable = TRUE;
-			}
-			break;
+		case CMD_RX_SET_CONFIG_DATA_VALUES:
 
-		case CMD_RX_ASK_FOR_PID_KS_PARAMETERS:
-			app->enableSendPidKsParameterValues = TRUE;
-			break;
-
-		case CMD_RX_ASK_FOR_PID_CONTROLLER_PARAMETERS:
-			app->enableSendPidControllerParameterValues = TRUE;
-			break;
-
-		case CMD_RX_SET_PID_KP_PARAMETER:
+			/************* Kp *************/
 			pidKpTimes1000 = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
 			pidKp = ((float) pidKpTimes1000) / 1000;
 			app->pid.kp = pidKp;
-			break;
 
-		case CMD_RX_SET_PID_KI_PARAMETER:
-			pidKiTimes1000 = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			/************* Ki *************/
+			pidKiTimes1000 = (app->data[4] << 24) + (app->data[5] << 16) + (app->data[6] << 8) + app->data[7];
 			pidKi = ((float) pidKiTimes1000) / 1000;
 			app->pid.ki = pidKi;
-			break;
 
-		case CMD_RX_SET_PID_KD_PARAMETER:
-			pidKdTimes1000 = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
+			/************* Kd *************/
+			pidKdTimes1000 = (app->data[8] << 24) + (app->data[9] << 16) + (app->data[10] << 8) + app->data[11];
 			pidKd = ((float) pidKdTimes1000) / 1000;
 			app->pid.kd = pidKd;
-			break;
 
-		case CMD_RX_SET_SAMPLING_INTERVAL:
-			receivedSamplingInterval = (app->data[0] << 8) + app->data[1];
-			if ((receivedSamplingInterval >= 0) && (receivedSamplingInterval <= 50000))
-			{
-				app->samplingInterval = receivedSamplingInterval;
-			}
-			break;
-
-		case CMD_RX_SET_PID_INTERVAL:
-			receivedPidInterval = (app->data[0] << 8) + app->data[1];
+			/************* Pid Interval *************/
+			receivedPidInterval = (app->data[12] << 8) + app->data[13];
 			if ((receivedPidInterval >= 0) && (receivedPidInterval <= 50000))
 			{
 				appSetPidInterval(app, receivedPidInterval);
 			}
+
+			/************* Sampling Interval *************/
+			receivedSamplingInterval = (app->data[14] << 8) + app->data[15];
+			if ((receivedSamplingInterval >= 0) && (receivedSamplingInterval <= 50000))
+			{
+				app->samplingInterval = receivedSamplingInterval;
+			}
+
+			/************* Moving Average Window *************/
+			receivedMovingAverageWindow = (app->data[16] << 8) + app->data[17];
+			if (receivedMovingAverageWindow > MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS)
+			{
+				receivedMovingAverageWindow = MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS;
+			}
+			app->movingAverageFilter.window = receivedMovingAverageWindow;
+
+			/************* Min Sum Of Errors *************/
+			receivedPidMinSumOfErrors = (app->data[18] << 24) + (app->data[19] << 16) + (app->data[20] << 8) + app->data[21];
+			receivedPidMinSumOfErrors -= 1000000000;
+			if (receivedPidMinSumOfErrors < MIN_SUM_OF_ERRORS_ALLOWED)
+			{
+				receivedPidMinSumOfErrors = MIN_SUM_OF_ERRORS_ALLOWED;
+			}
+			else if (receivedPidMinSumOfErrors > MAX_SUM_OF_ERRORS_ALLOWED)
+			{
+				receivedPidMinSumOfErrors = MAX_SUM_OF_ERRORS_ALLOWED;
+			}
+			app->pid.minSumOfErrors = receivedPidMinSumOfErrors;
+
+			/************* Max Sum Of Errors *************/
+			receivedPidMaxSumOfErrors = (app->data[22] << 24) + (app->data[23] << 16) + (app->data[24] << 8) + app->data[25];
+			receivedPidMaxSumOfErrors -= 1000000000;
+			if (receivedPidMaxSumOfErrors < MIN_SUM_OF_ERRORS_ALLOWED)
+			{
+				receivedPidMaxSumOfErrors = MIN_SUM_OF_ERRORS_ALLOWED;
+			}
+			else if (receivedPidMaxSumOfErrors > MAX_SUM_OF_ERRORS_ALLOWED)
+			{
+				receivedPidMaxSumOfErrors = MAX_SUM_OF_ERRORS_ALLOWED;
+			}
+			app->pid.maxSumOfErrors = receivedPidMaxSumOfErrors;
+
+			/************* Min Controlled Variable *************/
+			receivedPidMinControlledVariable = (app->data[26] << 24) + (app->data[27] << 16) + (app->data[28] << 8) + app->data[29];
+			receivedPidMinControlledVariable -= 1000000000;
+			if (receivedPidMinControlledVariable < MIN_CONTROLLED_VARIABLE_ALLOWED)
+			{
+				receivedPidMinControlledVariable = MIN_CONTROLLED_VARIABLE_ALLOWED;
+			}
+			else if (receivedPidMinControlledVariable > MAX_CONTROLLED_VARIABLE_ALLOWED)
+			{
+				receivedPidMinControlledVariable = MAX_CONTROLLED_VARIABLE_ALLOWED;
+			}
+			app->pid.minControlledVariable = receivedPidMinControlledVariable;
+
+			/************* Max Controlled Variable *************/
+			receivedPidMaxControlledVariable = (app->data[30] << 24) + (app->data[31] << 16) + (app->data[32] << 8) + app->data[33];
+			receivedPidMaxControlledVariable -= 1000000000;
+			if (receivedPidMaxControlledVariable < MIN_CONTROLLED_VARIABLE_ALLOWED)
+			{
+				receivedPidMaxControlledVariable = MIN_CONTROLLED_VARIABLE_ALLOWED;
+			}
+			else if (receivedPidMaxControlledVariable > MAX_CONTROLLED_VARIABLE_ALLOWED)
+			{
+				receivedPidMaxControlledVariable = MAX_CONTROLLED_VARIABLE_ALLOWED;
+			}
+			app->pid.maxControlledVariable = receivedPidMaxControlledVariable;
+
+			/************* Pid Offset *************/
+			receiveidPidOffset = (app->data[34] << 24) + (app->data[35] << 16) + (app->data[36] << 8) + app->data[37];
+			pidOffset = (((float) receiveidPidOffset) - 1000000) / 1000;
+			app->pid.offset = pidOffset;
+
+			/************* Pid Bias *************/
+			receiveidPidBias = (app->data[38] << 24) + (app->data[39] << 16) + (app->data[40] << 8) + app->data[41];
+			pidBias = (((float) receiveidPidBias) - 1000000) / 1000;
+			app->pid.bias = pidBias;
+			break;
+
+		case CMD_RX_ASK_FOR_CURRENT_CONFIG_DATA_VALUES:
+			app->enableSendCurrentConfigDataValues = TRUE;
 			break;
 
 		case CMD_RX_SET_PID_SETPOINT:
@@ -232,7 +282,7 @@ void appDecodeReceivedCommand(App *app)
 			}
 			break;
 
-		case CMD_RX_ASK_FOR_RUN_PID_CONTROLLER:
+		case CMD_RX_SET_RUN_PID_CONTROLLER_STATUS:
 			if (app->data[0] == 0x00)
 			{
 				app->runPidController = FALSE;
@@ -250,93 +300,15 @@ void appDecodeReceivedCommand(App *app)
 			}
 			break;
 
-		case CMD_RX_SET_MOVING_AVERAGE_WINDOW:
-			receivedMovingAverageWindow = (app->data[0] << 8) + app->data[1];
-			if (receivedMovingAverageWindow > MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS)
+		case CMD_RX_SET_SEND_PROCESS_VARIABLE_STATUS:
+			if (app->data[0] == 0x00)
 			{
-				receivedMovingAverageWindow = MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS;
+				app->enableSendProcessVariable = FALSE;
 			}
-			app->movingAverageFilter.window = receivedMovingAverageWindow;
-			break;
-
-		case CMD_RX_ASK_FOR_PID_MIN_AND_MAX_SUM_OF_ERRORS:
-			app->enableSendPidMinAndMaxSumOfErrors = TRUE;
-			break;
-
-		case CMD_RX_ASK_FOR_PID_MIN_AND_MAX_CONTROLLED_VARIABLE:
-			app->enableSendPidMinAndMaxControlledVariable = TRUE;
-			break;
-
-		case CMD_RX_SET_PID_MIN_SUM_OF_ERRORS:
-			receivedPidMinSumOfErrors = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
-			receivedPidMinSumOfErrors -= 1000000000;
-			if (receivedPidMinSumOfErrors < MIN_SUM_OF_ERRORS_ALLOWED)
+			else if (app->data[0] == 0x01)
 			{
-				receivedPidMinSumOfErrors = MIN_SUM_OF_ERRORS_ALLOWED;
+				app->enableSendProcessVariable = TRUE;
 			}
-			else if (receivedPidMinSumOfErrors > MAX_SUM_OF_ERRORS_ALLOWED)
-			{
-				receivedPidMinSumOfErrors = MAX_SUM_OF_ERRORS_ALLOWED;
-			}
-			app->pid.minSumOfErrors = receivedPidMinSumOfErrors;
-			break;
-
-		case CMD_RX_SET_PID_MAX_SUM_OF_ERRORS:
-			receivedPidMaxSumOfErrors = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
-			receivedPidMaxSumOfErrors -= 1000000000;
-			if (receivedPidMaxSumOfErrors < MIN_SUM_OF_ERRORS_ALLOWED)
-			{
-				receivedPidMaxSumOfErrors = MIN_SUM_OF_ERRORS_ALLOWED;
-			}
-			else if (receivedPidMaxSumOfErrors > MAX_SUM_OF_ERRORS_ALLOWED)
-			{
-				receivedPidMaxSumOfErrors = MAX_SUM_OF_ERRORS_ALLOWED;
-			}
-			app->pid.maxSumOfErrors = receivedPidMaxSumOfErrors;
-			break;
-
-		case CMD_RX_SET_PID_MIN_CONTROLLED_VARIABLE:
-			receivedPidMinControlledVariable = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
-			receivedPidMinControlledVariable -= 1000000000;
-			if (receivedPidMinControlledVariable < MIN_CONTROLLED_VARIABLE_ALLOWED)
-			{
-				receivedPidMinControlledVariable = MIN_CONTROLLED_VARIABLE_ALLOWED;
-			}
-			else if (receivedPidMinControlledVariable > MAX_CONTROLLED_VARIABLE_ALLOWED)
-			{
-				receivedPidMinControlledVariable = MAX_CONTROLLED_VARIABLE_ALLOWED;
-			}
-			app->pid.minControlledVariable = receivedPidMinControlledVariable;
-			break;
-
-		case CMD_RX_SET_PID_MAX_CONTROLLED_VARIABLE:
-			receivedPidMaxControlledVariable = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
-			receivedPidMaxControlledVariable -= 1000000000;
-			if (receivedPidMaxControlledVariable < MIN_CONTROLLED_VARIABLE_ALLOWED)
-			{
-				receivedPidMaxControlledVariable = MIN_CONTROLLED_VARIABLE_ALLOWED;
-			}
-			else if (receivedPidMaxControlledVariable > MAX_CONTROLLED_VARIABLE_ALLOWED)
-			{
-				receivedPidMaxControlledVariable = MAX_CONTROLLED_VARIABLE_ALLOWED;
-			}
-			app->pid.maxControlledVariable = receivedPidMaxControlledVariable;
-			break;
-
-		case CMD_RX_ASK_FOR_PID_OFFSET_AND_BIAS:
-			app->enableSendPidOffsetAndBias = TRUE;
-			break;
-
-		case CMD_RX_SET_PID_OFFSET:
-			receiveidPidOffset = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
-			pidOffset = (((float) receiveidPidOffset) - 1000000) / 1000;
-			app->pid.offset = pidOffset;
-			break;
-
-		case CMD_RX_SET_PID_BIAS:
-			receiveidPidBias = (app->data[0] << 24) + (app->data[1] << 16) + (app->data[2] << 8) + app->data[3];
-			pidBias = (((float) receiveidPidBias) - 1000000) / 1000;
-			app->pid.bias = pidBias;
 			break;
 
 		default:
@@ -369,6 +341,115 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength)
 }
 
 // ======== Data Packet Tx =========== //
+void appSendCurrentConfigDataValues(App *app)
+{
+	uint8_t qtyOfBytes = 42;
+	uint8_t bytes[qtyOfBytes];
+	uint32_t kpTimes1000 = (uint32_t)(1000 * app->pid.kp);
+	uint32_t kiTimes1000 = (uint32_t)(1000 * app->pid.ki);
+	uint32_t kdTimes1000 = (uint32_t)(1000 * app->pid.kd);
+	uint16_t pidInterval = (uint16_t) (10000 * pidGetInterval(&app->pid));
+	uint16_t movingAverageWindow = app->movingAverageFilter.window;
+	uint32_t minSumOfErrors = (uint32_t) (app->pid.minSumOfErrors + 1000000000);
+	uint32_t maxSumOfErrors = (uint32_t) (app->pid.maxSumOfErrors + 1000000000);
+	uint32_t minControlledVariable = (uint32_t) (app->pid.minControlledVariable + 1000000000);
+	uint32_t maxControlledVariable = (uint32_t) (app->pid.maxControlledVariable + 1000000000);
+	uint32_t offset = (uint32_t) ((app->pid.offset * 1000) + 1000000);
+	uint32_t bias = (uint32_t) ((app->pid.bias * 1000) + 1000000);
+
+	/************* Kp *************/
+	bytes[0] = ((kpTimes1000 >> 24) & 0x000000FF);
+	bytes[1] = ((kpTimes1000 >> 16) & 0x000000FF);
+	bytes[2] = ((kpTimes1000 >> 8) & 0x000000FF);
+	bytes[3] = (kpTimes1000 & 0x000000FF);
+
+	/************* Ki *************/
+	bytes[4] = ((kiTimes1000 >> 24) & 0x000000FF);
+	bytes[5] = ((kiTimes1000 >> 16) & 0x000000FF);
+	bytes[6] = ((kiTimes1000 >> 8) & 0x000000FF);
+	bytes[7] = (kiTimes1000 & 0x000000FF);
+
+	/************* Kd *************/
+	bytes[8] = ((kdTimes1000 >> 24) & 0x000000FF);
+	bytes[9] = ((kdTimes1000 >> 16) & 0x000000FF);
+	bytes[10] = ((kdTimes1000 >> 8) & 0x000000FF);
+	bytes[11] = (kdTimes1000 & 0x000000FF);
+
+	/************* Pid Interval *************/
+	bytes[12] = ((pidInterval >> 8) & 0x00FF);
+	bytes[13] = (pidInterval & 0x00FF);
+
+	/************* Sampling Interval *************/
+	bytes[14] = ((app->samplingInterval >> 8) & 0x00FF);
+	bytes[15] = (app->samplingInterval & 0x00FF);
+
+	/************* Moving Average Window *************/
+	bytes[16] = ((movingAverageWindow >> 8) & 0x00FF);
+	bytes[17] = (movingAverageWindow & 0x00FF);
+
+	/************* Min Sum Of Errors *************/
+	bytes[18] = ((minSumOfErrors >> 24) & 0x000000FF);
+	bytes[19] = ((minSumOfErrors >> 16) & 0x000000FF);
+	bytes[20] = ((minSumOfErrors >> 8) & 0x000000FF);
+	bytes[21] = (minSumOfErrors & 0x000000FF);
+
+	/************* Max Sum Of Errors *************/
+	bytes[22] = ((maxSumOfErrors >> 24) & 0x000000FF);
+	bytes[23] = ((maxSumOfErrors >> 16) & 0x000000FF);
+	bytes[24] = ((maxSumOfErrors >> 8) & 0x000000FF);
+	bytes[25] = (maxSumOfErrors & 0x000000FF);
+
+	/************* Min Controlled Variable *************/
+	bytes[26] = ((minControlledVariable >> 24) & 0x000000FF);
+	bytes[27] = ((minControlledVariable >> 16) & 0x000000FF);
+	bytes[28] = ((minControlledVariable >> 8) & 0x000000FF);
+	bytes[29] = (minControlledVariable & 0x000000FF);
+
+	/************* Max Controlled Variable *************/
+	bytes[30] = ((maxControlledVariable >> 24) & 0x000000FF);
+	bytes[31] = ((maxControlledVariable >> 16) & 0x000000FF);
+	bytes[32] = ((maxControlledVariable >> 8) & 0x000000FF);
+	bytes[33] = (maxControlledVariable & 0x000000FF);
+
+	/************* Offset *************/
+	bytes[34] = ((offset >> 24) & 0x000000FF);
+	bytes[35] = ((offset >> 16) & 0x000000FF);
+	bytes[36] = ((offset >> 8) & 0x000000FF);
+	bytes[37] = (offset & 0x000000FF);
+
+	/************* Bias *************/
+	bytes[38] = ((bias >> 24) & 0x000000FF);
+	bytes[39] = ((bias >> 16) & 0x000000FF);
+	bytes[40] = ((bias >> 8) & 0x000000FF);
+	bytes[41] = (bias & 0x000000FF);
+
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_CURRENT_CONFIG_DATA_VALUES);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
+	dataPacketTxMount(&app->dataPacketTx);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
+	dataPacketTxPayloadDataClear(&app->dataPacketTx);
+	dataPacketTxClear(&app->dataPacketTx);
+}
+
+void appSendCurrentPidSetpointValue(App *app)
+{
+	uint8_t qtyOfBytes = 4;
+	uint8_t bytes[qtyOfBytes];
+	uint32_t setpointTimes1000 = (uint32_t)(1000 * app->pid.setpoint);
+
+	bytes[0] = ((setpointTimes1000 >> 24) & 0x000000FF);
+	bytes[1] = ((setpointTimes1000 >> 16) & 0x000000FF);
+	bytes[2] = ((setpointTimes1000 >> 8) & 0x000000FF);
+	bytes[3] = (setpointTimes1000 & 0x000000FF);
+
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_CURRENT_PID_SETPOINT);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
+	dataPacketTxMount(&app->dataPacketTx);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
+	dataPacketTxPayloadDataClear(&app->dataPacketTx);
+	dataPacketTxClear(&app->dataPacketTx);
+}
+
 void appSendProcessVariable(App *app)
 {
 	uint32_t processVariableValue = (uint32_t) appGetProcessVariable(app);
@@ -379,140 +460,7 @@ void appSendProcessVariable(App *app)
 	bytes[2] = ((processVariableValue >> 8) & 0x000000FF);
 	bytes[3] = (processVariableValue & 0x000000FF);
 
-	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PROCESS_VARIABLE_VALUE);
-	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
-	dataPacketTxMount(&app->dataPacketTx);
-	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
-	dataPacketTxPayloadDataClear(&app->dataPacketTx);
-	dataPacketTxClear(&app->dataPacketTx);
-}
-
-void appSendPidKsParameterValues(App *app)
-{
-	uint8_t qtyOfBytes = 12;
-	uint8_t bytes[qtyOfBytes];
-	uint32_t kpTimes1000 = (uint32_t)(1000 * app->pid.kp);
-	uint32_t kiTimes1000 = (uint32_t)(1000 * app->pid.ki);
-	uint32_t kdTimes1000 = (uint32_t)(1000 * app->pid.kd);
-
-	bytes[0] = ((kpTimes1000 >> 24) & 0x000000FF);
-	bytes[1] = ((kpTimes1000 >> 16) & 0x000000FF);
-	bytes[2] = ((kpTimes1000 >> 8) & 0x000000FF);
-	bytes[3] = (kpTimes1000 & 0x000000FF);
-
-	bytes[4] = ((kiTimes1000 >> 24) & 0x000000FF);
-	bytes[5] = ((kiTimes1000 >> 16) & 0x000000FF);
-	bytes[6] = ((kiTimes1000 >> 8) & 0x000000FF);
-	bytes[7] = (kiTimes1000 & 0x000000FF);
-
-	bytes[8] = ((kdTimes1000 >> 24) & 0x000000FF);
-	bytes[9] = ((kdTimes1000 >> 16) & 0x000000FF);
-	bytes[10] = ((kdTimes1000 >> 8) & 0x000000FF);
-	bytes[11] = (kdTimes1000 & 0x000000FF);
-
-	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_KS_PARAMETER_VALUES);
-	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
-	dataPacketTxMount(&app->dataPacketTx);
-	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
-	dataPacketTxPayloadDataClear(&app->dataPacketTx);
-	dataPacketTxClear(&app->dataPacketTx);
-}
-
-void appSendPidControllerParameterValues(App *app)
-{
-	uint8_t qtyOfBytes = 10;
-	uint8_t bytes[qtyOfBytes];
-	uint32_t setpointTimes1000 = (uint32_t)(1000 * app->pid.setpoint);
-	uint16_t pidInterval = (uint16_t) (10000 * pidGetInterval(&app->pid));
-	uint16_t movingAverageWindow = app->movingAverageFilter.window;
-
-	bytes[0] = ((app->samplingInterval >> 8) & 0x00FF);
-	bytes[1] = (app->samplingInterval & 0x00FF);
-	bytes[2] = ((pidInterval >> 8) & 0x00FF);
-	bytes[3] = (pidInterval & 0x00FF);
-	bytes[4] = ((setpointTimes1000 >> 24) & 0x000000FF);
-	bytes[5] = ((setpointTimes1000 >> 16) & 0x000000FF);
-	bytes[6] = ((setpointTimes1000 >> 8) & 0x000000FF);
-	bytes[7] = (setpointTimes1000 & 0x000000FF);
-	bytes[8] = ((movingAverageWindow >> 8) & 0x00FF);
-	bytes[9] = (movingAverageWindow & 0x00FF);
-
-	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_CONTROLLER_PARAMETER_VALUES);
-	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
-	dataPacketTxMount(&app->dataPacketTx);
-	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
-	dataPacketTxPayloadDataClear(&app->dataPacketTx);
-	dataPacketTxClear(&app->dataPacketTx);
-}
-
-void appSendPidMinAndMaxSumOfErrorsValues(App *app)
-{
-	uint8_t qtyOfBytes = 8;
-	uint8_t bytes[qtyOfBytes];
-	uint32_t minSumOfErrors = (uint32_t) (app->pid.minSumOfErrors + 1000000000);
-	uint32_t maxSumOfErrors = (uint32_t) (app->pid.maxSumOfErrors + 1000000000);
-
-	bytes[0] = ((minSumOfErrors >> 24) & 0x000000FF);
-	bytes[1] = ((minSumOfErrors >> 16) & 0x000000FF);
-	bytes[2] = ((minSumOfErrors >> 8) & 0x000000FF);
-	bytes[3] = (minSumOfErrors & 0x000000FF);
-
-	bytes[4] = ((maxSumOfErrors >> 24) & 0x000000FF);
-	bytes[5] = ((maxSumOfErrors >> 16) & 0x000000FF);
-	bytes[6] = ((maxSumOfErrors >> 8) & 0x000000FF);
-	bytes[7] = (maxSumOfErrors & 0x000000FF);
-
-	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_MIN_AND_MAX_SUM_OF_ERRORS);
-	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
-	dataPacketTxMount(&app->dataPacketTx);
-	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
-	dataPacketTxPayloadDataClear(&app->dataPacketTx);
-	dataPacketTxClear(&app->dataPacketTx);
-}
-
-void appSendPidMinAndMaxControlledVariableValues(App *app)
-{
-	uint8_t qtyOfBytes = 8;
-	uint8_t bytes[qtyOfBytes];
-	uint32_t minControlledVariable = (uint32_t) (app->pid.minControlledVariable + 1000000000);
-	uint32_t maxControlledVariable = (uint32_t) (app->pid.maxControlledVariable + 1000000000);
-
-	bytes[0] = ((minControlledVariable >> 24) & 0x000000FF);
-	bytes[1] = ((minControlledVariable >> 16) & 0x000000FF);
-	bytes[2] = ((minControlledVariable >> 8) & 0x000000FF);
-	bytes[3] = (minControlledVariable & 0x000000FF);
-
-	bytes[4] = ((maxControlledVariable >> 24) & 0x000000FF);
-	bytes[5] = ((maxControlledVariable >> 16) & 0x000000FF);
-	bytes[6] = ((maxControlledVariable >> 8) & 0x000000FF);
-	bytes[7] = (maxControlledVariable & 0x000000FF);
-
-	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_MIN_AND_MAX_CONTROLLED_VARIABLE);
-	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
-	dataPacketTxMount(&app->dataPacketTx);
-	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
-	dataPacketTxPayloadDataClear(&app->dataPacketTx);
-	dataPacketTxClear(&app->dataPacketTx);
-}
-
-void appSendPidOffsetAndBiasValues(App *app)
-{
-	uint8_t qtyOfBytes = 8;
-	uint8_t bytes[qtyOfBytes];
-	uint32_t offset = (uint32_t) ((app->pid.offset * 1000) + 1000000);
-	uint32_t bias = (uint32_t) ((app->pid.bias * 1000) + 1000000);
-
-	bytes[0] = ((offset >> 24) & 0x000000FF);
-	bytes[1] = ((offset >> 16) & 0x000000FF);
-	bytes[2] = ((offset >> 8) & 0x000000FF);
-	bytes[3] = (offset & 0x000000FF);
-
-	bytes[4] = ((bias >> 24) & 0x000000FF);
-	bytes[5] = ((bias >> 16) & 0x000000FF);
-	bytes[6] = ((bias >> 8) & 0x000000FF);
-	bytes[7] = (bias & 0x000000FF);
-
-	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_PID_OFFSET_AND_BIAS);
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_CURRENT_PROCESS_VARIABLE_VALUE);
 	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
 	dataPacketTxMount(&app->dataPacketTx);
 	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
@@ -522,30 +470,15 @@ void appSendPidOffsetAndBiasValues(App *app)
 
 void appTrySendData(App *app)
 {
-	if (appGetEnableSendPidKsParameterValues(app) == TRUE)
+	if (appGetEnableSendCurrentConfigDataValues(app) == TRUE)
 	{
-		appSendPidKsParameterValues(app);
-		appSetEnableSendPidKsParameterValues(app, FALSE);
+		appSendCurrentConfigDataValues(app);
+		appSetEnableSendCurrentConfigDataValues(app, FALSE);
 	}
-	else if (appGetEnableSendPidMinAndMaxSumOfErrorsValues(app) == TRUE)
+	else if (appGetEnableSendCurrentPidSetpointValue(app) == TRUE)
 	{
-		appSendPidMinAndMaxSumOfErrorsValues(app);
-		appSetEnableSendPidMinAndMaxSumOfErrorsValues(app, FALSE);
-	}
-	else if (appGetEnableSendPidMinAndMaxControlledVariableValues(app) == TRUE)
-	{
-		appSendPidMinAndMaxControlledVariableValues(app);
-		appSetEnableSendPidMinAndMaxControlledVariableValues(app, FALSE);
-	}
-	else if (appGetEnableSendPidControllerParameterValues(app) == TRUE)
-	{
-		appSendPidControllerParameterValues(app);
-		appSetEnableSendPidControllerParameterValues(app, FALSE);
-	}
-	else if (appGetEnableSendPidOffsetAndBiasValues(app) == TRUE)
-	{
-		appSendPidOffsetAndBiasValues(app);
-		appSetEnableSendPidOffsetAndBiasValues(app, FALSE);
+		appSendCurrentPidSetpointValue(app);
+		appSetEnableSendCurrentPidSetpointValue(app, FALSE);
 	}
 	else if (appGetEnableSendProcessVariable(app) == TRUE)
 	{
@@ -573,14 +506,14 @@ void appSetEnableSendProcessVariable(App *app, Bool status)
 	app->enableSendProcessVariable = status;
 }
 
-Bool appGetEnableSendPidKsParameterValues(App *app)
+Bool appGetEnableSendCurrentConfigDataValues(App *app)
 {
-	return app->enableSendPidKsParameterValues;
+	return app->enableSendCurrentConfigDataValues;
 }
 
-void appSetEnableSendPidKsParameterValues(App *app, Bool status)
+void appSetEnableSendCurrentConfigDataValues(App *app, Bool status)
 {
-	app->enableSendPidKsParameterValues = status;
+	app->enableSendCurrentConfigDataValues = status;
 }
 
 void appSetSamplingInterval(App *app, uint16_t samplingInterval)
@@ -603,16 +536,6 @@ uint16_t appGetPidInterval(App *app)
 	return (uint16_t) (10000 * pidGetInterval(&app->pid));
 }
 
-Bool appGetEnableSendPidControllerParameterValues(App *app)
-{
-	return app->enableSendPidControllerParameterValues;
-}
-
-void appSetEnableSendPidControllerParameterValues(App *app, Bool status)
-{
-	app->enableSendPidControllerParameterValues = status;
-}
-
 Bool appGetRunPidControllerStatus(App *app)
 {
 	return app->runPidController;
@@ -623,32 +546,12 @@ void appSetRunPidControllerStatus(App *app, Bool status)
 	app->runPidController = status;
 }
 
-Bool appGetEnableSendPidMinAndMaxSumOfErrorsValues(App *app)
+Bool appGetEnableSendCurrentPidSetpointValue(App *app)
 {
-	return app->enableSendPidMinAndMaxSumOfErrors;
+	return app->enableSendCurrentPidSetpointValue;
 }
 
-void appSetEnableSendPidMinAndMaxSumOfErrorsValues(App *app, Bool status)
+void appSetEnableSendCurrentPidSetpointValue(App *app, Bool status)
 {
-	app->enableSendPidMinAndMaxSumOfErrors = status;
-}
-
-Bool appGetEnableSendPidMinAndMaxControlledVariableValues(App *app)
-{
-	return app->enableSendPidMinAndMaxControlledVariable;
-}
-
-void appSetEnableSendPidMinAndMaxControlledVariableValues(App *app, Bool status)
-{
-	app->enableSendPidMinAndMaxControlledVariable = status;
-}
-
-Bool appGetEnableSendPidOffsetAndBiasValues(App *app)
-{
-	return app->enableSendPidOffsetAndBias;
-}
-
-void appSetEnableSendPidOffsetAndBiasValues(App *app, Bool status)
-{
-	app->enableSendPidOffsetAndBias = status;
+	app->enableSendCurrentPidSetpointValue = status;
 }
