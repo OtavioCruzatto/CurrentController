@@ -282,6 +282,7 @@ void appDecodeReceivedCommand(App *app)
 			if ((receivedPidSetpoint >= 0) && (receivedPidSetpoint <= 300000))
 			{
 				app->pid.setpoint = receivedPidSetpoint;
+				appSetEnableSendCurrentPidSetpointValue(app, TRUE);
 			}
 			break;
 
@@ -312,6 +313,10 @@ void appDecodeReceivedCommand(App *app)
 			{
 				app->enableSendProcessVariable = TRUE;
 			}
+			break;
+
+		case CMD_RX_ASK_FOR_CURRENT_PID_SETPOINT_VALUE:
+			appSetEnableSendCurrentPidSetpointValue(app, TRUE);
 			break;
 
 		default:
