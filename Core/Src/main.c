@@ -55,6 +55,7 @@ uint16_t blinkLedDelay = 0;
 uint16_t sendDataDelay1 = 0;
 uint16_t samplingInterval = 0;
 uint16_t controllerInterval = 0;
+uint16_t sendKeepAliveDelay = 0;
 
 App app;
 uint8_t stateMachine = 0x00;
@@ -88,6 +89,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		sendDataDelay1++;
 		samplingInterval++;
 		controllerInterval++;
+		sendKeepAliveDelay++;
 	}
 }
 
@@ -228,6 +230,15 @@ int main(void)
 			  {
 				  appTrySendData(&app);
 				  sendDataDelay1 = 0;
+			  }
+			  stateMachine = 5;
+			  break;
+
+		  case 5:
+			  if (sendKeepAliveDelay >= DELAY_2000_MILISECONDS)
+			  {
+				  appSetEnableSendKeepAliveMessage(&app, TRUE);
+				  sendKeepAliveDelay = 0;
 			  }
 			  stateMachine = 0;
 			  break;

@@ -37,6 +37,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->processVariableReadyToSend = FALSE;
 	app->enableSendProcessVariable = FALSE;
 	app->enableSendCurrentConfigDataValues = FALSE;
+	app->enableSendKeepAliveMessage = FALSE;
 
 	// ======== Data Packet Rx =========== //
 	dataPacketRxInit(&app->dataPacketRx, 0xAA, 0x55);
@@ -476,6 +477,28 @@ void appSendProcessVariable(App *app)
 	dataPacketTxClear(&app->dataPacketTx);
 }
 
+void appSendKeepAliveMessage(App *app)
+{
+	uint8_t qtyOfBytes = 1;
+	uint8_t bytes[qtyOfBytes];
+
+	if (appGetRunPidControllerStatus(app) == TRUE)
+	{
+		bytes[0] = 0x01;
+	}
+	else
+	{
+		bytes[0] = 0x00;
+	}
+
+	dataPacketTxSetCommand(&app->dataPacketTx, CMD_TX_KEEP_ALIVE_MESSAGE);
+	dataPacketTxSetPayloadData(&app->dataPacketTx, bytes, qtyOfBytes);
+	dataPacketTxMount(&app->dataPacketTx);
+	dataPacketTxUartSend(&app->dataPacketTx, app->huart);
+	dataPacketTxPayloadDataClear(&app->dataPacketTx);
+	dataPacketTxClear(&app->dataPacketTx);
+}
+
 void appTrySendData(App *app)
 {
 	if (appGetEnableSendCurrentConfigDataValues(app) == TRUE)
@@ -487,6 +510,11 @@ void appTrySendData(App *app)
 	{
 		appSendCurrentPidSetpointValue(app);
 		appSetEnableSendCurrentPidSetpointValue(app, FALSE);
+	}
+	else if (appGetEnableSendKeepAliveMessage(app) == TRUE)
+	{
+		appSendKeepAliveMessage(app);
+		appSetEnableSendKeepAliveMessage(app, FALSE);
 	}
 	else if (appGetEnableSendProcessVariable(app) == TRUE)
 	{
@@ -562,4 +590,14 @@ Bool appGetEnableSendCurrentPidSetpointValue(App *app)
 void appSetEnableSendCurrentPidSetpointValue(App *app, Bool status)
 {
 	app->enableSendCurrentPidSetpointValue = status;
+}
+
+Bool appGetEnableSendKeepAliveMessage(App *app)
+{
+	return app->enableSendKeepAliveMessage;
+}
+
+void appSetEnableSendKeepAliveMessage(App *app, Bool status)
+{
+	app->enableSendKeepAliveMessage = status;
 }

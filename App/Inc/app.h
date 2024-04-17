@@ -26,7 +26,8 @@ typedef enum APP_TX_COMMANDS
 {
 	CMD_TX_CURRENT_CONFIG_DATA_VALUES = 0x80,
 	CMD_TX_CURRENT_PID_SETPOINT = 0x81,
-	CMD_TX_CURRENT_PROCESS_VARIABLE_VALUE = 0x82
+	CMD_TX_CURRENT_PROCESS_VARIABLE_VALUE = 0x82,
+	CMD_TX_KEEP_ALIVE_MESSAGE = 0x83
 } CommandsToComputer;
 
 typedef struct
@@ -57,6 +58,7 @@ typedef struct
 	Bool enableSendProcessVariable;
 	Bool enableSendCurrentConfigDataValues;
 	Bool enableSendCurrentPidSetpointValue;
+	Bool enableSendKeepAliveMessage;
 
 	// ======== Data Packet Rx =========== //
 	DataPacketRx dataPacketRx;
@@ -104,6 +106,7 @@ void appSetData(App *app, uint8_t *data, uint8_t dataLength);
 void appSendProcessVariable(App *app);
 void appSendCurrentConfigDataValues(App *app);
 void appSendCurrentPidSetpointValue(App *app);
+void appSendKeepAliveMessage(App *app);
 void appTrySendData(App *app);
 Bool appGetProcessVariableReadyToSend(App *app);
 void appSetProcessVariableReadyToSend(App *app, Bool status);
@@ -113,5 +116,7 @@ Bool appGetEnableSendCurrentConfigDataValues(App *app);
 void appSetEnableSendCurrentConfigDataValues(App *app, Bool status);
 Bool appGetEnableSendCurrentPidSetpointValue(App *app);
 void appSetEnableSendCurrentPidSetpointValue(App *app, Bool status);
+Bool appGetEnableSendKeepAliveMessage(App *app);
+void appSetEnableSendKeepAliveMessage(App *app, Bool status);
 
 #endif /* INC_APP_H_ */
