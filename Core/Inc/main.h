@@ -33,12 +33,12 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 
 //#include "enums.h"
-#include "defs.h"
-#include "dataPacketTx.h"
-#include "dataPacketRx.h"
-#include "pid.h"
-#include "movingAverage.h"
+//#include "defs.h"
+//#include "pid.h"
+//#include "movingAverage.h"
+//#include "comm.h"
 #include "app.h"
+
 
 /* USER CODE END Includes */
 

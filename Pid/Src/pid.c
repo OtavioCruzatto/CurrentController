@@ -80,29 +80,44 @@ void pidCompute(PidController *pidController)
 	pidController->previousError = pidController->currentError;
 }
 
-void pidSetSetpoint(PidController *pidController, float setpoint)
+void pidClearParameters(PidController *pidController)
 {
-	pidController->setpoint = setpoint;
+	pidController->controlledVariable = 0;
+	pidController->currentError = 0;
+	pidController->differenceOfErrors = 0;
+	pidController->previousError = 0;
+	pidController->processVariable = 0;
+	pidController->sumOfErrors = 0;
 }
 
-float pidGetSetpoint(PidController *pidController)
+float pidGetKp(PidController *pidController)
 {
-	return pidController->setpoint;
+	return pidController->kp;
 }
 
-void pidSetProcessVariable(PidController *pidController, float processVariable)
+void pidSetKp(PidController *pidController, float kp)
 {
-	pidController->processVariable = processVariable + pidController->offset;
+	pidController->kp = kp;
 }
 
-float pidGetProcessVariable(PidController *pidController)
+float pidGetKi(PidController *pidController)
 {
-	return pidController->processVariable;
+	return pidController->ki;
 }
 
-float pidGetControlledVariable(PidController *pidController)
+void pidSetKi(PidController *pidController, float ki)
 {
-	return pidController->controlledVariable;
+	pidController->ki = ki;
+}
+
+float pidGetKd(PidController *pidController)
+{
+	return pidController->kd;
+}
+
+void pidSetKd(PidController *pidController, float kd)
+{
+	pidController->kd = kd;
 }
 
 float pidGetInterval(PidController *pidController)
@@ -113,6 +128,31 @@ float pidGetInterval(PidController *pidController)
 void pidSetInterval(PidController *pidController, float interval)
 {
 	pidController->interval = interval;
+}
+
+float pidGetSetpoint(PidController *pidController)
+{
+	return pidController->setpoint;
+}
+
+void pidSetSetpoint(PidController *pidController, float setpoint)
+{
+	pidController->setpoint = setpoint;
+}
+
+float pidGetProcessVariable(PidController *pidController)
+{
+	return pidController->processVariable;
+}
+
+void pidSetProcessVariable(PidController *pidController, float processVariable)
+{
+	pidController->processVariable = processVariable + pidController->offset;
+}
+
+float pidGetControlledVariable(PidController *pidController)
+{
+	return pidController->controlledVariable;
 }
 
 float pidGetOffset(PidController *pidController)
@@ -133,4 +173,76 @@ float pidGetBias(PidController *pidController)
 void pidSetBias(PidController *pidController, float bias)
 {
 	pidController->bias = bias;
+}
+
+int32_t pidGetMinSumOfErrors(PidController *pidController)
+{
+	return pidController->minSumOfErrors;
+}
+
+void pidSetMinSumOfErrors(PidController *pidController, int32_t minSumOfErrors)
+{
+	if (minSumOfErrors < MIN_SUM_OF_ERRORS_ALLOWED)
+	{
+		minSumOfErrors = MIN_SUM_OF_ERRORS_ALLOWED;
+	}
+	else if (minSumOfErrors > MAX_SUM_OF_ERRORS_ALLOWED)
+	{
+		minSumOfErrors = MAX_SUM_OF_ERRORS_ALLOWED;
+	}
+	pidController->minSumOfErrors = minSumOfErrors;
+}
+
+int32_t pidGetMaxSumOfErrors(PidController *pidController)
+{
+	return pidController->maxSumOfErrors;
+}
+
+void pidSetMaxSumOfErrors(PidController *pidController, int32_t maxSumOfErrors)
+{
+	if (maxSumOfErrors < MIN_SUM_OF_ERRORS_ALLOWED)
+	{
+		maxSumOfErrors = MIN_SUM_OF_ERRORS_ALLOWED;
+	}
+	else if (maxSumOfErrors > MAX_SUM_OF_ERRORS_ALLOWED)
+	{
+		maxSumOfErrors = MAX_SUM_OF_ERRORS_ALLOWED;
+	}
+	pidController->maxSumOfErrors = maxSumOfErrors;
+}
+
+int32_t pidGetMinControlledVariable(PidController *pidController)
+{
+	return pidController->minControlledVariable;
+}
+
+void pidSetMinControlledVariable(PidController *pidController, int32_t minControlledVariable)
+{
+	if (minControlledVariable < MIN_CONTROLLED_VARIABLE_ALLOWED)
+	{
+		minControlledVariable = MIN_CONTROLLED_VARIABLE_ALLOWED;
+	}
+	else if (minControlledVariable > MAX_CONTROLLED_VARIABLE_ALLOWED)
+	{
+		minControlledVariable = MAX_CONTROLLED_VARIABLE_ALLOWED;
+	}
+	pidController->minControlledVariable = minControlledVariable;
+}
+
+int32_t pidGetMaxControlledVariable(PidController *pidController)
+{
+	return pidController->maxControlledVariable;
+}
+
+void pidSetMaxControlledVariable(PidController *pidController, int32_t maxControlledVariable)
+{
+	if (maxControlledVariable < MIN_CONTROLLED_VARIABLE_ALLOWED)
+	{
+		maxControlledVariable = MIN_CONTROLLED_VARIABLE_ALLOWED;
+	}
+	else if (maxControlledVariable > MAX_CONTROLLED_VARIABLE_ALLOWED)
+	{
+		maxControlledVariable = MAX_CONTROLLED_VARIABLE_ALLOWED;
+	}
+	pidController->maxControlledVariable = maxControlledVariable;
 }

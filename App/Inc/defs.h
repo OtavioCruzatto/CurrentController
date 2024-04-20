@@ -8,8 +8,6 @@
 #ifndef INC_DEFS_H_
 #define INC_DEFS_H_
 
-#include "main.h"
-
 #define DELAY_1_MILISECONDS		10
 #define DELAY_5_MILISECONDS		50
 #define DELAY_10_MILISECONDS	100

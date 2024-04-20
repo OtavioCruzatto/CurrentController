@@ -8,7 +8,6 @@
 #ifndef INC_DATAPACKETTX_H_
 #define INC_DATAPACKETTX_H_
 
-//#include "main.h"
 #include <string.h>
 #include "crc8.h"
 #include <stdint.h>

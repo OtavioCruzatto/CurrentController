@@ -1,3 +1,5 @@
 ../Dsp/Src/movingAverage.c:10:6:movingAverageInit	16	static
 ../Dsp/Src/movingAverage.c:19:6:movingAverageAddValue	16	static
 ../Dsp/Src/movingAverage.c:27:9:movingAverageGetMean	16	static
+../Dsp/Src/movingAverage.c:32:10:movingAverageGetWindow	16	static
+../Dsp/Src/movingAverage.c:37:6:movingAverageSetWindow	16	static

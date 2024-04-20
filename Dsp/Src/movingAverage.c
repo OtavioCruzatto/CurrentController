@@ -29,3 +29,16 @@ int32_t movingAverageGetMean(MovingAverage *movingAverage)
 	return movingAverage->movingAverage;
 }
 
+uint16_t movingAverageGetWindow(MovingAverage *movingAverage)
+{
+	return movingAverage->window;
+}
+
+void movingAverageSetWindow(MovingAverage *movingAverage, uint16_t window)
+{
+	if (window > MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS)
+	{
+		window = MOV_AVG_FIL_MAX_QTY_OF_ELEMENTS;
+	}
+	movingAverage->window = window;
+}

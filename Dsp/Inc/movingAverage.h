@@ -8,7 +8,6 @@
 #ifndef INC_MOVINGAVERAGE_H_
 #define INC_MOVINGAVERAGE_H_
 
-//#include "main.h"
 #include <stdint.h>
 #include <string.h>
 
@@ -26,5 +25,7 @@ typedef struct
 void movingAverageInit(MovingAverage *movingAverage, uint16_t window);
 void movingAverageAddValue(MovingAverage *movingAverage, int32_t newValue);
 int32_t movingAverageGetMean(MovingAverage *movingAverage);
+uint16_t movingAverageGetWindow(MovingAverage *movingAverage);
+void movingAverageSetWindow(MovingAverage *movingAverage, uint16_t window);
 
 #endif /* INC_MOVINGAVERAGE_H_ */

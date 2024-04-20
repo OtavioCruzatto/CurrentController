@@ -1,5 +1,7 @@
-App/Src/app.o: ../App/Src/app.c \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h \
+App/Src/comm.o: ../App/Src/comm.c \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/comm.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -33,17 +35,17 @@ App/Src/app.o: ../App/Src/app.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketRx.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Pid/Inc/pid.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/defs.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/comm.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketRx.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h \
- C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h
-C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h:
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/comm.h
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/comm.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h:
@@ -77,13 +79,11 @@ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketRx.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Pid/Inc/pid.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/defs.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/comm.h:
-C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h:
-C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h:
-C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketRx.h:
-C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/enums.h:
-C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/app.h:

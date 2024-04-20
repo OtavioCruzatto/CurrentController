@@ -8,8 +8,6 @@
 #ifndef INC_ENUMS_H_
 #define INC_ENUMS_H_
 
-//#include "main.h"
-
 typedef enum FLAG
 {
 	INACTIVE = 0x00,
