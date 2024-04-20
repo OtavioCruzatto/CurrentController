@@ -60,7 +60,7 @@ void commSendCurrentConfigDataValues(Comm *comm, App *app)
 	uint32_t kpTimes1000 = (uint32_t)(1000 * appGetPidKp(app));
 	uint32_t kiTimes1000 = (uint32_t)(1000 * appGetPidKi(app));
 	uint32_t kdTimes1000 = (uint32_t)(1000 * appGetPidKd(app));
-	uint16_t pidInterval = (uint16_t) (10000 * appGetPidInterval(app));
+	uint16_t pidInterval = (uint16_t) appGetPidInterval(app);
 	uint16_t samplingInterval = appGetSamplingInterval(app);
 	uint16_t movingAverageWindow = appGetMovingAverageFilterWindow(app);
 	uint32_t minSumOfErrors = (uint32_t) (appGetPidMinSumOfErrors(app) + 1000000000);
