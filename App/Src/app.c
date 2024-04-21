@@ -15,18 +15,11 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 	app->ledPort = ledPort;
 	app->ledPin = ledPin;
 
-	// ======== DAC ============ //
-	app->hdac = hdac;
-
 	// ======== Comm ======== //
 	commInit(&app->comm, huart, huartDebug);
 
 	// ======== Controller =========== //
-	pidInit(&app->pid, 50, 2, 100, 2, 0, PID_CONTROLLER);
-	pidSetSetpoint(&app->pid, 0);
-	appSetSamplingInterval(app, DELAY_5_MILISECONDS);
-	appSetRunPidControllerStatus(app, FALSE);
-	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+	controllerInit(&app->controller, hdac);
 
 	// ======== Filter =========== //
 	movingAverageInit(&app->movingAverageFilter, 128);
@@ -46,19 +39,7 @@ uint32_t appGetBlinkDelay(App *app)
 // ======== Controller =========== //
 void appRunController(App *app)
 {
-	pidCompute(&app->pid);
-	uint32_t controlledVariable = (uint32_t) pidGetControlledVariable(&app->pid);
-	HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, controlledVariable);
-}
-
-void appSetProcessVariable(App *app, uint32_t value)
-{
-	pidSetProcessVariable(&app->pid, (float) value);
-}
-
-float appGetProcessVariable(App *app)
-{
-	return pidGetProcessVariable(&app->pid);
+	controllerRunPidController(&app->controller);
 }
 
 uint32_t appGetCurrentInMiliAmps(uint16_t adcValue)
@@ -71,20 +52,6 @@ uint32_t appGetCurrentInMiliAmps(uint16_t adcValue)
   	float calculatedCurrentInMiliAmpsAux = 1000 * calculatedCurrentInAmps;
   	uint32_t calculatedCurrentInMiliAmps = (uint32_t) calculatedCurrentInMiliAmpsAux;
   	return calculatedCurrentInMiliAmps;
-}
-
-void appSetRunControllerStatus(App *app, Bool status)
-{
-	if (status == FALSE)
-	{
-		appSetRunPidControllerStatus(app, FALSE);
-		pidClearParameters(&app->pid);
-		HAL_DAC_SetValue(&app->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
-	}
-	else
-	{
-		appSetRunPidControllerStatus(app, TRUE);
-	}
 }
 
 // ======== Filter =========== //
@@ -128,57 +95,151 @@ void appSendData(App *app)
 // ======= Getters and Setters ======== //
 float appGetPidKp(App *app)
 {
-	return pidGetKp(&app->pid);
+	return controllerGetPidKp(&app->controller);
 }
 
 void appSetPidKp(App *app, float kp)
 {
-	pidSetKp(&app->pid, kp);
+	controllerSetPidKp(&app->controller, kp);
 }
 
 float appGetPidKi(App *app)
 {
-	return pidGetKi(&app->pid);
+	return controllerGetPidKi(&app->controller);
 }
 
 void appSetPidKi(App *app, float ki)
 {
-	pidSetKi(&app->pid, ki);
+	controllerSetPidKi(&app->controller, ki);
 }
 
 float appGetPidKd(App *app)
 {
-	return pidGetKd(&app->pid);
+	return controllerGetPidKd(&app->controller);
 }
 
 void appSetPidKd(App *app, float kd)
 {
-	pidSetKd(&app->pid, kd);
+	controllerSetPidKd(&app->controller, kd);
 }
 
 uint16_t appGetPidInterval(App *app)
 {
-	return (uint16_t) (10000 * pidGetInterval(&app->pid));
+	return (uint16_t) (10000 * controllerGetPidInterval(&app->controller));
 }
 
 void appSetPidInterval(App *app, uint16_t pidInterval)
 {
-	if ((pidInterval >= 0) && (pidInterval <= 50000))
+	if ((pidInterval >= 0) && (pidInterval <= DELAY_5000_MILISECONDS))
 	{
-		pidSetInterval(&app->pid, ((float) pidInterval) / 10000);
+		controllerSetPidInterval(&app->controller, ((float) pidInterval) / 10000);
 	}
+}
+
+int32_t appGetPidMinSumOfErrors(App *app)
+{
+	return controllerGetPidMinSumOfErrors(&app->controller);
+}
+
+void appSetPidMinSumOfErrors(App *app, int32_t minSumOfErrors)
+{
+	controllerSetPidMinSumOfErrors(&app->controller, minSumOfErrors);
+}
+
+int32_t appGetPidMaxSumOfErrors(App *app)
+{
+	return controllerGetPidMaxSumOfErrors(&app->controller);
+}
+
+void appSetPidMaxSumOfErrors(App *app, int32_t maxSumOfErrors)
+{
+	controllerSetPidMaxSumOfErrors(&app->controller, maxSumOfErrors);
+}
+
+int32_t appGetPidMinControlledVariable(App *app)
+{
+	return controllerGetPidMinControlledVariable(&app->controller);
+}
+
+void appSetPidMinControlledVariable(App *app, int32_t minControlledVariable)
+{
+	controllerSetPidMinControlledVariable(&app->controller, minControlledVariable);
+}
+
+int32_t appGetPidMaxControlledVariable(App *app)
+{
+	return controllerGetPidMaxControlledVariable(&app->controller);
+}
+
+void appSetPidMaxControlledVariable(App *app, int32_t maxControlledVariable)
+{
+	controllerSetPidMaxControlledVariable(&app->controller, maxControlledVariable);
+}
+
+float appGetPidOffset(App *app)
+{
+	return controllerGetPidOffset(&app->controller);
+}
+
+void appSetPidOffset(App *app, float offset)
+{
+	controllerSetPidOffset(&app->controller, offset);
+}
+
+float appGetPidBias(App *app)
+{
+	return controllerGetPidBias(&app->controller);
+}
+
+void appSetPidBias(App *app, float bias)
+{
+	controllerSetPidBias(&app->controller, bias);
+}
+
+float appGetPidSetpoint(App *app)
+{
+	return controllerGetPidSetpoint(&app->controller);
+}
+
+void appSetPidSetpoint(App *app, float setpoint)
+{
+	if ((setpoint >= MIN_CURRENT_IN_MICRO_AMPS) && (setpoint <= MAX_CURRENT_IN_MICRO_AMPS))
+	{
+		controllerSetPidSetpoint(&app->controller, setpoint);
+		commSetEnableSendCurrentPidSetpointValue(&app->comm, TRUE);
+	}
+}
+
+float appGetPidProcessVariable(App *app)
+{
+	return controllerGetPidProcessVariable(&app->controller);
+}
+
+void appSetPidProcessVariable(App *app, uint32_t value)
+{
+	controllerSetPidProcessVariable(&app->controller, (float) value);
+}
+
+Bool appGetRunPidControllerStatus(App *app)
+{
+	return controllerGetRunPidControllerStatus(&app->controller);
+}
+
+void appSetRunPidControllerStatus(App *app, Bool status)
+{
+	controllerSetRunPidControllerStatus(&app->controller, status);
 }
 
 uint16_t appGetSamplingInterval(App *app)
 {
-	return app->samplingInterval;
+	return controllerGetSamplingInterval(&app->controller);
 }
 
 void appSetSamplingInterval(App *app, uint16_t samplingInterval)
 {
-	if ((samplingInterval >= 0) && (samplingInterval <= 50000))
+	if ((samplingInterval >= 0) && (samplingInterval <= DELAY_5000_MILISECONDS))
 	{
-		app->samplingInterval = samplingInterval;
+		controllerSetSamplingInterval(&app->controller, samplingInterval);
 	}
 }
 
@@ -190,90 +251,6 @@ uint16_t appGetMovingAverageFilterWindow(App *app)
 void appSetMovingAverageFilterWindow(App *app, uint16_t movingAverageFilterWindow)
 {
 	movingAverageSetWindow(&app->movingAverageFilter, movingAverageFilterWindow);
-}
-
-int32_t appGetPidMinSumOfErrors(App *app)
-{
-	return pidGetMinSumOfErrors(&app->pid);
-}
-
-void appSetPidMinSumOfErrors(App *app, int32_t minSumOfErrors)
-{
-	pidSetMinSumOfErrors(&app->pid, minSumOfErrors);
-}
-
-int32_t appGetPidMaxSumOfErrors(App *app)
-{
-	return pidGetMaxSumOfErrors(&app->pid);
-}
-
-void appSetPidMaxSumOfErrors(App *app, int32_t maxSumOfErrors)
-{
-	pidSetMaxSumOfErrors(&app->pid, maxSumOfErrors);
-}
-
-int32_t appGetPidMinControlledVariable(App *app)
-{
-	return pidGetMinControlledVariable(&app->pid);
-}
-
-void appSetPidMinControlledVariable(App *app, int32_t minControlledVariable)
-{
-	pidSetMinControlledVariable(&app->pid, minControlledVariable);
-}
-
-int32_t appGetPidMaxControlledVariable(App *app)
-{
-	return pidGetMaxControlledVariable(&app->pid);
-}
-
-void appSetPidMaxControlledVariable(App *app, int32_t maxControlledVariable)
-{
-	pidSetMaxControlledVariable(&app->pid, maxControlledVariable);
-}
-
-float appGetPidOffset(App *app)
-{
-	return pidGetOffset(&app->pid);
-}
-
-void appSetPidOffset(App *app, float offset)
-{
-	pidSetOffset(&app->pid, offset);
-}
-
-float appGetPidBias(App *app)
-{
-	return pidGetBias(&app->pid);
-}
-
-void appSetPidBias(App *app, float bias)
-{
-	pidSetBias(&app->pid, bias);
-}
-
-float appGetPidSetpoint(App *app)
-{
-	return pidGetSetpoint(&app->pid);
-}
-
-void appSetPidSetpoint(App *app, float setpoint)
-{
-	if ((setpoint >= 0) && (setpoint <= 300000))
-	{
-		pidSetSetpoint(&app->pid, setpoint);
-		commSetEnableSendCurrentPidSetpointValue(&app->comm, TRUE);
-	}
-}
-
-Bool appGetRunPidControllerStatus(App *app)
-{
-	return app->runPidController;
-}
-
-void appSetRunPidControllerStatus(App *app, Bool status)
-{
-	app->runPidController = status;
 }
 
 Bool appGetEnableSendKeepAliveMessage(App *app)

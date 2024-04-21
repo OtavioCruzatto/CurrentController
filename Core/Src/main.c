@@ -175,7 +175,7 @@ int main(void)
 		  uint32_t calculatedCurrentInMiliAmps = appGetCurrentInMiliAmps(adcValue);
 		  appAddNewValueToFilter(&app, calculatedCurrentInMiliAmps);
 		  uint32_t filteredCurrentInMiliAmps = appGetFilterResult(&app);
-		  appSetProcessVariable(&app, filteredCurrentInMiliAmps);
+		  appSetPidProcessVariable(&app, filteredCurrentInMiliAmps);
 
 		  samplingInterval = 0;
 	  }

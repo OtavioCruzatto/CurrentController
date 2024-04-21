@@ -10,10 +10,13 @@
 
 #include <stdint.h>
 #include "stm32f4xx_hal.h"
-#include "pid.h"
+#include "controller.h"
 #include "enums.h"
 #include "defs.h"
 #include "movingAverage.h"
+
+#define MIN_CURRENT_IN_MICRO_AMPS	0
+#define MAX_CURRENT_IN_MICRO_AMPS	300000
 
 typedef struct App App;
 
@@ -26,19 +29,14 @@ struct App
 	GPIO_TypeDef* ledPort;
 	uint16_t ledPin;
 
-	// ======== DAC ============ //
-	DAC_HandleTypeDef hdac;
+	// ======== Comm ======== //
+	Comm comm;
 
 	// ======== Controller =========== //
-	PidController pid;
-	uint16_t samplingInterval;
-	Bool runPidController;
+	Controller controller;
 
 	// ======== Filter =========== //
 	MovingAverage movingAverageFilter;
-
-	// ======== Comm ======== //
-	Comm comm;
 };
 
 // ======== Init =========== //
@@ -50,12 +48,7 @@ uint32_t appGetBlinkDelay(App *app);
 
 // ======== Controller =========== //
 void appRunController(App *app);
-void appSetProcessVariable(App *app, uint32_t value);
-float appGetProcessVariable(App *app);
-Bool appGetRunPidControllerStatus(App *app);
-void appSetRunPidControllerStatus(App *app, Bool status);
 uint32_t appGetCurrentInMiliAmps(uint16_t adcValue);
-void appSetRunControllerStatus(App *app, Bool status);
 
 // ======== Filter =========== //
 void appAddNewValueToFilter(App *app, uint32_t newValue);
@@ -97,6 +90,10 @@ float appGetPidBias(App *app);
 void appSetPidBias(App *app, float bias);
 float appGetPidSetpoint(App *app);
 void appSetPidSetpoint(App *app, float setpoint);
+float appGetPidProcessVariable(App *app);
+void appSetPidProcessVariable(App *app, uint32_t value);
+Bool appGetRunPidControllerStatus(App *app);
+void appSetRunPidControllerStatus(App *app, Bool status);
 Bool appGetEnableSendKeepAliveMessage(App *app);
 void appSetEnableSendKeepAliveMessage(App *app, Bool status);
 

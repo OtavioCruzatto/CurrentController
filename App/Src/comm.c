@@ -187,7 +187,7 @@ void commSendKeepAliveMessage(Comm *comm, App *app)
 
 void commSendProcessVariable(Comm *comm, App *app)
 {
-	uint32_t processVariableValue = (uint32_t) appGetProcessVariable(app);
+	uint32_t processVariableValue = (uint32_t) appGetPidProcessVariable(app);
 	uint8_t qtyOfBytes = 4;
 	uint8_t bytes[qtyOfBytes];
 	bytes[0] = ((processVariableValue >> 24) & 0x000000FF);
@@ -362,11 +362,11 @@ void commDecodeReceivedCommand(Comm *comm, App *app)
 		case CMD_RX_SET_RUN_PID_CONTROLLER_STATUS:
 			if (comm->data[0] == 0x00)
 			{
-				appSetRunControllerStatus(app, FALSE);
+				appSetRunPidControllerStatus(app, FALSE);
 			}
 			else if (comm->data[0] == 0x01)
 			{
-				appSetRunControllerStatus(app, TRUE);
+				appSetRunPidControllerStatus(app, TRUE);
 			}
 			break;
 
