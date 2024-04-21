@@ -39,11 +39,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   000166b3  00000000  00000000  0005fe42  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000df6f8  00000000  00000000  000764f5  2**0
+ 18 .debug_str    000df6e0  00000000  00000000  000764f5  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000050  00000000  00000000  00155bed  2**0
+ 19 .comment      00000050  00000000  00000000  00155bd5  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00005484  00000000  00000000  00155c40  2**2
+ 20 .debug_frame  00005484  00000000  00000000  00155c28  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1456,9 +1456,9 @@ void appAppendReceivedByte(App *app, uint8_t receivedByte)
  800104e:	46bd      	mov	sp, r7
  8001050:	bd80      	pop	{r7, pc}
 
-08001052 <appTryDecodeReceivedDataPacket>:
+08001052 <appDecodeReceivedData>:
 
-void appTryDecodeReceivedDataPacket(App *app)
+void appDecodeReceivedData(App *app)
 {
  8001052:	b580      	push	{r7, lr}
  8001054:	b082      	sub	sp, #8
@@ -1475,9 +1475,9 @@ void appTryDecodeReceivedDataPacket(App *app)
  800106a:	46bd      	mov	sp, r7
  800106c:	bd80      	pop	{r7, pc}
 
-0800106e <appTryExtractCommandAndPayloadFromDecodedDataPacket>:
+0800106e <appExtractCommandAndPayloadFromDecodedData>:
 
-void appTryExtractCommandAndPayloadFromDecodedDataPacket(App *app)
+void appExtractCommandAndPayloadFromDecodedData(App *app)
 {
  800106e:	b580      	push	{r7, lr}
  8001070:	b082      	sub	sp, #8
@@ -1494,9 +1494,9 @@ void appTryExtractCommandAndPayloadFromDecodedDataPacket(App *app)
  8001086:	46bd      	mov	sp, r7
  8001088:	bd80      	pop	{r7, pc}
 
-0800108a <appTryDecodeExtractedCommand>:
+0800108a <appDecodeExtractedCommand>:
 
-void appTryDecodeExtractedCommand(App *app)
+void appDecodeExtractedCommand(App *app)
 {
  800108a:	b580      	push	{r7, lr}
  800108c:	b082      	sub	sp, #8
@@ -1514,10 +1514,10 @@ void appTryDecodeExtractedCommand(App *app)
  80010a4:	46bd      	mov	sp, r7
  80010a6:	bd80      	pop	{r7, pc}
 
-080010a8 <appTrySendData>:
+080010a8 <appSendData>:
 
 // ======== Data Packet Tx =========== //
-void appTrySendData(App *app)
+void appSendData(App *app)
 {
  80010a8:	b580      	push	{r7, lr}
  80010aa:	b082      	sub	sp, #8
@@ -4502,9 +4502,9 @@ int main(void)
  8002538:	2b63      	cmp	r3, #99	; 0x63
  800253a:	d905      	bls.n	8002548 <main+0x140>
 	  		  {
-	  			appTryDecodeReceivedDataPacket(&app);
+	  			appDecodeReceivedData(&app);
  800253c:	482c      	ldr	r0, [pc, #176]	; (80025f0 <main+0x1e8>)
- 800253e:	f7fe fd88 	bl	8001052 <appTryDecodeReceivedDataPacket>
+ 800253e:	f7fe fd88 	bl	8001052 <appDecodeReceivedData>
 	  			decodeDataPacketDelay = 0;
  8002542:	4b31      	ldr	r3, [pc, #196]	; (8002608 <main+0x200>)
  8002544:	2200      	movs	r2, #0
@@ -4518,9 +4518,9 @@ int main(void)
  800254e:	e044      	b.n	80025da <main+0x1d2>
 
 		  case 1:
-			  appTryExtractCommandAndPayloadFromDecodedDataPacket(&app);
+			  appExtractCommandAndPayloadFromDecodedData(&app);
  8002550:	4827      	ldr	r0, [pc, #156]	; (80025f0 <main+0x1e8>)
- 8002552:	f7fe fd8c 	bl	800106e <appTryExtractCommandAndPayloadFromDecodedDataPacket>
+ 8002552:	f7fe fd8c 	bl	800106e <appExtractCommandAndPayloadFromDecodedData>
 			  stateMachine = 2;
  8002556:	4b2b      	ldr	r3, [pc, #172]	; (8002604 <main+0x1fc>)
  8002558:	2202      	movs	r2, #2
@@ -4529,9 +4529,9 @@ int main(void)
  800255c:	e03d      	b.n	80025da <main+0x1d2>
 
 		  case 2:
-			  appTryDecodeExtractedCommand(&app);
+			  appDecodeExtractedCommand(&app);
  800255e:	4824      	ldr	r0, [pc, #144]	; (80025f0 <main+0x1e8>)
- 8002560:	f7fe fd93 	bl	800108a <appTryDecodeExtractedCommand>
+ 8002560:	f7fe fd93 	bl	800108a <appDecodeExtractedCommand>
 			  stateMachine = 3;
  8002564:	4b27      	ldr	r3, [pc, #156]	; (8002604 <main+0x1fc>)
  8002566:	2203      	movs	r2, #3
@@ -4572,9 +4572,9 @@ int main(void)
  8002596:	f5b3 7f7a 	cmp.w	r3, #1000	; 0x3e8
  800259a:	d305      	bcc.n	80025a8 <main+0x1a0>
 			  {
-				  appTrySendData(&app);
+				  appSendData(&app);
  800259c:	4814      	ldr	r0, [pc, #80]	; (80025f0 <main+0x1e8>)
- 800259e:	f7fe fd83 	bl	80010a8 <appTrySendData>
+ 800259e:	f7fe fd83 	bl	80010a8 <appSendData>
 				  sendDataDelay1 = 0;
  80025a2:	4b1b      	ldr	r3, [pc, #108]	; (8002610 <main+0x208>)
  80025a4:	2200      	movs	r2, #0

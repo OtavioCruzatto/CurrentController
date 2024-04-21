@@ -9,10 +9,10 @@
 ../App/Src/app.c:91:6:appAddNewValueToFilter	16	static
 ../App/Src/app.c:96:10:appGetFilterResult	16	static
 ../App/Src/app.c:102:6:appAppendReceivedByte	16	static
-../App/Src/app.c:107:6:appTryDecodeReceivedDataPacket	16	static
-../App/Src/app.c:112:6:appTryExtractCommandAndPayloadFromDecodedDataPacket	16	static
-../App/Src/app.c:117:6:appTryDecodeExtractedCommand	16	static
-../App/Src/app.c:123:6:appTrySendData	16	static
+../App/Src/app.c:107:6:appDecodeReceivedData	16	static
+../App/Src/app.c:112:6:appExtractCommandAndPayloadFromDecodedData	16	static
+../App/Src/app.c:117:6:appDecodeExtractedCommand	16	static
+../App/Src/app.c:123:6:appSendData	16	static
 ../App/Src/app.c:129:7:appGetPidKp	16	static
 ../App/Src/app.c:134:6:appSetPidKp	16	static
 ../App/Src/app.c:139:7:appGetPidKi	16	static

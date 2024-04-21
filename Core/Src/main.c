@@ -200,19 +200,19 @@ int main(void)
 	  	  case 0:
 	  		  if (decodeDataPacketDelay >= DELAY_10_MILISECONDS)
 	  		  {
-	  			appTryDecodeReceivedDataPacket(&app);
+	  			appDecodeReceivedData(&app);
 	  			decodeDataPacketDelay = 0;
 	  		  }
 	  		  stateMachine = 1;
 	  		  break;
 
 		  case 1:
-			  appTryExtractCommandAndPayloadFromDecodedDataPacket(&app);
+			  appExtractCommandAndPayloadFromDecodedData(&app);
 			  stateMachine = 2;
 			  break;
 
 		  case 2:
-			  appTryDecodeExtractedCommand(&app);
+			  appDecodeExtractedCommand(&app);
 			  stateMachine = 3;
 			  break;
 
@@ -228,7 +228,7 @@ int main(void)
 		  case 4:
 			  if (sendDataDelay1 >= DELAY_100_MILISECONDS)
 			  {
-				  appTrySendData(&app);
+				  appSendData(&app);
 				  sendDataDelay1 = 0;
 			  }
 			  stateMachine = 5;

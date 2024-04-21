@@ -63,12 +63,12 @@ uint32_t appGetFilterResult(App *app);
 
 // ======== Data Packet Rx =========== //
 void appAppendReceivedByte(App *app, uint8_t receivedByte);
-void appTryDecodeReceivedDataPacket(App *app);
-void appTryExtractCommandAndPayloadFromDecodedDataPacket(App *app);
-void appTryDecodeExtractedCommand(App *app);
+void appDecodeReceivedData(App *app);
+void appExtractCommandAndPayloadFromDecodedData(App *app);
+void appDecodeExtractedCommand(App *app);
 
 // ======== Data Packet Tx =========== //
-void appTrySendData(App *app);
+void appSendData(App *app);
 
 // ======= Getters and Setters ======== //
 float appGetPidKp(App *app);

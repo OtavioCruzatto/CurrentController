@@ -104,23 +104,23 @@ void appAppendReceivedByte(App *app, uint8_t receivedByte)
 	commAppendReceivedByte(&app->comm, receivedByte);
 }
 
-void appTryDecodeReceivedDataPacket(App *app)
+void appDecodeReceivedData(App *app)
 {
 	commTryDecodeReceivedDataPacket(&app->comm);
 }
 
-void appTryExtractCommandAndPayloadFromDecodedDataPacket(App *app)
+void appExtractCommandAndPayloadFromDecodedData(App *app)
 {
 	commTryExtractCommandAndPayloadFromDecodedDataPacket(&app->comm);
 }
 
-void appTryDecodeExtractedCommand(App *app)
+void appDecodeExtractedCommand(App *app)
 {
 	commTryDecodeExtractedCommand(&app->comm, app);
 }
 
 // ======== Data Packet Tx =========== //
-void appTrySendData(App *app)
+void appSendData(App *app)
 {
 	commTrySendData(&app->comm, app);
 }
