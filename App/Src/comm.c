@@ -57,9 +57,9 @@ void commSendCurrentConfigDataValues(Comm *comm, App *app)
 {
 	uint8_t qtyOfBytes = 42;
 	uint8_t bytes[qtyOfBytes];
-	uint32_t kpTimes1000 = (uint32_t)(1000 * appGetPidKp(app));
-	uint32_t kiTimes1000 = (uint32_t)(1000 * appGetPidKi(app));
-	uint32_t kdTimes1000 = (uint32_t)(1000 * appGetPidKd(app));
+	uint32_t kpTimes1000 = (uint32_t) (1000 * appGetPidKp(app));
+	uint32_t kiTimes1000 = (uint32_t) (1000 * appGetPidKi(app));
+	uint32_t kdTimes1000 = (uint32_t) (1000 * appGetPidKd(app));
 	uint16_t pidInterval = (uint16_t) appGetPidInterval(app);
 	uint16_t samplingInterval = appGetSamplingInterval(app);
 	uint16_t movingAverageWindow = appGetMovingAverageFilterWindow(app);
@@ -170,11 +170,11 @@ void commSendKeepAliveMessage(Comm *comm, App *app)
 
 	if (appGetRunPidControllerStatus(app) == TRUE)
 	{
-		bytes[0] = 0x01;
+		bytes[0] = RUN;
 	}
 	else
 	{
-		bytes[0] = 0x00;
+		bytes[0] = HALT;
 	}
 
 	dataPacketTxSetCommand(&comm->dataPacketTx, CMD_TX_KEEP_ALIVE_MESSAGE);
@@ -360,22 +360,22 @@ void commDecodeReceivedCommand(Comm *comm, App *app)
 			break;
 
 		case CMD_RX_SET_RUN_PID_CONTROLLER_STATUS:
-			if (comm->data[0] == 0x00)
+			if (comm->data[0] == HALT)
 			{
 				appSetRunPidControllerStatus(app, FALSE);
 			}
-			else if (comm->data[0] == 0x01)
+			else if (comm->data[0] == RUN)
 			{
 				appSetRunPidControllerStatus(app, TRUE);
 			}
 			break;
 
 		case CMD_RX_SET_SEND_PROCESS_VARIABLE_STATUS:
-			if (comm->data[0] == 0x00)
+			if (comm->data[0] == NOT_SEND)
 			{
 				commSetEnableSendProcessVariable(comm, FALSE);
 			}
-			else if (comm->data[0] == 0x01)
+			else if (comm->data[0] == SEND)
 			{
 				commSetEnableSendProcessVariable(comm, TRUE);
 			}
