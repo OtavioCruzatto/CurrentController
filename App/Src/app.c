@@ -11,9 +11,7 @@
 void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac, UART_HandleTypeDef huartDebug)
 {
 	// ======== LED =========== //
-	app->blinkDelay = DELAY_100_MILISECONDS;
-	app->ledPort = ledPort;
-	app->ledPin = ledPin;
+	blinkLedInit(&app->blinkLed, ledPort, ledPin, PATTERN_TOGGLE_EACH_250_MS);
 
 	// ======== Comm ======== //
 	commInit(&app->comm, huart, huartDebug);
@@ -28,12 +26,7 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 // ======== LED =========== //
 void appExecuteBlinkLed(App *app)
 {
-	HAL_GPIO_TogglePin(app->ledPort, app->ledPin);
-}
-
-uint32_t appGetBlinkDelay(App *app)
-{
-	return app->blinkDelay;
+	blinkLedExecuteBlink(&app->blinkLed);
 }
 
 // ======== Controller =========== //
@@ -261,4 +254,9 @@ Bool appGetEnableSendKeepAliveMessage(App *app)
 void appSetEnableSendKeepAliveMessage(App *app, Bool status)
 {
 	commSetEnableSendKeepAliveMessage(&app->comm, status);
+}
+
+uint32_t appGetBlinkDelay(App *app)
+{
+	return blinkLedGetBlinkDelay(&app->blinkLed);
 }

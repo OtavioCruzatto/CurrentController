@@ -1,4 +1,5 @@
 "./App/Src/app.o"
+"./App/Src/blinkLed.o"
 "./App/Src/comm.o"
 "./App/Src/controller.o"
 "./Core/Src/main.o"

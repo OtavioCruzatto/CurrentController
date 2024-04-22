@@ -8,12 +8,11 @@
 #ifndef INC_APP_H_
 #define INC_APP_H_
 
-#include <stdint.h>
-#include "stm32f4xx_hal.h"
 #include "controller.h"
 #include "enums.h"
 #include "defs.h"
 #include "movingAverage.h"
+#include "blinkLed.h"
 
 #define MIN_CURRENT_IN_MICRO_AMPS	0
 #define MAX_CURRENT_IN_MICRO_AMPS	300000
@@ -25,9 +24,7 @@ typedef struct App App;
 struct App
 {
 	// ======== LED =========== //
-	uint32_t blinkDelay;
-	GPIO_TypeDef* ledPort;
-	uint16_t ledPin;
+	BlinkLed blinkLed;
 
 	// ======== Comm ======== //
 	Comm comm;
@@ -44,7 +41,6 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDe
 
 // ======== LED =========== //
 void appExecuteBlinkLed(App *app);
-uint32_t appGetBlinkDelay(App *app);
 
 // ======== Controller =========== //
 void appRunController(App *app);
@@ -96,5 +92,6 @@ Bool appGetRunPidControllerStatus(App *app);
 void appSetRunPidControllerStatus(App *app, Bool status);
 Bool appGetEnableSendKeepAliveMessage(App *app);
 void appSetEnableSendKeepAliveMessage(App *app, Bool status);
+uint32_t appGetBlinkDelay(App *app);
 
 #endif /* INC_APP_H_ */
