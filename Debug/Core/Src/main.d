@@ -39,6 +39,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Pid/Inc/pid.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/blinkLed.h \
+ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/sampling.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/comm.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h \
  C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h \
@@ -86,6 +87,7 @@ C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/defs.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Pid/Inc/pid.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/Dsp/Inc/movingAverage.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/blinkLed.h:
+C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/sampling.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/App/Inc/comm.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/dataPacketTx.h:
 C:/Users/Otavi/Documents/Embed/STM32/Projects/CurrentController/DataPacket/Inc/crc8.h:

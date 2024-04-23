@@ -8,19 +8,24 @@
 #include "app.h"
 
 // ======== Init =========== //
-void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac, UART_HandleTypeDef huartDebug)
+void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin,
+			UART_HandleTypeDef huart, DAC_HandleTypeDef hdac,
+			UART_HandleTypeDef huartDebug, ADC_HandleTypeDef hadc)
 {
 	// ======== LED =========== //
-	blinkLedInit(&app->blinkLed, ledPort, ledPin, PATTERN_TOGGLE_EACH_250_MS);
+	blinkLedInit(&app->blinkLed, ledPort, ledPin, PATTERN_TOGGLE_EACH_100_MS);
 
 	// ======== Comm ======== //
 	commInit(&app->comm, huart, huartDebug);
 
-	// ======== Controller =========== //
-	controllerInit(&app->controller, hdac);
-
 	// ======== Filter =========== //
 	movingAverageInit(&app->movingAverageFilter, 128);
+
+	// ======== Sampling =========== //
+	samplingInit(&app->sampling, hadc);
+
+	// ======== Controller =========== //
+	controllerInit(&app->controller, hdac);
 }
 
 // ======== LED =========== //
@@ -35,6 +40,7 @@ void appRunController(App *app)
 	controllerRunPidController(&app->controller);
 }
 
+// ======== App Calculations =========== //
 uint32_t appGetCurrentInMiliAmps(uint16_t adcValue)
 {
 	uint32_t electronicCircuitGain = 10;
@@ -45,6 +51,18 @@ uint32_t appGetCurrentInMiliAmps(uint16_t adcValue)
   	float calculatedCurrentInMiliAmpsAux = 1000 * calculatedCurrentInAmps;
   	uint32_t calculatedCurrentInMiliAmps = (uint32_t) calculatedCurrentInMiliAmpsAux;
   	return calculatedCurrentInMiliAmps;
+}
+
+// ======== Sampling =========== //
+void appExecuteSampling(App *app)
+{
+	samplingExecuteAdcRead(&app->sampling);
+
+	uint16_t readAdcValue = samplingGetAdcValue(&app->sampling);
+	uint32_t calculatedCurrentInMiliAmps = appGetCurrentInMiliAmps(readAdcValue);
+	appAddNewValueToFilter(app, calculatedCurrentInMiliAmps);
+	uint32_t filteredCurrentInMiliAmps = appGetFilterResult(app);
+	appSetPidProcessVariable(app, filteredCurrentInMiliAmps);
 }
 
 // ======== Filter =========== //
@@ -220,19 +238,28 @@ Bool appGetRunPidControllerStatus(App *app)
 
 void appSetRunPidControllerStatus(App *app, Bool status)
 {
+	if (status == TRUE)
+	{
+		blinkLedSetBlinkPattern(&app->blinkLed, PATTERN_TOGGLE_EACH_250_MS);
+	}
+	else
+	{
+		blinkLedSetBlinkPattern(&app->blinkLed, PATTERN_TOGGLE_EACH_100_MS);
+	}
+
 	controllerSetRunPidControllerStatus(&app->controller, status);
 }
 
 uint16_t appGetSamplingInterval(App *app)
 {
-	return controllerGetSamplingInterval(&app->controller);
+	return samplingGetSamplingInterval(&app->sampling);
 }
 
 void appSetSamplingInterval(App *app, uint16_t samplingInterval)
 {
 	if ((samplingInterval >= 0) && (samplingInterval <= DELAY_5000_MILISECONDS))
 	{
-		controllerSetSamplingInterval(&app->controller, samplingInterval);
+		samplingSetSamplingInterval(&app->sampling, samplingInterval);
 	}
 }
 

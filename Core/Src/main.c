@@ -145,7 +145,7 @@ int main(void)
 
   HAL_TIM_Base_Start_IT(&htim9);
   HAL_DAC_Start(&hdac, DAC_CHANNEL_1);
-  appInit(&app, LED_GPIO_Port, LED_Pin, huart2, hdac, huart3);
+  appInit(&app, LED_GPIO_Port, LED_Pin, huart2, hdac, huart3, hadc1);
   HAL_UART_Receive_IT(&huart2, &receivedByte, 1);
 
   /* USER CODE END 2 */
@@ -167,16 +167,7 @@ int main(void)
 
 	  if (samplingInterval >= appGetSamplingInterval(&app))
 	  {
-		  HAL_ADC_Start(&hadc1);
-		  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY);
-		  uint16_t adcValue = HAL_ADC_GetValue(&hadc1);
-		  HAL_ADC_Stop(&hadc1);
-
-		  uint32_t calculatedCurrentInMiliAmps = appGetCurrentInMiliAmps(adcValue);
-		  appAddNewValueToFilter(&app, calculatedCurrentInMiliAmps);
-		  uint32_t filteredCurrentInMiliAmps = appGetFilterResult(&app);
-		  appSetPidProcessVariable(&app, filteredCurrentInMiliAmps);
-
+		  appExecuteSampling(&app);
 		  samplingInterval = 0;
 	  }
 

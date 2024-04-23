@@ -1,0 +1,6 @@
+../App/Src/sampling.c:11:6:samplingInit	16	static
+../App/Src/sampling.c:19:6:samplingExecuteAdcRead	16	static
+../App/Src/sampling.c:28:10:samplingGetSamplingInterval	16	static
+../App/Src/sampling.c:33:6:samplingSetSamplingInterval	16	static
+../App/Src/sampling.c:38:10:samplingGetAdcValue	16	static
+../App/Src/sampling.c:43:6:samplingSetAdcValue	16	static

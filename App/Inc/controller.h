@@ -17,7 +17,6 @@ typedef struct
 {
 	// ======== Controller ============ //
 	PidController pid;
-	uint16_t samplingInterval;
 	Bool runPidController;
 
 	// ======== DAC ============ //
@@ -57,7 +56,5 @@ float controllerGetPidProcessVariable(Controller *controller);
 void controllerSetPidProcessVariable(Controller *controller, float value);
 Bool controllerGetRunPidControllerStatus(Controller *controller);
 void controllerSetRunPidControllerStatus(Controller *controller, Bool status);
-uint16_t controllerGetSamplingInterval(Controller *controller);
-void controllerSetSamplingInterval(Controller *controller, uint16_t samplingInterval);
 
 #endif /* INC_CONTROLLER_H_ */

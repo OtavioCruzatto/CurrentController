@@ -13,6 +13,7 @@
 #include "defs.h"
 #include "movingAverage.h"
 #include "blinkLed.h"
+#include "sampling.h"
 
 #define MIN_CURRENT_IN_MICRO_AMPS	0
 #define MAX_CURRENT_IN_MICRO_AMPS	300000
@@ -29,22 +30,32 @@ struct App
 	// ======== Comm ======== //
 	Comm comm;
 
-	// ======== Controller =========== //
-	Controller controller;
-
 	// ======== Filter =========== //
 	MovingAverage movingAverageFilter;
+
+	// ======== Sampling =========== //
+	Sampling sampling;
+
+	// ======== Controller =========== //
+	Controller controller;
 };
 
 // ======== Init =========== //
-void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin, UART_HandleTypeDef huart, DAC_HandleTypeDef hdac, UART_HandleTypeDef huartDebug);
+void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin,
+			UART_HandleTypeDef huart, DAC_HandleTypeDef hdac,
+			UART_HandleTypeDef huartDebug, ADC_HandleTypeDef hadc);
 
 // ======== LED =========== //
 void appExecuteBlinkLed(App *app);
 
 // ======== Controller =========== //
 void appRunController(App *app);
+
+// ======== App Calculations =========== //
 uint32_t appGetCurrentInMiliAmps(uint16_t adcValue);
+
+// ======== Sampling =========== //
+void appExecuteSampling(App *app);
 
 // ======== Filter =========== //
 void appAddNewValueToFilter(App *app, uint32_t newValue);

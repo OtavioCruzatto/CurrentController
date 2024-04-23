@@ -14,7 +14,6 @@ void controllerInit(Controller *controller, DAC_HandleTypeDef hdac)
 
 	pidInit(&controller->pid, 50, 2, 100, 2, 0, PID_CONTROLLER);
 	pidSetSetpoint(&controller->pid, 0);
-	controllerSetSamplingInterval(controller, DELAY_5_MILISECONDS);
 	controllerSetRunPidControllerStatus(controller, FALSE);
 	HAL_DAC_SetValue(&controller->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 }
@@ -162,14 +161,4 @@ void controllerSetRunPidControllerStatus(Controller *controller, Bool status)
 	}
 
 	controller->runPidController = status;
-}
-
-uint16_t controllerGetSamplingInterval(Controller *controller)
-{
-	return controller->samplingInterval;
-}
-
-void controllerSetSamplingInterval(Controller *controller, uint16_t samplingInterval)
-{
-	controller->samplingInterval = samplingInterval;
 }
