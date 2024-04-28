@@ -96,11 +96,12 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
     __HAL_RCC_GPIOA_CLK_ENABLE();
     /**ADC1 GPIO Configuration
     PA1     ------> ADC1_IN1
+    PA6     ------> ADC1_IN6
     */
-    GPIO_InitStruct.Pin = CURRENT_SENSE_Pin;
+    GPIO_InitStruct.Pin = HIGH_CURRENT_SENSE_Pin|LOW_CURRENT_SENSE_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    HAL_GPIO_Init(CURRENT_SENSE_GPIO_Port, &GPIO_InitStruct);
+    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* USER CODE BEGIN ADC1_MspInit 1 */
 
@@ -127,8 +128,9 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 
     /**ADC1 GPIO Configuration
     PA1     ------> ADC1_IN1
+    PA6     ------> ADC1_IN6
     */
-    HAL_GPIO_DeInit(CURRENT_SENSE_GPIO_Port, CURRENT_SENSE_Pin);
+    HAL_GPIO_DeInit(GPIOA, HIGH_CURRENT_SENSE_Pin|LOW_CURRENT_SENSE_Pin);
 
   /* USER CODE BEGIN ADC1_MspDeInit 1 */
 

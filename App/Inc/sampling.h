@@ -16,10 +16,21 @@ typedef struct
 	// ======== Sampling ============ //
 	uint16_t samplingInterval;
 	uint16_t adcValue;
+	uint16_t adcHysteresisCriticalValue;
+	uint16_t adcHysteresisThreshold;
+	uint16_t adcValueHigh;
+	uint16_t adcValueLow;
+	uint8_t currentMagnitudeOrder;
 
 	// ======== ADC ============ //
 	ADC_HandleTypeDef hadc;
 } Sampling;
+
+typedef enum CURRENT_MAGNITUDE_ORDER
+{
+	LOW_CURRENT = 0x00,
+	HIGH_CURRENT = 0x01
+} CurrentMagnitudeOrder;
 
 // ======== Init ======== //
 void samplingInit(Sampling *sampling, ADC_HandleTypeDef hdac);
@@ -32,5 +43,7 @@ uint16_t samplingGetSamplingInterval(Sampling *sampling);
 void samplingSetSamplingInterval(Sampling *sampling, uint16_t samplingInterval);
 uint16_t samplingGetAdcValue(Sampling *sampling);
 void samplingSetAdcValue(Sampling *sampling, uint16_t adcValue);
+uint8_t samplingGetCurrentMagnitudeOrder(Sampling *sampling);
+void samplingSetCurrentMagnitudeOrder(Sampling *sampling, uint8_t currentMagnitudeOrder);
 
 #endif /* INC_SAMPLING_H_ */

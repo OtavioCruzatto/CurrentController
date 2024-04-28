@@ -67,12 +67,14 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define BUTTON_Pin GPIO_PIN_13
 #define BUTTON_GPIO_Port GPIOC
-#define CURRENT_SENSE_Pin GPIO_PIN_1
-#define CURRENT_SENSE_GPIO_Port GPIOA
+#define HIGH_CURRENT_SENSE_Pin GPIO_PIN_1
+#define HIGH_CURRENT_SENSE_GPIO_Port GPIOA
 #define CURRENT_CTRL_Pin GPIO_PIN_4
 #define CURRENT_CTRL_GPIO_Port GPIOA
 #define LED_Pin GPIO_PIN_5
 #define LED_GPIO_Port GPIOA
+#define LOW_CURRENT_SENSE_Pin GPIO_PIN_6
+#define LOW_CURRENT_SENSE_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

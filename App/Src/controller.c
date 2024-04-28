@@ -12,7 +12,7 @@ void controllerInit(Controller *controller, DAC_HandleTypeDef hdac)
 {
 	controller->hdac = hdac;
 
-	pidInit(&controller->pid, 50, 2, 100, 2, 0, PID_CONTROLLER);
+	pidInit(&controller->pid, 50, 2, 100, 0, 0, PID_CONTROLLER);
 	pidSetSetpoint(&controller->pid, 0);
 	controllerSetRunPidControllerStatus(controller, FALSE);
 	HAL_DAC_SetValue(&controller->hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);

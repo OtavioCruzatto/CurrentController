@@ -41,12 +41,25 @@ void appRunController(App *app)
 }
 
 // ======== App Calculations =========== //
-uint32_t appGetCurrentInMiliAmps(uint16_t adcValue)
+uint32_t appGetCurrentInMiliAmps(App *app, uint16_t adcValue)
 {
-	uint32_t electronicCircuitGain = 10;
+	uint32_t electronicCircuitGain = 0;
+	float voltageDividerRate = 0;
+
+	if (samplingGetCurrentMagnitudeOrder(&app->sampling) == LOW_CURRENT)
+	{
+		electronicCircuitGain = 100;
+		voltageDividerRate = 0.877;
+	}
+	else
+	{
+		electronicCircuitGain = 10;
+		voltageDividerRate = 0.955;
+	}
+
 	uint32_t shuntResistorInOhms = 1;
   	float measuredSignalInVolts = ((3.3 * adcValue) / 4095);
-  	float conditionedSignalInVolts = measuredSignalInVolts / electronicCircuitGain;
+  	float conditionedSignalInVolts = measuredSignalInVolts / (electronicCircuitGain * voltageDividerRate);
   	float calculatedCurrentInAmps = conditionedSignalInVolts / shuntResistorInOhms;
   	float calculatedCurrentInMiliAmpsAux = 1000 * calculatedCurrentInAmps;
   	uint32_t calculatedCurrentInMiliAmps = (uint32_t) calculatedCurrentInMiliAmpsAux;
@@ -59,7 +72,7 @@ void appExecuteSampling(App *app)
 	samplingExecuteAdcRead(&app->sampling);
 
 	uint16_t readAdcValue = samplingGetAdcValue(&app->sampling);
-	uint32_t calculatedCurrentInMiliAmps = appGetCurrentInMiliAmps(readAdcValue);
+	uint32_t calculatedCurrentInMiliAmps = appGetCurrentInMiliAmps(app, readAdcValue);
 	appAddNewValueToFilter(app, calculatedCurrentInMiliAmps);
 	uint32_t filteredCurrentInMiliAmps = appGetFilterResult(app);
 	appSetPidProcessVariable(app, filteredCurrentInMiliAmps);

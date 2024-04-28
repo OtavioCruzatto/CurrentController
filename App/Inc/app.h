@@ -52,7 +52,7 @@ void appExecuteBlinkLed(App *app);
 void appRunController(App *app);
 
 // ======== App Calculations =========== //
-uint32_t appGetCurrentInMiliAmps(uint16_t adcValue);
+uint32_t appGetCurrentInMiliAmps(App *app, uint16_t adcValue);
 
 // ======== Sampling =========== //
 void appExecuteSampling(App *app);
