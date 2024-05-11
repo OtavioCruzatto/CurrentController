@@ -15,7 +15,7 @@ void samplingInit(Sampling *sampling, ADC_HandleTypeDef hadc)
 	sampling->adcHysteresisThreshold = 500;
 	sampling->currentMagnitudeOrder = LOW_CURRENT;
 
-	samplingSetSamplingInterval(sampling, DELAY_5_MILISECONDS);
+	samplingSetSamplingInterval(sampling, DELAY_1_MILISECONDS);
 }
 
 // ======== Sampling ============ //

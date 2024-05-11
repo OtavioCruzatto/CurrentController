@@ -27,7 +27,7 @@ void pidInit(PidController *pidController, float kp, float ki, float kd, float o
 	pidController->maxControlledVariable = 4095;
 	pidController->offset = offset;
 	pidController->bias = bias;
-	pidController->interval = ((float) DELAY_25_MILISECONDS) / 10000;
+	pidController->interval = ((float) DELAY_5_MILISECONDS) / 10000;
 }
 
 void pidCompute(PidController *pidController)
