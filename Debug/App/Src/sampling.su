@@ -1,8 +1,8 @@
 ../App/Src/sampling.c:11:6:samplingInit	16	static
-../App/Src/sampling.c:23:6:samplingExecuteAdcRead	24	static
-../App/Src/sampling.c:58:10:samplingGetSamplingInterval	16	static
-../App/Src/sampling.c:63:6:samplingSetSamplingInterval	16	static
-../App/Src/sampling.c:68:10:samplingGetAdcValue	16	static
-../App/Src/sampling.c:73:6:samplingSetAdcValue	16	static
-../App/Src/sampling.c:78:9:samplingGetCurrentMagnitudeOrder	16	static
-../App/Src/sampling.c:83:6:samplingSetCurrentMagnitudeOrder	16	static
+../App/Src/sampling.c:22:6:samplingExecuteAdcRead	24	static
+../App/Src/sampling.c:57:10:samplingGetSamplingInterval	16	static
+../App/Src/sampling.c:62:6:samplingSetSamplingInterval	16	static
+../App/Src/sampling.c:67:10:samplingGetAdcValue	16	static
+../App/Src/sampling.c:72:6:samplingSetAdcValue	16	static
+../App/Src/sampling.c:77:9:samplingGetCurrentMagnitudeOrder	16	static
+../App/Src/sampling.c:82:6:samplingSetCurrentMagnitudeOrder	16	static
