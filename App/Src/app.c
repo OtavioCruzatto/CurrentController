@@ -26,6 +26,29 @@ void appInit(App *app, GPIO_TypeDef* ledPort, uint16_t ledPin,
 
 	// ======== Controller =========== //
 	controllerInit(&app->controller, hdac);
+
+	// ======== Calibration =========== //
+	uint32_t y_Imeasured_mA[] = {0, 5, 10, 15, 20, 25, 30, 35, 40, 45,
+								50, 55, 60, 65, 70, 75, 80, 85, 90, 95,
+								100, 105, 110, 115, 120, 125, 130, 135, 140, 145,
+								150, 155, 160, 165, 170, 175, 180, 185, 190, 195,
+								200, 205, 210, 215, 220, 225, 230, 235, 240, 245,
+								250, 255, 260, 265, 270, 275, 280, 285, 290, 295,
+								300};
+
+	uint32_t x_Icalculated_mA[] = {0, 4, 9, 14, 19, 24, 29, 35, 40, 46,
+								  51, 56, 61, 66, 72, 77, 82, 87, 93, 98,
+								  103, 108, 113, 118, 124, 129, 134, 139, 144, 149,
+								  155, 160, 165, 171, 176, 181, 186, 191, 197, 202,
+								  206, 212, 217, 222, 227, 233, 238, 243, 248, 254,
+								  259, 264, 269, 274, 280, 285, 290, 295, 300, 305,
+								  310};
+
+	uint32_t sizeof_y = sizeof(y_Imeasured_mA) / sizeof(y_Imeasured_mA[0]);
+	uint32_t sizeof_x = sizeof(x_Icalculated_mA) / sizeof(x_Icalculated_mA[0]);
+
+	memcpy(app->currentReferenceInMiliAmpsY, y_Imeasured_mA, 4*61);
+	memcpy(app->currentCalculatedInMiliAmpsX, x_Icalculated_mA, 4*61);
 }
 
 // ======== LED =========== //
@@ -75,7 +98,50 @@ void appExecuteSampling(App *app)
 	uint32_t calculatedCurrentInMiliAmps = appGetCurrentInMiliAmps(app, readAdcValue);
 	appAddNewValueToFilter(app, calculatedCurrentInMiliAmps);
 	uint32_t filteredCurrentInMiliAmps = appGetFilterResult(app);
-	appSetPidProcessVariable(app, filteredCurrentInMiliAmps);
+
+	if (filteredCurrentInMiliAmps < app->currentCalculatedInMiliAmpsX[0])
+	{
+		filteredCurrentInMiliAmps = app->currentCalculatedInMiliAmpsX[0];
+	}
+	else if (filteredCurrentInMiliAmps > app->currentCalculatedInMiliAmpsX[60])
+	{
+		filteredCurrentInMiliAmps = app->currentCalculatedInMiliAmpsX[60];
+	}
+
+	int8_t mainIndex = 0;
+	int8_t prevIndex = 0;
+	int8_t nextIndex = 0;
+
+	for (mainIndex = 0; mainIndex < 60; mainIndex++)
+	{
+		if ((filteredCurrentInMiliAmps >= app->currentCalculatedInMiliAmpsX[mainIndex]) && (filteredCurrentInMiliAmps <= app->currentCalculatedInMiliAmpsX[mainIndex+1]))
+		{
+			prevIndex = mainIndex - 1;
+			nextIndex = mainIndex + 1;
+
+			if (prevIndex < 0)
+			{
+				prevIndex = 0;
+			}
+
+			if (nextIndex > 60)
+			{
+				nextIndex = 60;
+			}
+			break;
+		}
+	}
+
+	float x  = (float) filteredCurrentInMiliAmps;
+	float x0 = (float) app->currentCalculatedInMiliAmpsX[prevIndex];
+	float x1 = (float) app->currentCalculatedInMiliAmpsX[nextIndex];
+	float y0 = (float) app->currentReferenceInMiliAmpsY[prevIndex];
+	float y1 = (float) app->currentReferenceInMiliAmpsY[nextIndex];
+	float y  = (((x - x0) / (x1 - x0)) * (y1 - y0)) + y0;
+
+	uint32_t calibratedCurrentInMiliAmps = (uint32_t) y;
+
+	appSetPidProcessVariable(app, calibratedCurrentInMiliAmps);
 }
 
 // ======== Filter =========== //

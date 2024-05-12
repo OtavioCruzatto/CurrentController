@@ -38,6 +38,10 @@ struct App
 
 	// ======== Controller =========== //
 	Controller controller;
+
+	// ======== Calibration =========== //
+	uint32_t currentReferenceInMiliAmpsY[61];
+	uint32_t currentCalculatedInMiliAmpsX[61];
 };
 
 // ======== Init =========== //
