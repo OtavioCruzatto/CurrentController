@@ -44,9 +44,9 @@ Este projeto implementa um sistema de controle de corrente baseado em PID com um
 Os parâmetros Kp, Ki e Kd podem ser ajustados via interface gráfica durante a execução. Isso facilita a sintonia do controlador em diferentes condições de carga.
 
 ## Imagens
-![plot](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources\Media\Images\GUI_1.jpg)
+![plot](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources/Media/Images/GUI_1.jpg)
 
-![plot](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources\Media\Images\Hardware_1.jpg)
+![plot](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources/Media/Images/Hardware_1.jpg)
 
 ## Licença
 
