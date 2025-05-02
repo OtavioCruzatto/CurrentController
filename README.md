@@ -4,7 +4,7 @@ Projeto para controle de corrente elétrica utilizando a placa Nucleo-F446RE e u
 
 ## Descrição
 
-Este projeto implementa um sistema de controle de corrente baseado em PID com um microcontrolador STM32F446RE (placa Nucleo). A medição da corrente é feita por meio de um resistor shunt e amplificador operacional, conforme o [esquemático](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources/Sch/Schematic.jpg). A corrente de saída é ajustada via DAC, e o sistema permite o monitoramento e ajuste dinâmico dos parâmetros PID por UART.
+Este projeto implementa um sistema de controle de corrente baseado em PID com um microcontrolador STM32F446RE (placa Nucleo). A medição da corrente é feita por meio de um resistor shunt e amplificador operacional, conforme o [esquemático](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources/Sch/Schematic%202.jpg). A corrente de saída é ajustada via DAC, e o sistema permite o monitoramento e ajuste dinâmico dos parâmetros PID por UART.
 
 ## Funcionalidades
 
@@ -50,7 +50,7 @@ Os parâmetros Kp, Ki e Kd podem ser ajustados via interface gráfica durante a 
 
 ## Licença
 
-Este projeto está licenciado sob a licença MIT - consulte o arquivo [LICENSE](LICENSE) para mais detalhes.
+Este projeto está licenciado sob a licença MIT - consulte o arquivo [LICENSE](https://github.com/OtavioCruzatto/CurrentController/blob/master/LICENSE.md) para mais detalhes.
 
 ## Autor
 
