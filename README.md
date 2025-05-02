@@ -29,14 +29,24 @@ Este projeto implementa um sistema de controle de corrente baseado em PID com um
 
 1. Clone este repositório e abra o projeto no STM32CubeIDE.
 2. Compile e grave o firmware na Nucleo-F446RE.
-3. Monte o circuito de medição conforme o [esquemático](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources/Sch/Schematic.jpg).
+3. Monte o circuito de medição conforme o [esquemático](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources/Sch/Schematic%202.jpg).
 4. Baixe e abra o [PidTuningHelper](https://github.com/OtavioCruzatto/PidTuningHelper).
 5. Conecte à porta serial e ajuste o setpoint e os ganhos PID.
 6. Visualize a resposta do sistema em tempo real com gráficos lineares.
 
+## Comandos via UART
+
+- Os comandos implementados para a comunicação entre o microcontrolador e a interface gráfica, podem ser consultados na seguinte [tabela de comandos](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources/DataPacket/Commands.xlsx).
+- A seguinte ferramenta feita em C# auxilia no processo de codificar e decodificar comandos: [DataPacketViewer](https://github.com/OtavioCruzatto/DataPacketViewer).
+
 ## Ajuste PID
 
 Os parâmetros Kp, Ki e Kd podem ser ajustados via interface gráfica durante a execução. Isso facilita a sintonia do controlador em diferentes condições de carga.
+
+## Imagens
+![plot](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources\Media\Images\GUI_1.jpg)
+
+![plot](https://github.com/OtavioCruzatto/CurrentController/blob/master/Resources\Media\Images\Hardware_1.jpg)
 
 ## Licença
 
